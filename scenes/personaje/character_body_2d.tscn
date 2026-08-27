@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://b80j1nxalek7b"]
+
+[ext_resource type="Script" uid="uid://crqe27y17ss77" path="res://scenes/personaje/character_body_2d.gd" id="1_2ehrf"]
+[ext_resource type="SpriteFrames" uid="uid://paqn3dqqyx4y" path="res://scenes/personaje/sprite_frames_personaje.tres" id="1_mi7pn"]
+[ext_resource type="Texture2D" uid="uid://drvcgdb672afc" path="res://sprites/reticula.png" id="3_2qcng"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(463, 462)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(158, 499)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(468, 465)
+
+[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
+collision_mask = 40
+script = ExtResource("1_2ehrf")
+animacion = NodePath("AnimatedSprite2D")
+area_idle = NodePath("areaidle")
+area_dash = NodePath("areadash")
+emisionidle = NodePath("areaidle/emisionidle")
+emisiondash = NodePath("areadash/emisiondash")
+reticula = NodePath("reticula")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=501302772]
+position = Vector2(-13.5, 11)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1681357401]
+sprite_frames = ExtResource("1_mi7pn")
+animation = &"idle"
+
+[node name="reticula" type="Sprite2D" parent="." unique_id=999005961]
+position = Vector2(3.0000305, 10.9999695)
+scale = Vector2(0.09124999, 0.08583335)
+texture = ExtResource("3_2qcng")
+
+[node name="areaidle" type="Area2D" parent="." unique_id=1876981566]
+collision_mask = 20
+
+[node name="emisionidle" type="CollisionShape2D" parent="areaidle" unique_id=1660684343]
+position = Vector2(5, 3.5)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="areadash" type="Area2D" parent="." unique_id=2094868173 groups=["ataque_personaje", "lalo"]]
+collision_layer = 2
+collision_mask = 20
+
+[node name="emisiondash" type="CollisionShape2D" parent="areadash" unique_id=1021779453]
+position = Vector2(-14, 10.5)
+shape = SubResource("RectangleShape2D_57qmd")
+disabled = true

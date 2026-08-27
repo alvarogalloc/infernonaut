@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://8spqkjufaju3"]
+
+[ext_resource type="Script" uid="uid://x4826y415vid" path="res://scenes/enemigos/enemigo_1.gd" id="1_djrvw"]
+[ext_resource type="SpriteFrames" uid="uid://dfnop4k3ts0xf" path="res://scenes/enemigos/sprite_frames_enemigo1.tres" id="1_qa7oh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(381, 497)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+radius = 1492.2819
+
+[node name="enemigo1" type="CharacterBody2D" unique_id=1158425960 node_paths=PackedStringArray("area_2d", "activate", "area_activacion")]
+collision_layer = 20
+collision_mask = 40
+script = ExtResource("1_djrvw")
+area_2d = NodePath("Area2D")
+activate = NodePath("activate")
+area_activacion = NodePath("activate/areaActivacion")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1470058930 groups=["ataque_personaje", "lalo"]]
+position = Vector2(-11.5, 7.5)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1331139950]
+sprite_frames = ExtResource("1_qa7oh")
+animation = &"idle"
+
+[node name="Area2D" type="Area2D" parent="." unique_id=208066084]
+position = Vector2(-11.5, 7.5)
+collision_layer = 20
+collision_mask = 3
+collision_priority = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=140968200]
+position = Vector2(2.5, -4.5)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="activate" type="Area2D" parent="." unique_id=355431038]
+collision_layer = 64
+
+[node name="areaActivacion" type="CollisionShape2D" parent="activate" unique_id=1804670388]
+shape = SubResource("CircleShape2D_g4v7s")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="body_entered" from="activate" to="." method="_on_activate_body_entered"]

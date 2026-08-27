@@ -1,0 +1,44 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="LALO"
+run/main_scene="uid://cfrpbb33x2vu6"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.svg"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[global_group]
+
+ataque_personaje="hitbox que daña"
+lalo="el personaje puede morir de la peor forma posible conocida y sufrira"
+
+[layer_names]
+
+2d_physics/layer_1="jugador"
+2d_physics/layer_2="dash"
+2d_physics/layer_3="enemigo"
+2d_physics/layer_4="pared"
+2d_physics/layer_5="daño"
+2d_physics/layer_6="para colisionar con pared"
+2d_physics/layer_7="activar"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

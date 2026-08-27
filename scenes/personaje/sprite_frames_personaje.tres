@@ -1,0 +1,31 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://paqn3dqqyx4y"]
+
+[ext_resource type="Texture2D" uid="uid://cf2egorev20wb" path="res://sprites/dash.png" id="1_leby5"]
+[ext_resource type="Texture2D" uid="uid://bgwgdbfemm0y2" path="res://sprites/knight.png" id="2_8g5iy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tytla"]
+atlas = ExtResource("1_leby5")
+region = Rect2(0, 0, 500, 500)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nt06w"]
+atlas = ExtResource("2_8g5iy")
+region = Rect2(0, 0, 389, 500)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tytla")
+}],
+"loop": 1,
+"name": &"dash",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nt06w")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]

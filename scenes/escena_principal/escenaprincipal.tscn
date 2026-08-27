@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cfrpbb33x2vu6"]
+
+[ext_resource type="PackedScene" uid="uid://b80j1nxalek7b" path="res://scenes/personaje/character_body_2d.tscn" id="1_qvqrr"]
+[ext_resource type="PackedScene" uid="uid://8spqkjufaju3" path="res://scenes/enemigos/enemigo_1.tscn" id="2_64fjh"]
+
+[node name="escenaprincipal" type="Node" unique_id=1133823808]
+
+[node name="personaje" parent="." unique_id=1272821337 instance=ExtResource("1_qvqrr")]
+position = Vector2(28, -11)
+scale = Vector2(0.145, 0.145)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1641530615]
+
+[node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
+position = Vector2(338, -44.999992)
+scale = Vector2(0.175, 0.175)
+
+[node name="enemigo2" parent="." unique_id=144220933 instance=ExtResource("2_64fjh")]
+position = Vector2(-297.99994, -202.99997)
+scale = Vector2(0.175, 0.175)
