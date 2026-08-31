@@ -9,8 +9,6 @@
 position = Vector2(28, -11)
 scale = Vector2(0.145, 0.145)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1641530615]
-
 [node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
 position = Vector2(338, -44.999992)
 scale = Vector2(0.175, 0.175)
