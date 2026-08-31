@@ -10,9 +10,25 @@ position = Vector2(28, -11)
 scale = Vector2(0.145, 0.145)
 
 [node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
-position = Vector2(338, -44.999992)
+position = Vector2(324, -148)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo2" parent="." unique_id=144220933 instance=ExtResource("2_64fjh")]
-position = Vector2(-297.99994, -202.99997)
+position = Vector2(-217, -278)
+scale = Vector2(0.175, 0.175)
+
+[node name="enemigo3" parent="." unique_id=1075480831 instance=ExtResource("2_64fjh")]
+position = Vector2(383.99997, 359.99997)
+scale = Vector2(0.175, 0.175)
+
+[node name="enemigo4" parent="." unique_id=896427809 instance=ExtResource("2_64fjh")]
+position = Vector2(-446, 381.99997)
+scale = Vector2(0.175, 0.175)
+
+[node name="enemigo5" parent="." unique_id=1783455587 instance=ExtResource("2_64fjh")]
+position = Vector2(-574, -13.999996)
+scale = Vector2(0.175, 0.175)
+
+[node name="enemigo6" parent="." unique_id=666200266 instance=ExtResource("2_64fjh")]
+position = Vector2(-94.99994, 242.00003)
 scale = Vector2(0.175, 0.175)
