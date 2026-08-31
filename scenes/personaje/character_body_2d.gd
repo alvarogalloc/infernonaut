@@ -1,8 +1,8 @@
 #LA _ ES LA CONVENCION DE QUE UN PARAMETRO SOLO SE USA EN SI MISMO
 
 extends CharacterBody2D
-var _velocidad : float = 1000.0 #velocidad para el dash
-var _velocidad_lenta : float = 500.0 #velocidad para el movimiento lento
+var _velocidad : float = 750.0 #velocidad para el dash
+var _velocidad_lenta : float = 400.0 #velocidad para el movimiento lento
 var _muerto : bool = false #variable que controla si muere
 
 var target_position = Vector2.ZERO #la posicion de donde se dirige el personaje, se inicia como un vector en 0
@@ -45,45 +45,61 @@ func _ready():
 	target_position = global_position
 
 
-#FUNCION _physics_process(_delta) 
-## ES LA QUE SE EJECUTA CADA FRAME, SIRVE PARA HACER COMPROBACIONES CONSTANTES, MOVIMIENTO DEL PERSONAJE. ETC
 func _physics_process(_delta):
 	if _muerto == true:
 		return
 	
 	var distance = global_position.distance_to(target_position)
 	
-	if velocity.x != 0:
-		animacion.play("dash")
-		if dash_rapido == true and dash_lento ==false:
+	if distance > 10.0:
+		var direction = global_position.direction_to(target_position)
+		
+		# --- Elegimos la animación según la dirección dominante del dash ---
+		_actualizar_animacion_direccional(direction)
+		
+		if dash_rapido == true and dash_lento == false:
+			velocity = direction * _velocidad
 			emisionidle.set_deferred("disabled", true)
 			emisiondash.set_deferred("disabled", false)
-		elif dash_rapido == false and dash_lento ==true:
+		elif dash_rapido == false and dash_lento == true:
+			velocity = direction * _velocidad_lenta
 			emisionidle.set_deferred("disabled", false)
 			emisiondash.set_deferred("disabled", true)
+		
+		move_and_slide()
+		reticula.global_position = target_position
 	else:
+		velocity = Vector2.ZERO
 		animacion.play("idle")
 		emisionidle.set_deferred("disabled", false)
 		emisiondash.set_deferred("disabled", true)
-	
-	# Si estamos a más de 5 píxeles de distancia, nos movemos 
-	# (esto evita que el personaje "tiemble" al llegar al punto exacto)
-	if distance > 10.0:
-		# Calculamos la dirección hacia el objetivo
-		var direction = global_position.direction_to(target_position)	
-		# Asignamos la velocidad (dirección * rapidez) y movemos al personaje
-		if dash_rapido == true and dash_lento ==false:
-			velocity = direction * _velocidad
-		elif dash_rapido== false and dash_lento==true:
-			velocity = direction*_velocidad_lenta
-		move_and_slide()
-		reticula.global_position = target_position
-
-	else:
-		# Si ya llegó, detenemos el movimiento
-		velocity = Vector2.ZERO
+		
 		var mouse_offset = get_global_mouse_position() - global_position
 		reticula.global_position = global_position + mouse_offset.limit_length(radio_maximo)
+
+
+# para decidir cual animacion
+func _actualizar_animacion_direccional(direction: Vector2) -> void:
+	# Umbral para decidir si el movimiento es "mas vertical" que "horizontal"
+	# entre mas cerca de 1.0, mas estricto es para entrar en front/back
+	var umbral_vertical : float = 0.5
+	
+	if direction.y < -umbral_vertical:
+		# Se mueve principalmente hacia arriba -> se aleja de la cámara
+		animacion.play("dash_back")
+	elif direction.y > umbral_vertical:
+		# Se mueve principalmente hacia abajo -> se acerca a la cámara
+		animacion.play("dash_front")
+	else:
+		# Movimiento principalmente horizontal
+		animacion.play("dash")
+	
+	# El flip horizontal se mantiene independiente de qué animación se use,
+	# asi el personaje sigue viendo hacia donde se mueve en horizontal
+	if direction.x < 0:
+		animacion.flip_h = true
+	elif direction.x > 0:
+		animacion.flip_h = false
 
 ##FUNCION PARA EL MOVIMIENTO DEL MOUSE
 func _input(event):
@@ -103,11 +119,9 @@ func _input(event):
 		target_position = global_position + vector_desplazamiento
 		dash_rapido = false
 		dash_lento=true 
-	
 
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
 func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
-	print("xddddd")
 	animacion.modulate = Color(18.892, 0.0, 0.0, 1.0)
 	_muerto = true
 	animacion.stop()

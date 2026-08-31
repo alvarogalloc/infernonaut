@@ -8,12 +8,13 @@
 size = Vector2(463, 462)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
-size = Vector2(158, 499)
+size = Vector2(245, 596)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(468, 465)
 
 [node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
+scale = Vector2(0.7, 0.7)
 collision_mask = 40
 script = ExtResource("1_2ehrf")
 animacion = NodePath("AnimatedSprite2D")
@@ -40,7 +41,7 @@ texture = ExtResource("3_2qcng")
 collision_mask = 20
 
 [node name="emisionidle" type="CollisionShape2D" parent="areaidle" unique_id=1660684343]
-position = Vector2(5, 3.5)
+position = Vector2(-38.5, 52)
 shape = SubResource("RectangleShape2D_yf5fn")
 
 [node name="areadash" type="Area2D" parent="." unique_id=2094868173 groups=["ataque_personaje", "lalo"]]
