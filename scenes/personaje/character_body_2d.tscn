@@ -52,8 +52,3 @@ collision_mask = 20
 position = Vector2(-14, 10.5)
 shape = SubResource("RectangleShape2D_57qmd")
 disabled = true
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1285046515]
-offset = Vector2(1, 1)
-ignore_rotation = false
-zoom = Vector2(1.205, 1.205)

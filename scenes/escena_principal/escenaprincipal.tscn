@@ -2,23 +2,31 @@
 
 [ext_resource type="PackedScene" uid="uid://b80j1nxalek7b" path="res://scenes/personaje/character_body_2d.tscn" id="1_qvqrr"]
 [ext_resource type="PackedScene" uid="uid://8spqkjufaju3" path="res://scenes/enemigos/enemigo_1.tscn" id="2_64fjh"]
+[ext_resource type="Script" uid="uid://8e7f4yxax57t" path="res://scenes/escena_principal/camera_2d_2.gd" id="2_rtjyt"]
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
 
 [node name="personaje" parent="." unique_id=1272821337 instance=ExtResource("1_qvqrr")]
-position = Vector2(28, -11)
+position = Vector2(1321, -694)
 scale = Vector2(0.145, 0.145)
 
+[node name="Camera2D2" type="Camera2D" parent="personaje" unique_id=41825619]
+offset = Vector2(1, 1)
+ignore_rotation = false
+zoom = Vector2(1.205, 1.205)
+position_smoothing_enabled = true
+script = ExtResource("2_rtjyt")
+
 [node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
-position = Vector2(324, -148)
+position = Vector2(569, -683)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo2" parent="." unique_id=144220933 instance=ExtResource("2_64fjh")]
-position = Vector2(-217, -278)
+position = Vector2(65, -832)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo3" parent="." unique_id=1075480831 instance=ExtResource("2_64fjh")]
-position = Vector2(383.99997, 359.99997)
+position = Vector2(307, -115)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo4" parent="." unique_id=896427809 instance=ExtResource("2_64fjh")]
@@ -30,5 +38,5 @@ position = Vector2(-574, -13.999996)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo6" parent="." unique_id=666200266 instance=ExtResource("2_64fjh")]
-position = Vector2(-94.99994, 242.00003)
+position = Vector2(-272, 184)
 scale = Vector2(0.175, 0.175)
