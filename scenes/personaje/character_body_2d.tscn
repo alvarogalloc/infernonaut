@@ -34,6 +34,7 @@ sprite_frames = ExtResource("1_mi7pn")
 animation = &"idle"
 
 [node name="reticula" type="Sprite2D" parent="." unique_id=999005961]
+texture_filter = 1
 position = Vector2(-5.714264, 3.0517578e-05)
 scale = Vector2(12.585803, 9.362872)
 texture = ExtResource("3_2qcng")

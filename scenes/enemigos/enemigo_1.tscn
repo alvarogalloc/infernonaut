@@ -9,7 +9,7 @@ size = Vector2(381, 497)
 [sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
 radius = 1492.2819
 
-[node name="enemigo1" type="CharacterBody2D" unique_id=1158425960 node_paths=PackedStringArray("area_2d", "animacion", "activate", "area_activacion")]
+[node name="enemigo1" type="CharacterBody2D" unique_id=1158425960 node_paths=PackedStringArray("area_2d", "animacion", "activate", "area_activacion", "hitboxDead", "collision") groups=["ataque_personaje", "lalo"]]
 collision_layer = 20
 collision_mask = 40
 script = ExtResource("1_djrvw")
@@ -17,16 +17,18 @@ area_2d = NodePath("Area2D")
 animacion = NodePath("AnimatedSprite2D")
 activate = NodePath("activate")
 area_activacion = NodePath("activate/areaActivacion")
+hitboxDead = NodePath("Area2D/CollisionShape2D")
+collision = NodePath("CollisionShape2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1470058930 groups=["ataque_personaje", "lalo"]]
 position = Vector2(-11.5, 7.5)
 shape = SubResource("RectangleShape2D_g4v7s")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1331139950]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1331139950 groups=["ataque_personaje", "lalo"]]
+z_index = -1
 scale = Vector2(0.8, 0.8)
 sprite_frames = ExtResource("1_qa7oh")
 animation = &"detection"
-frame_progress = 0.5420406
 
 [node name="Area2D" type="Area2D" parent="." unique_id=208066084]
 position = Vector2(-11.5, 7.5)

@@ -33,7 +33,7 @@ func crear_ghost():
 	
 	# Color rojo claro
 	ghost.modulate = Color(1.0, 0.6, 0.6, 1.0)
-	ghost.z_index = -10
+	ghost.z_index = -1
 	
 	# Desvanecer
 	var tween = get_tree().create_tween()

@@ -1,5 +1,6 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://dfnop4k3ts0xf"]
 
+[ext_resource type="Texture2D" uid="uid://bdlp7eg07etwc" path="res://sprites/mentirosospritebutchered.png" id="1_0ql48"]
 [ext_resource type="Texture2D" uid="uid://bm6xpykhlmdtg" path="res://sprites/spritesheets/MentirosoStartled/Línea de tiempo 1_0000.png" id="1_m83od"]
 [ext_resource type="Texture2D" uid="uid://dsjsk0gxhkgm5" path="res://sprites/mentirososprite.png" id="1_xgb4q"]
 [ext_resource type="Texture2D" uid="uid://danu6wdvrdk7c" path="res://sprites/spritesheets/MentirosoStartled/Línea de tiempo 1_0001.png" id="2_0ql48"]
@@ -22,6 +23,14 @@
 
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_0ql48")
+}],
+"loop": 1,
+"name": &"butcher",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_m83od")
