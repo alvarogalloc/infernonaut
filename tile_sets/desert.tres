@@ -1,0 +1,56 @@
+[gd_resource type="TileSet" format=3 uid="uid://cm10euk2xqc45"]
+
+[ext_resource type="Texture2D" uid="uid://fqtfkin281pl" path="res://tile_sets/sandTilev1.png" id="1_ovn4d"]
+[ext_resource type="Texture2D" uid="uid://d17cxxcno1x6r" path="res://tile_sets/sandTilev4.png" id="2_pwglq"]
+[ext_resource type="Texture2D" uid="uid://bthmtuctc3crq" path="res://tile_sets/sandTilev2.png" id="2_td5ol"]
+[ext_resource type="Texture2D" uid="uid://csak4xlbrphf8" path="res://tile_sets/sandTilev3.png" id="3_8ap8d"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_td5ol"]
+texture = ExtResource("1_ovn4d")
+texture_region_size = Vector2i(100, 100)
+0:0/size_in_atlas = Vector2i(5, 5)
+0:0/0 = 0
+5:0/size_in_atlas = Vector2i(5, 5)
+5:0/0 = 0
+10:0/size_in_atlas = Vector2i(5, 5)
+10:0/0 = 0
+0:5/size_in_atlas = Vector2i(5, 5)
+0:5/0 = 0
+5:5/size_in_atlas = Vector2i(5, 5)
+5:5/0 = 0
+10:5/size_in_atlas = Vector2i(5, 5)
+10:5/0 = 0
+0:10/size_in_atlas = Vector2i(5, 5)
+0:10/0 = 0
+5:10/size_in_atlas = Vector2i(5, 5)
+5:10/0 = 0
+10:10/size_in_atlas = Vector2i(5, 5)
+10:10/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h553h"]
+texture = ExtResource("2_pwglq")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8ap8d"]
+texture = ExtResource("2_td5ol")
+texture_region_size = Vector2i(750, 750)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pwglq"]
+texture = ExtResource("3_8ap8d")
+texture_region_size = Vector2i(750, 750)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[resource]
+tile_size = Vector2i(512, 512)
+sources/0 = SubResource("TileSetAtlasSource_td5ol")
+sources/2 = SubResource("TileSetAtlasSource_8ap8d")
+sources/3 = SubResource("TileSetAtlasSource_pwglq")
+sources/1 = SubResource("TileSetAtlasSource_h553h")
