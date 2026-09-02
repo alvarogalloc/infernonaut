@@ -1,6 +1,6 @@
 #LA _ ES LA CONVENCION DE QUE UN PARAMETRO SOLO SE USA EN SI MISMO
-
 extends CharacterBody2D
+
 var _velocidad : float = 750.0 #velocidad para el dash
 var _velocidad_lenta : float = 400.0 #velocidad para el movimiento lento
 var _muerto : bool = false #variable que controla si muere
@@ -12,6 +12,12 @@ var radio_maximo : float = 300.0 #El radio del circulo en el que puedes hacer da
 var radio_minimo : float = 120.0 #El radio del circulo a donde te puedes mover (mas pequeño)
 
 
+var max_cargas : int = 3
+var cargas_actuales : int = 3
+var tiempo_recarga : float = 2.0 # Segundos que tarda en rellenarse un contenedor
+var timer_recarga : Timer # Timer que crearemos por código
+
+@export var bloodHud : Control
 
 var dash_lento
 var dash_rapido
@@ -30,7 +36,6 @@ var tween_dash = Tween
 @export var animacion : AnimatedSprite2D #para el animated sprite del personaje
 @export var area_idle: Area2D #para la hitbox del personaje cuando esta IDLE, detecta cosas que entran ahi
 @export var area_dash: Area2D #para la hitbox del personaje cuando esta haciendo dash, detecta lo que entra ahi
-##TAL VEZ FALTA UNA HITBOX PARA CUANDO HACE EL DASH CORTO
 
 @export var emisionidle: CollisionShape2D #para desactivar la hitbox del personaje
 @export var emisiondash: CollisionShape2D #para desactivar la hitbox del dash
@@ -43,6 +48,25 @@ func _ready():
 	add_to_group("personajes") #el grupo del personaje, se usa para conectarlo a la escena principal
 	area_idle.body_entered.connect(_on_area_2d_body_entered_idle)
 	target_position = global_position
+	
+	timer_recarga = Timer.new()
+	timer_recarga.wait_time = tiempo_recarga
+	timer_recarga.one_shot = true
+	# Conectamos la señal timeout del timer a nuestra función
+	timer_recarga.timeout.connect(_on_timer_recarga_timeout) 
+	add_child(timer_recarga)
+
+
+
+func _process(_delta):
+	if bloodHud != null:
+		var porcentaje = 0.0
+		# Si el timer está corriendo, calculamos el porcentaje de 0 a 100
+		if not timer_recarga.is_stopped():
+			porcentaje = (1.0 - (timer_recarga.time_left / tiempo_recarga)) * 100.0
+		
+		# Le enviamos los datos a la escena de UI
+		bloodHud.actualizar_cargas(cargas_actuales, porcentaje)
 
 
 func _physics_process(_delta):
@@ -103,22 +127,42 @@ func _actualizar_animacion_direccional(direction: Vector2) -> void:
 
 ##FUNCION PARA EL MOVIMIENTO DEL MOUSE
 func _input(event):
+	# CLICK IZQUIERDO: Hace daño (Requiere y gasta viales)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		# Vector desde el personaje hasta el click (SIN limitar la posición absoluta)
-		var vector_desplazamiento = get_global_mouse_position() - global_position
-		# Ahora sí limitamos el desplazamiento, que es lo que tiene sentido limitar
-		vector_desplazamiento = vector_desplazamiento.limit_length(radio_maximo)
-		target_position = global_position + vector_desplazamiento
-		dash_rapido=true
-		dash_lento = false
+		if cargas_actuales > 0: # Solo atacamos si hay cargas
+			cargas_actuales -= 1 # Gastamos una carga
+			
+			# Iniciamos el Timer de recarga si no estaba corriendo ya
+			if timer_recarga.is_stopped():
+				
+				timer_recarga.start()
+			
+			var vector_desplazamiento = get_global_mouse_position() - global_position
+			vector_desplazamiento = vector_desplazamiento.limit_length(radio_maximo)
+			target_position = global_position + vector_desplazamiento
+			dash_rapido = true
+			dash_lento = false
+		else:
+			# aqui hay que poner un sonido o efecto visual de que no puedes atacar
+			pass
+	# CLICK DERECHO: Movimiento normal (No gasta viales)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-		# Vector desde el personaje hasta el click (SIN limitar la posición absoluta)
 		var vector_desplazamiento = get_global_mouse_position() - global_position
-		# Ahora sí limitamos el desplazamiento, que es lo que tiene sentido limitar
 		vector_desplazamiento = vector_desplazamiento.limit_length(radio_minimo)
 		target_position = global_position + vector_desplazamiento
 		dash_rapido = false
-		dash_lento=true 
+		dash_lento = true
+
+
+# --- funcion para cuando el timer termina
+func _on_timer_recarga_timeout():
+	if cargas_actuales < max_cargas:
+		cargas_actuales += 1 # Recuperamos un vial
+		
+		# Si todavía nos faltan viales por recuperar, reiniciamos el Timer
+		if cargas_actuales < max_cargas:
+			timer_recarga.start()
+
 
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
 func _on_area_2d_body_entered_idle(_body: Node2D) -> void:

@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://b3qls31p3imcj"]
+
+[ext_resource type="Script" uid="uid://c5n56sqscl4k5" path="res://scenes/HUD+/BloodHud/blood_hud.gd" id="1_pgm5i"]
+[ext_resource type="Texture2D" uid="uid://d1dhe28336c8y" path="res://sprites/vial.png" id="2_jejpu"]
+[ext_resource type="Texture2D" uid="uid://ch0ytqxjugk1q" path="res://sprites/vial_full.png" id="3_477mq"]
+
+[node name="BloodHud" type="Control" unique_id=1171745085]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_pgm5i")
+
+[node name="Vial1" type="TextureProgressBar" parent="." unique_id=1225444452]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 8.0
+offset_right = 41.0
+offset_bottom = 48.0
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")
+
+[node name="Vial2" type="TextureProgressBar" parent="." unique_id=608295253]
+layout_mode = 0
+offset_left = 38.0
+offset_right = 78.0
+offset_bottom = 40.0
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")
+
+[node name="Vial3" type="TextureProgressBar" parent="." unique_id=1446964371]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 12.0
+offset_right = 114.0
+offset_bottom = 52.0
+value = 100.0
+fill_mode = 3
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")

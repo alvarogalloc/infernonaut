@@ -4,6 +4,7 @@
 [ext_resource type="SpriteFrames" uid="uid://paqn3dqqyx4y" path="res://scenes/personaje/sprite_frames_personaje.tres" id="1_mi7pn"]
 [ext_resource type="Texture2D" uid="uid://dknl85uqhy43e" path="res://sprites/crosshair.png" id="3_2qcng"]
 [ext_resource type="Script" uid="uid://cul8koogc28xv" path="res://scenes/personaje/sprite_trail.gd" id="4_gl5o5"]
+[ext_resource type="PackedScene" uid="uid://b3qls31p3imcj" path="res://scenes/HUD+/BloodHud/blood_hud.tscn" id="5_brr8y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(463, 462)
@@ -14,10 +15,11 @@ size = Vector2(245, 596)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(468, 465)
 
-[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
+[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
 scale = Vector2(0.7, 0.7)
 collision_mask = 40
 script = ExtResource("1_2ehrf")
+bloodHud = NodePath("CanvasLayer/BloodHud")
 animacion = NodePath("AnimatedSprite2D")
 area_idle = NodePath("areaidle")
 area_dash = NodePath("areadash")
@@ -57,3 +59,9 @@ disabled = true
 
 [node name="spriteTrail" type="Node" parent="." unique_id=1528965698]
 script = ExtResource("4_gl5o5")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1513592264]
+scale = Vector2(2.385, 2.385)
+transform = Transform2D(2.385, 0, 0, 2.385, 0, 0)
+
+[node name="BloodHud" parent="CanvasLayer" unique_id=1171745085 instance=ExtResource("5_brr8y")]
