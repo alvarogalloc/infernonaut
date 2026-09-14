@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dybleaqk6gnrn"]
+
+[ext_resource type="Script" uid="uid://br1ed638eg1o1" path="res://ghost.gd" id="1_me671"]
+
+[node name="Ghost" type="Sprite2D" unique_id=630036203]
+script = ExtResource("1_me671")

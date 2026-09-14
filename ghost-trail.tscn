@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://d2xjivbsa2rej"]
+
+[ext_resource type="Script" uid="uid://dyksg1dkqbbsu" path="res://ghost_trail.gd" id="1_xuex4"]
+
+[node name="GhostTrail" type="Node" unique_id=1400430859]
+script = ExtResource("1_xuex4")
