@@ -2,6 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://fqtfkin281pl" path="res://tile_sets/sandTilev1.png" id="1_ovn4d"]
 [ext_resource type="Texture2D" uid="uid://d17cxxcno1x6r" path="res://tile_sets/sandTilev4.png" id="2_pwglq"]
+[ext_resource type="Texture2D" uid="uid://bthmtuctc3crq" path="res://tile_sets/sandTilev2.png" id="2_td5ol"]
+[ext_resource type="Texture2D" uid="uid://csak4xlbrphf8" path="res://tile_sets/sandTilev3.png" id="3_8ap8d"]
+[ext_resource type="Texture2D" uid="uid://d13q36e6hyny6" path="res://tile_sets/Sandtile.png" id="5_h553h"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_td5ol"]
+resource_name = "sand-tilesv2"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_td5ol"]
 resource_name = "sand-tilesv2"
@@ -27,7 +33,32 @@ texture = ExtResource("2_pwglq")
 texture_region_size = Vector2i(512, 512)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8ap8d"]
+texture = ExtResource("2_td5ol")
+texture_region_size = Vector2i(750, 750)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pwglq"]
+texture = ExtResource("3_8ap8d")
+texture_region_size = Vector2i(750, 750)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fi7lu"]
+texture = ExtResource("5_h553h")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+1:0/0 = 0
+
 [resource]
-tile_size = Vector2i(256, 256)
+tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_td5ol")
 sources/1 = SubResource("TileSetAtlasSource_h553h")
+sources/4 = SubResource("TileSetAtlasSource_fi7lu")
