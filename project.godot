@@ -39,6 +39,7 @@ lalo="el personaje puede morir de la peor forma posible conocida y sufrira"
 2d_physics/layer_5="daño"
 2d_physics/layer_6="para colisionar con pared"
 2d_physics/layer_7="activar"
+2d_physics/layer_8="pinchos"
 
 [physics]
 

@@ -17,7 +17,7 @@ size = Vector2(468, 465)
 
 [node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
 scale = Vector2(0.7, 0.7)
-collision_mask = 41
+collision_mask = 40
 script = ExtResource("1_2ehrf")
 bloodHud = NodePath("CanvasLayer/BloodHud")
 animacion = NodePath("AnimatedSprite2D")
@@ -42,7 +42,7 @@ scale = Vector2(12.585803, 9.362872)
 texture = ExtResource("3_2qcng")
 
 [node name="areaidle" type="Area2D" parent="." unique_id=1876981566]
-collision_mask = 20
+collision_mask = 148
 
 [node name="emisionidle" type="CollisionShape2D" parent="areaidle" unique_id=1660684343]
 position = Vector2(-38.5, 52)
@@ -50,7 +50,7 @@ shape = SubResource("RectangleShape2D_yf5fn")
 
 [node name="areadash" type="Area2D" parent="." unique_id=2094868173 groups=["ataque_personaje", "lalo"]]
 collision_layer = 2
-collision_mask = 20
+collision_mask = 148
 
 [node name="emisiondash" type="CollisionShape2D" parent="areadash" unique_id=1021779453]
 position = Vector2(-14, 10.5)

@@ -183,3 +183,6 @@ func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
 	#LA FUNCION .EMIT() ES PARA SEÑALES
 	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
 	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
+	
+	
+	

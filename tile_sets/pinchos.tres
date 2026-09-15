@@ -1,0 +1,9 @@
+[gd_resource type="TileSet" format=3 uid="uid://6bkyvdbg7m03"]
+
+[ext_resource type="Texture2D" uid="uid://ci8oqutd6de1o" path="res://sprites/pincho.png" id="1_3me7r"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fjx53"]
+texture = ExtResource("1_3me7r")
+
+[resource]
+sources/2 = SubResource("TileSetAtlasSource_fjx53")

@@ -1,0 +1,43 @@
+[gd_scene format=4 uid="uid://dnpgr1lyo8ujn"]
+
+[ext_resource type="TileSet" uid="uid://cm10euk2xqc45" path="res://tile_sets/desert.tres" id="1_ptwtb"]
+[ext_resource type="Texture2D" uid="uid://dfdpuwsf674rf" path="res://tile_sets/stoneTile.png" id="2_drab6"]
+[ext_resource type="Texture2D" uid="uid://bgpmgo86pdnjs" path="res://tile_sets/WalltileA.png" id="3_2hhts"]
+[ext_resource type="Texture2D" uid="uid://bfyk3vwkri0af" path="res://tile_sets/Emptytile.png" id="4_fl28s"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ptwtb"]
+texture = ExtResource("2_drab6")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-232.24376, -228.0592, 215.50546, -221.78233, 217.59775, 242.70517, -232.24376, 240.61288)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_drab6"]
+texture = ExtResource("3_2hhts")
+texture_region_size = Vector2i(256, 256)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-128, -128, 128, -128, 128, 128, -128, 128)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2hhts"]
+texture = ExtResource("4_fl28s")
+texture_region_size = Vector2i(256, 256)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hxg4e"]
+tile_size = Vector2i(256, 256)
+physics_layer_0/collision_layer = 8
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_ptwtb")
+sources/1 = SubResource("TileSetAtlasSource_drab6")
+sources/2 = SubResource("TileSetAtlasSource_2hhts")
+
+[node name="habitacion1" type="Node2D" unique_id=1317705937]
+
+[node name="sand" type="TileMapLayer" parent="." unique_id=1449813159]
+z_index = -11
+tile_map_data = PackedByteArray("AAAOAPj/BAAAAAAAAAAOAPn/BAAAAAEAAAAPAPj/BAABAAAAAAAPAPn/BAABAAEAAAAOAPr/BAAAAAAAAAAOAPv/BAAAAAEAAAAPAPr/BAABAAAAAAAPAPv/BAABAAEAAAAOAPz/BAAAAAAAAAAOAP3/BAAAAAEAAAAPAPz/BAABAAAAAAAPAP3/BAABAAEAAAAMAPz/BAAAAAAAAAAMAP3/BAAAAAEAAAANAPz/BAABAAAAAAANAP3/BAABAAEAAAAKAPz/BAAAAAAAAAAKAP3/BAAAAAEAAAALAPz/BAABAAAAAAALAP3/BAABAAEAAAAIAPz/BAAAAAAAAAAIAP3/BAAAAAEAAAAJAPz/BAABAAAAAAAJAP3/BAABAAEAAAAGAPz/BAAAAAAAAAAGAP3/BAAAAAEAAAAHAPz/BAABAAAAAAAHAP3/BAABAAEAAAAEAPz/BAAAAAAAAAAEAP3/BAAAAAEAAAAFAPz/BAABAAAAAAAFAP3/BAABAAEAAAAEAPj/BAAAAAAAAAAEAPn/BAAAAAEAAAAFAPj/BAABAAAAAAAFAPn/BAABAAEAAAAGAPj/BAAAAAAAAAAGAPn/BAAAAAEAAAAHAPj/BAABAAAAAAAHAPn/BAABAAEAAAAIAPj/BAAAAAAAAAAIAPn/BAAAAAEAAAAJAPj/BAABAAAAAAAJAPn/BAABAAEAAAAKAPj/BAAAAAAAAAAKAPn/BAAAAAEAAAALAPj/BAABAAAAAAALAPn/BAABAAEAAAAKAPr/BAAAAAAAAAAKAPv/BAAAAAEAAAALAPr/BAABAAAAAAALAPv/BAABAAEAAAAMAPr/BAAAAAAAAAAMAPv/BAAAAAEAAAANAPr/BAABAAAAAAANAPv/BAABAAEAAAAMAPj/BAAAAAAAAAAMAPn/BAAAAAEAAAANAPj/BAABAAAAAAANAPn/BAABAAEAAAAIAPr/BAAAAAAAAAAIAPv/BAAAAAEAAAAJAPr/BAABAAAAAAAJAPv/BAABAAEAAAAGAPr/BAAAAAAAAAAGAPv/BAAAAAEAAAAHAPr/BAABAAAAAAAHAPv/BAABAAEAAAAEAPr/BAAAAAAAAAAEAPv/BAAAAAEAAAAFAPr/BAABAAAAAAAFAPv/BAABAAEAAAA=")
+tile_set = ExtResource("1_ptwtb")
+
+[node name="walls" type="TileMapLayer" parent="." unique_id=1218254568]
+z_index = -10
+tile_map_data = PackedByteArray("AAACAPv/AQAAAAAAAAADAPv/AQAAAAAAAAAEAPv/AQAAAAAAAAAFAPv/AQAAAAAAAAAGAPv/AQAAAAAAAAAHAPv/AQAAAAAAAAAIAPv/AQAAAAAAAAAIAP//AQAAAAAAAAAHAP//AQAAAAAAAAAGAP//AQAAAAAAAAAFAP//AQAAAAAAAAAEAP//AQAAAAAAAAADAP//AQAAAAAAAAACAP//AQAAAAAAAAAIAPz/AQAAAAAAAAAIAP3/AQAAAAAAAAAIAP7/AQAAAAAAAAACAPz/AQAAAAAAAAACAP7/AQAAAAAAAAA=")
+tile_set = SubResource("TileSet_hxg4e")
