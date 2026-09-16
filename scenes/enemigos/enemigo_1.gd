@@ -35,10 +35,22 @@ func _physics_process(_delta: float) -> void:
 		
 	move_and_slide()
 
+
+func trigger_dim_light() -> void:
+	# registers a tween for fading light for fallen enemies
+	var tween = create_tween()
+	const dim_duration=1.5
+	tween.tween_property($enemy_emission, "energy", 0.0, dim_duration)
+	tween.tween_property($enemy_emission, "texture_scale", 0.0, dim_duration)
+	tween.tween_callback(queue_free)
+
+
+
 # Detecta el golpe que mata al enemigo
 func _on_area_2d_area_entered(_area: Area2D) -> void:
 	if _area.is_in_group("ataque_personaje") and not esta_muerto:
 		esta_muerto = true
+		trigger_dim_light()
 		persiguiendo = false
 		animacion.play("butcher")
 		

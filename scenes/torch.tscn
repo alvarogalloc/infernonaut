@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://hipkjjgb34qq"]
+
+[ext_resource type="Texture2D" uid="uid://pn6qvn27tjbh" path="res://misc_sprites/torch_spritesheet.png" id="1_d4v33"]
+[ext_resource type="Texture2D" uid="uid://d4k34drnkv5va" path="res://misc_sprites/light.png" id="2_my26j"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ltfmc"]
+cull_mode = 1
+polygon = PackedVector2Array(0, 0, 12, 0, 12, 24, 0, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d4v33"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_my26j"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o2tjn"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3k50"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ndh0a"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ktql7"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gybtl"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_21l5o"]
+atlas = ExtResource("1_d4v33")
+region = Rect2(192, 64, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ltfmc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d4v33")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_my26j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o2tjn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r3k50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ndh0a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ktql7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gybtl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_21l5o")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="torch" type="Node2D" unique_id=1912709740]
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=1804734307]
+position = Vector2(-8, -1)
+occluder = SubResource("OccluderPolygon2D_ltfmc")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=173189413]
+position = Vector2(-1, -20)
+color = Color(0.7810376, 0.3269104, 0.08940659, 1)
+texture = ExtResource("2_my26j")
+texture_scale = 0.1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2076714407]
+sprite_frames = SubResource("SpriteFrames_ltfmc")
+frame_progress = 0.39733738

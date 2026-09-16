@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bi7nd6vs8mdnu" path="res://scenes/habitaciones/habitacion3/habitacion_3.tscn" id="6_c0dd2"]
 [ext_resource type="PackedScene" uid="uid://coeqb1xqdg6xc" path="res://scenes/habitaciones/habitacionSecreta/habitacion_secreta.tscn" id="7_ik20d"]
 [ext_resource type="PackedScene" uid="uid://br4lmf5aa7ih1" path="res://scenes/habitaciones/habitacion4/habitacion_4.tscn" id="7_qdi7g"]
+[ext_resource type="PackedScene" uid="uid://hipkjjgb34qq" path="res://scenes/torch.tscn" id="9_xnjis"]
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
 
@@ -23,7 +24,7 @@ position_smoothing_enabled = true
 script = ExtResource("2_rtjyt")
 
 [node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
-position = Vector2(-1403, -672)
+position = Vector2(31.999878, -638)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo2" parent="." unique_id=2070730415 instance=ExtResource("2_64fjh")]
@@ -63,3 +64,10 @@ position = Vector2(-2044, 2546)
 
 [node name="habitacionSecreta" parent="." unique_id=859744286 instance=ExtResource("7_ik20d")]
 position = Vector2(-3827, 1276)
+
+[node name="darken_scene" type="CanvasModulate" parent="." unique_id=232747731]
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="torch" parent="." unique_id=1912709740 instance=ExtResource("9_xnjis")]
+position = Vector2(547, -904)
+scale = Vector2(2.65, 2.65)
