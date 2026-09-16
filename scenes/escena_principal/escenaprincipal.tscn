@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://coeqb1xqdg6xc" path="res://scenes/habitaciones/habitacionSecreta/habitacion_secreta.tscn" id="7_ik20d"]
 [ext_resource type="PackedScene" uid="uid://br4lmf5aa7ih1" path="res://scenes/habitaciones/habitacion4/habitacion_4.tscn" id="7_qdi7g"]
 [ext_resource type="PackedScene" uid="uid://hipkjjgb34qq" path="res://scenes/torch.tscn" id="9_xnjis"]
+[ext_resource type="PackedScene" uid="uid://baerc1j1f4yfm" path="res://scenes/obstaculos/pincho/pincho.tscn" id="10_0wckv"]
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
 
@@ -71,3 +72,6 @@ color = Color(0.1764706, 0.1764706, 0.1764706, 1)
 [node name="torch" parent="." unique_id=1912709740 instance=ExtResource("9_xnjis")]
 position = Vector2(547, -904)
 scale = Vector2(2.65, 2.65)
+
+[node name="pincho" parent="." unique_id=936065860 instance=ExtResource("10_0wckv")]
+position = Vector2(-1093, -938)

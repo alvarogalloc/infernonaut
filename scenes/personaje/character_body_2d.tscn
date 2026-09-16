@@ -15,7 +15,10 @@ size = Vector2(245, 596)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(468, 465)
 
-[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "emisionidle", "emisiondash", "reticula")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
+size = Vector2(254.2857, 477.8573)
+
+[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "area_environment", "emisionidle", "emisiondash", "reticula")]
 scale = Vector2(0.7, 0.7)
 collision_mask = 40
 script = ExtResource("1_2ehrf")
@@ -23,6 +26,7 @@ bloodHud = NodePath("CanvasLayer/BloodHud")
 animacion = NodePath("AnimatedSprite2D")
 area_idle = NodePath("areaidle")
 area_dash = NodePath("areadash")
+area_environment = NodePath("environment")
 emisionidle = NodePath("areaidle/emisionidle")
 emisiondash = NodePath("areadash/emisiondash")
 reticula = NodePath("reticula")
@@ -53,7 +57,8 @@ collision_layer = 2
 collision_mask = 148
 
 [node name="emisiondash" type="CollisionShape2D" parent="areadash" unique_id=1021779453]
-position = Vector2(-14, 10.5)
+position = Vector2(-13.999999, 10.499999)
+scale = Vector2(0.99999994, 0.99999994)
 shape = SubResource("RectangleShape2D_57qmd")
 disabled = true
 
@@ -65,3 +70,14 @@ scale = Vector2(2.385, 2.385)
 transform = Transform2D(2.385, 0, 0, 2.385, 0, 0)
 
 [node name="BloodHud" parent="CanvasLayer" unique_id=1171745085 instance=ExtResource("5_brr8y")]
+
+[node name="environment" type="Area2D" parent="." unique_id=950658312]
+collision_layer = 0
+collision_mask = 128
+
+[node name="pinchos" type="CollisionShape2D" parent="environment" unique_id=1119199814]
+position = Vector2(4.285713, 122.5)
+scale = Vector2(0.9999996, 0.9999996)
+shape = SubResource("RectangleShape2D_d0u6y")
+
+[connection signal="area_entered" from="environment" to="." method="_on_environment_area_entered"]

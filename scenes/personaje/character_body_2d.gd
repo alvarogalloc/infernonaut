@@ -37,6 +37,8 @@ var tween_dash = Tween
 @export var area_idle: Area2D #para la hitbox del personaje cuando esta IDLE, detecta cosas que entran ahi
 @export var area_dash: Area2D #para la hitbox del personaje cuando esta haciendo dash, detecta lo que entra ahi
 
+@export var area_environment : Area2D
+
 @export var emisionidle: CollisionShape2D #para desactivar la hitbox del personaje
 @export var emisiondash: CollisionShape2D #para desactivar la hitbox del dash
 
@@ -184,5 +186,27 @@ func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
 	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
 	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
 	
+	
+	
+
+
+func _on_environment_area_entered(area: Area2D) -> void:
+	animacion.modulate = Color(18.892, 0.0, 0.0, 1.0)
+	_muerto = true
+	animacion.stop()
+	
+	var timer : Timer = Timer.new() #variable timer de tipo Timer que le asignamos un contador con Timer.new()
+	#esto para que la emision de la señal NO SEA INMEDIATA, y podamos ver el color rojo
+	add_child(timer)
+	timer.start(0.5)
+	await timer.timeout #se espera hasta que el tiempo se acabe, se usa el .timeout para cuando el tiempo se acabe, y await para que espere
+	
+	##LINEA QUE HACE LO DEL TIMER EN UNA LINEA, ES MUY UTIL###
+	# await get.tree().create_timer(0.5).timeout #
+	## con esa linea estamos directamente creando un timer, y esperar a que el tiempo termine##
+	
+	#LA FUNCION .EMIT() ES PARA SEÑALES
+	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
+	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
 	
 	

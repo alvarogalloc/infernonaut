@@ -8,6 +8,9 @@ extends CharacterBody2D
 var speed: float
 
 @export var activate : Area2D
+
+@export var area_environment : Area2D
+
 @export var area_activacion : CollisionShape2D
 @export var hitboxDead : CollisionShape2D
 @export var collision : CollisionShape2D
@@ -83,3 +86,15 @@ func _on_activate_body_entered(body: Node2D) -> void:
 func _on_jugador_muerto() -> void:
 	persiguiendo = false
 	velocity = Vector2.ZERO
+
+
+func _on_environment_area_entered(area: Area2D) -> void:
+	esta_muerto = true
+	trigger_dim_light()
+	persiguiendo = false
+	animacion.play("butcher")
+	
+	# set_deferred le dice a Godot que desactive la colisión de forma segura cuando termine el frame de físicas actual.
+	collision.set_deferred("disabled", true)
+	hitboxDead.set_deferred("disabled", true)
+	area_activacion.set_deferred("disabled", true)
