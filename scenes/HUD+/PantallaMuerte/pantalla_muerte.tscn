@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://bw1j8jgk303uo"]
+
+[ext_resource type="Script" uid="uid://drygdqc3woity" path="res://scenes/HUD+/PantallaMuerte/pantalla_muerte.gd" id="1_muerte"]
+
+[node name="PantallaMuerte" type="CanvasLayer" unique_id=1340907409]
+layer = 100
+script = ExtResource("1_muerte")
+
+[node name="Control" type="Control" parent="." unique_id=705731520]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Overlay" type="ColorRect" parent="Control" unique_id=1204355300]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="Panel" type="Panel" parent="Control" unique_id=979271013]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -110.0
+offset_right = 160.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel" unique_id=1750713250]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Control/Panel/VBoxContainer" unique_id=455782551]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Has muerto"
+horizontal_alignment = 1
+
+[node name="Separador" type="Control" parent="Control/Panel/VBoxContainer" unique_id=1286080359]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="BotonReiniciar" type="Button" parent="Control/Panel/VBoxContainer" unique_id=1907171374]
+layout_mode = 2
+text = "Reiniciar"
+
+[node name="BotonSalir" type="Button" parent="Control/Panel/VBoxContainer" unique_id=1171076]
+layout_mode = 2
+text = "Salir"

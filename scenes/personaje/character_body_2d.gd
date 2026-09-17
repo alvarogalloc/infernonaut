@@ -19,25 +19,21 @@ var timer_recarga : Timer # Timer que crearemos por código
 
 @export var bloodHud : Control
 
-var dash_lento
-var dash_rapido
+var dash_lento : bool = false
+var dash_rapido : bool = false
 
 
 ##Señal que se va a emitir para la escenaprincipal
 signal personaje_muerto #podemos hacer que emita una señal con la palabra signal, seguida del nombre de la señal
 #esta señal la podemos emitir cuando el personaje muera, eso se hace hasta abajo con el nombre de la señal y .
-	##para hacer esa conexion de la emision de la señal a la escena principal, SE TIENE QUE METER EN UN GRUPO EL PERSONAJE 
-
-#FUNCIONES PARA LA LOGICA DEL TWEEN (slow in slow out)
-var _velocidad_actual : float = 0.0
-var tween_dash = Tween
+	##para hacer esa conexion de la emision de la señal a la escena principal, SE TIENE QUE METER EN UN GRUPO EL PERSONAJE
 
 #EXPORTACION VARIABLES, PARA IMPORTAR LOS NODOS HIJOS Y PODER MODIFICARLOS DESDE AQUI
 @export var animacion : AnimatedSprite2D #para el animated sprite del personaje
 @export var area_idle: Area2D #para la hitbox del personaje cuando esta IDLE, detecta cosas que entran ahi
 @export var area_dash: Area2D #para la hitbox del personaje cuando esta haciendo dash, detecta lo que entra ahi
 
-@export var area_environment : Area2D
+@export var area_environment : Area2D ##para que colisione con objetos del escenario como los pinchos
 
 @export var emisionidle: CollisionShape2D #para desactivar la hitbox del personaje
 @export var emisiondash: CollisionShape2D #para desactivar la hitbox del dash
@@ -47,15 +43,17 @@ var tween_dash = Tween
 #FUNCION _ready()
 ##SE EJECUTA UNA SOLA VEZ CADA QUE SE INICIA (sirve para iniciar grupos, hacer concexiones, obtener posicion inicial, e inicializar booleanos)
 func _ready():
-	add_to_group("personajes") #el grupo del personaje, se usa para conectarlo a la escena principal
+	
+	process_mode = Node.PROCESS_MODE_PAUSABLE
+	
+	add_to_group(Constantes.GRUPO_PERSONAJES) #el grupo del personaje, se usa para conectarlo a la escena principal
 	area_idle.body_entered.connect(_on_area_2d_body_entered_idle)
 	target_position = global_position
-	
 	timer_recarga = Timer.new()
 	timer_recarga.wait_time = tiempo_recarga
 	timer_recarga.one_shot = true
 	# Conectamos la señal timeout del timer a nuestra función
-	timer_recarga.timeout.connect(_on_timer_recarga_timeout) 
+	timer_recarga.timeout.connect(_on_timer_recarga_timeout)
 	add_child(timer_recarga)
 
 
@@ -66,7 +64,6 @@ func _process(_delta):
 		# Si el timer está corriendo, calculamos el porcentaje de 0 a 100
 		if not timer_recarga.is_stopped():
 			porcentaje = (1.0 - (timer_recarga.time_left / tiempo_recarga)) * 100.0
-		
 		# Le enviamos los datos a la escena de UI
 		bloodHud.actualizar_cargas(cargas_actuales, porcentaje)
 
@@ -74,15 +71,11 @@ func _process(_delta):
 func _physics_process(_delta):
 	if _muerto == true:
 		return
-	
 	var distance = global_position.distance_to(target_position)
-	
 	if distance > 10.0:
 		var direction = global_position.direction_to(target_position)
-		
 		# --- Elegimos la animación según la dirección dominante del dash ---
 		_actualizar_animacion_direccional(direction)
-		
 		if dash_rapido == true and dash_lento == false:
 			velocity = direction * _velocidad
 			emisionidle.set_deferred("disabled", true)
@@ -91,7 +84,6 @@ func _physics_process(_delta):
 			velocity = direction * _velocidad_lenta
 			emisionidle.set_deferred("disabled", false)
 			emisiondash.set_deferred("disabled", true)
-		
 		move_and_slide()
 		reticula.global_position = target_position
 	else:
@@ -109,7 +101,7 @@ func _actualizar_animacion_direccional(direction: Vector2) -> void:
 	# Umbral para decidir si el movimiento es "mas vertical" que "horizontal"
 	# entre mas cerca de 1.0, mas estricto es para entrar en front/back
 	var umbral_vertical : float = 0.5
-	
+
 	if direction.y < -umbral_vertical:
 		# Se mueve principalmente hacia arriba -> se aleja de la cámara
 		animacion.play("dash_back")
@@ -119,7 +111,7 @@ func _actualizar_animacion_direccional(direction: Vector2) -> void:
 	else:
 		# Movimiento principalmente horizontal
 		animacion.play("dash")
-	
+		
 	# El flip horizontal se mantiene independiente de qué animación se use,
 	# asi el personaje sigue viendo hacia donde se mueve en horizontal
 	if direction.x < 0:
@@ -129,84 +121,91 @@ func _actualizar_animacion_direccional(direction: Vector2) -> void:
 
 ##FUNCION PARA EL MOVIMIENTO DEL MOUSE
 func _input(event):
-	# CLICK IZQUIERDO: Hace daño (Requiere y gasta viales)
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if cargas_actuales > 0: # Solo atacamos si hay cargas
-			cargas_actuales -= 1 # Gastamos una carga
-			
-			# Iniciamos el Timer de recarga si no estaba corriendo ya
-			if timer_recarga.is_stopped():
-				
-				timer_recarga.start()
-			
-			var vector_desplazamiento = get_global_mouse_position() - global_position
-			vector_desplazamiento = vector_desplazamiento.limit_length(radio_maximo)
-			target_position = global_position + vector_desplazamiento
-			dash_rapido = true
-			dash_lento = false
-		else:
-			# aqui hay que poner un sonido o efecto visual de que no puedes atacar
-			pass
-	# CLICK DERECHO: Movimiento normal (No gasta viales)
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-		var vector_desplazamiento = get_global_mouse_position() - global_position
-		vector_desplazamiento = vector_desplazamiento.limit_length(radio_minimo)
-		target_position = global_position + vector_desplazamiento
-		dash_rapido = false
-		dash_lento = true
-
-
-# --- funcion para cuando el timer termina
-func _on_timer_recarga_timeout():
-	if cargas_actuales < max_cargas:
-		cargas_actuales += 1 # Recuperamos un vial
+	if not (event is InputEventMouseButton and event.pressed):
+		return
 		
-		# Si todavía nos faltan viales por recuperar, reiniciamos el Timer
-		if cargas_actuales < max_cargas:
-			timer_recarga.start()
+	# CLICK IZQUIERDO: Hace daño (Requiere y gasta viales)
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		_intentar_dash_fuerte()
+	# CLICK DERECHO: Movimiento normal (No gasta viales)
+	elif event.button_index == MOUSE_BUTTON_RIGHT:
+		_apuntar_dash(radio_minimo, false)
+
+
+## Dash fuerte: solo se ejecuta si hay cargas, y consume una
+func _intentar_dash_fuerte() -> void:
+	if cargas_actuales <= 0:
+		# aqui hay que poner un sonido o efecto visual de que no puedes atacar
+		return
+	cargas_actuales -= 1 # Gastamos una carga
+	
+	# Iniciamos el Timer de recarga si no estaba corriendo ya
+	if timer_recarga.is_stopped():
+		timer_recarga.start()
+		
+	_apuntar_dash(radio_maximo, true)
+
+
+## Calcula hacia donde va el dash y guarda si es fuerte o corto
+func _apuntar_dash(radio: float, es_fuerte: bool) -> void:
+	var vector_desplazamiento = get_global_mouse_position() - global_position
+	vector_desplazamiento = vector_desplazamiento.limit_length(radio)
+	target_position = global_position + vector_desplazamiento
+	dash_rapido = es_fuerte
+	dash_lento = not es_fuerte
+
+
+# --- funcion unica para dar una carga, sin importar de donde venga
+## (por tiempo o por matar un enemigo). Antes esta lógica solo vivía
+## dentro de _on_timer_recarga_timeout; ahora la puede llamar cualquiera.
+func _agregar_carga() -> void:
+	if cargas_actuales >= max_cargas:
+		return
+		
+	cargas_actuales += 1 # Recuperamos un vial
+	
+	if cargas_actuales < max_cargas:
+		# Todavia faltan viales por recuperar: reiniciamos el Timer
+		# para que el siguiente vial vuelva a llenarse desde 0%
+		timer_recarga.start()
+	else:
+		# Ya estan los 3 llenos, no hace falta seguir contando
+		timer_recarga.stop()
+
+
+## funcion para cuando el timer termina (recarga por tiempo)
+func _on_timer_recarga_timeout() -> void:
+	_agregar_carga()
+
+
+## Recarga por matar un enemigo. La llama el enemigo cuando el jugador lo mata de un dash.
+func recargar_carga_por_kill() -> void:
+	_agregar_carga()
+
+
+## FUNCION UNICA DE MUERTE: antes estaba duplicada en
+## _on_area_2d_body_entered_idle y _on_environment_area_entered.
+## El "if _muerto: return" evita que, si ambas hitboxes se activan
+## casi al mismo tiempo, la señal personaje_muerto se emita dos veces.
+func _morir() -> void:
+	if _muerto:
+		return
+		
+	_muerto = true
+	animacion.modulate = Constantes.COLOR_MUERTE
+	animacion.stop()
+	
+	#esto para que la emision de la señal NO SEA INMEDIATA, y podamos ver el color rojo
+	await get_tree().create_timer(Constantes.TIEMPO_FADE_MUERTE).timeout
+	
+	#LA FUNCION .EMIT() ES PARA SEÑALES
+	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
+	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
 
 
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
 func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
-	animacion.modulate = Color(18.892, 0.0, 0.0, 1.0)
-	_muerto = true
-	animacion.stop()
-	
-	var timer : Timer = Timer.new() #variable timer de tipo Timer que le asignamos un contador con Timer.new()
-	#esto para que la emision de la señal NO SEA INMEDIATA, y podamos ver el color rojo
-	add_child(timer)
-	timer.start(0.5)
-	await timer.timeout #se espera hasta que el tiempo se acabe, se usa el .timeout para cuando el tiempo se acabe, y await para que espere
-	
-	##LINEA QUE HACE LO DEL TIMER EN UNA LINEA, ES MUY UTIL###
-	# await get.tree().create_timer(0.5).timeout #
-	## con esa linea estamos directamente creando un timer, y esperar a que el tiempo termine##
-	
-	#LA FUNCION .EMIT() ES PARA SEÑALES
-	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
-	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
-	
-	
-	
+	_morir()
 
-
-func _on_environment_area_entered(area: Area2D) -> void:
-	animacion.modulate = Color(18.892, 0.0, 0.0, 1.0)
-	_muerto = true
-	animacion.stop()
-	
-	var timer : Timer = Timer.new() #variable timer de tipo Timer que le asignamos un contador con Timer.new()
-	#esto para que la emision de la señal NO SEA INMEDIATA, y podamos ver el color rojo
-	add_child(timer)
-	timer.start(0.5)
-	await timer.timeout #se espera hasta que el tiempo se acabe, se usa el .timeout para cuando el tiempo se acabe, y await para que espere
-	
-	##LINEA QUE HACE LO DEL TIMER EN UNA LINEA, ES MUY UTIL###
-	# await get.tree().create_timer(0.5).timeout #
-	## con esa linea estamos directamente creando un timer, y esperar a que el tiempo termine##
-	
-	#LA FUNCION .EMIT() ES PARA SEÑALES
-	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
-	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
-	
-	
+func _on_environment_area_entered(_area: Area2D) -> void:
+	_morir()

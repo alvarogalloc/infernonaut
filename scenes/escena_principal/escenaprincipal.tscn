@@ -10,8 +10,10 @@
 [ext_resource type="PackedScene" uid="uid://br4lmf5aa7ih1" path="res://scenes/habitaciones/habitacion4/habitacion_4.tscn" id="7_qdi7g"]
 [ext_resource type="PackedScene" uid="uid://hipkjjgb34qq" path="res://scenes/torch.tscn" id="9_xnjis"]
 [ext_resource type="PackedScene" uid="uid://baerc1j1f4yfm" path="res://scenes/obstaculos/pincho/pincho.tscn" id="10_0wckv"]
+[ext_resource type="Script" uid="uid://cvbdtjpik6ip1" path="res://scenes/escena_principal/escena_principal.gd" id="11_muerte"]
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
+script = ExtResource("11_muerte")
 
 [node name="personaje" parent="." unique_id=1272821337 instance=ExtResource("1_qvqrr")]
 position = Vector2(1321, -694)
@@ -74,4 +76,5 @@ position = Vector2(547, -904)
 scale = Vector2(2.65, 2.65)
 
 [node name="pincho" parent="." unique_id=936065860 instance=ExtResource("10_0wckv")]
-position = Vector2(-1093, -938)
+z_index = -11
+position = Vector2(1111, -566)
