@@ -1,11 +1,4 @@
 extends CharacterBody2D
-## Estados:
-##   INACTIVO     -> esperando a que el jugador entre en el área de activación
-##   REACCIONANDO -> se dio cuenta del jugador (mismo delay que enemigo_1)
-##   HUYENDO      -> se aleja del jugador
-##   PREPARANDO   -> parado; marca la posición del jugador y muestra el telégrafo
-##   ATACANDO     -> la mano sale hacia el punto marcado; después una pequeña recuperación
-##   MUERTO
 
 enum Estado { INACTIVO, REACCIONANDO, HUYENDO, PREPARANDO, ATACANDO, MUERTO }
 

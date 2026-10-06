@@ -33,7 +33,7 @@ shape = SubResource("RectangleShape2D_g4v7s")
 z_index = -1
 scale = Vector2(0.8, 0.8)
 sprite_frames = ExtResource("1_qa7oh")
-animation = &"detection"
+animation = &"idle"
 
 [node name="Area2D" type="Area2D" parent="." unique_id=208066084]
 position = Vector2(-11.5, 7.5)
