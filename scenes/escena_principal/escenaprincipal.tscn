@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://hipkjjgb34qq" path="res://scenes/torch.tscn" id="9_xnjis"]
 [ext_resource type="PackedScene" uid="uid://baerc1j1f4yfm" path="res://scenes/obstaculos/pincho/pincho.tscn" id="10_0wckv"]
 [ext_resource type="Script" uid="uid://cvbdtjpik6ip1" path="res://scenes/escena_principal/escena_principal.gd" id="11_muerte"]
+[ext_resource type="PackedScene" uid="uid://c0hk5gs57qou1" path="res://scenes/enemigos/cobarde/cobarde.tscn" id="12_obon5"]
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
 script = ExtResource("11_muerte")
@@ -78,3 +79,6 @@ scale = Vector2(2.65, 2.65)
 [node name="pincho" parent="." unique_id=936065860 instance=ExtResource("10_0wckv")]
 z_index = -11
 position = Vector2(1111, -566)
+
+[node name="cobarde" parent="." unique_id=1084872575 instance=ExtResource("12_obon5")]
+position = Vector2(1842, -566)

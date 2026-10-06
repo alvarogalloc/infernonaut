@@ -202,7 +202,10 @@ func _morir() -> void:
 	personaje_muerto.emit() #el personaje muerto EMITE una SEÑAL
 	##hay que conseguir que la escenaprincipal tenga una referencia al personaje PARA PODER CONECTARSE A ESTA SEÑAL EMITIDA
 
-
+func morir() -> void:
+	_morir()
+	
+	
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
 func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
 	_morir()
