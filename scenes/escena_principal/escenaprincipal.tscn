@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://cvbdtjpik6ip1" path="res://scenes/escena_principal/escena_principal.gd" id="11_muerte"]
 [ext_resource type="Script" uid="uid://jucc1nbnfatm" path="res://scenes/escena_principal/transicion_salas.gd" id="12_trans"]
 [ext_resource type="Shader" uid="uid://b3dahyk5qxgu0" path="res://scenes/escena_principal/transicion_wipe.gdshader" id="13_wipe"]
+[ext_resource type="PackedScene" uid="uid://c0hk5gs57qou1" path="res://scenes/enemigos/cobarde/cobarde.tscn" id="12_obon5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_trans"]
 shader = ExtResource("13_wipe")
@@ -94,3 +95,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="cobarde" parent="." unique_id=1084872575 instance=ExtResource("12_obon5")]
+position = Vector2(1842, -566)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://x4826y415vid" path="res://scenes/enemigos/enemigo_1.gd" id="1_djrvw"]
 [ext_resource type="SpriteFrames" uid="uid://dfnop4k3ts0xf" path="res://scenes/enemigos/sprite_frames_enemigo1.tres" id="1_qa7oh"]
+[ext_resource type="Texture2D" uid="uid://d4k34drnkv5va" path="res://misc_sprites/light.png" id="3_iuhqk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(381, 497)
@@ -50,7 +51,8 @@ shape = SubResource("RectangleShape2D_g4v7s")
 z_index = -1
 scale = Vector2(0.8, 0.8)
 sprite_frames = ExtResource("1_qa7oh")
-animation = &"detection"
+animation = &"idle"
+frame_progress = 0.47810018
 
 [node name="Area2D" type="Area2D" parent="." unique_id=208066084]
 position = Vector2(-11.5, 7.5)
@@ -67,6 +69,12 @@ collision_layer = 64
 
 [node name="areaActivacion" type="CollisionShape2D" parent="activate" unique_id=1804670388]
 shape = SubResource("CircleShape2D_g4v7s")
+
+[node name="enemy_emission" type="PointLight2D" parent="." unique_id=49399355]
+position = Vector2(-17, -10.0000305)
+scale = Vector2(20.875, 23.1875)
+texture = ExtResource("3_iuhqk")
+texture_scale = 0.5
 
 [node name="MuerteParticles" type="GPUParticles2D" parent="."]
 scale = Vector2(6, 6)

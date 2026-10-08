@@ -24,7 +24,7 @@ var esta_muerto: bool = false #Estado de muerte
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	speed = randf_range(min_speed, max_speed)
-
+	animacion.play("idle")
 
 func _physics_process(_delta: float) -> void:
 	# Si está muerto, detenemos por completo cualquier cálculo de movimiento
@@ -32,13 +32,13 @@ func _physics_process(_delta: float) -> void:
 		return
 
 	if persiguiendo and jugador != null:
-		animacion.play("idle")
 		var direction = global_position.direction_to(jugador.global_position)
 		velocity = direction * speed
 	else:
 		velocity = Vector2.ZERO
-
+		
 	move_and_slide()
+	
 
 
 func _emitir_muerte() -> void:
@@ -87,16 +87,14 @@ func _on_area_2d_area_entered(_area: Area2D) -> void:
 func _on_activate_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(Constantes.GRUPO_PERSONAJES) or esta_muerto:
 		return
-
 	jugador = body
 	animacion.play("detection")
-
 	await get_tree().create_timer(0.6).timeout
-
 	# se verifica si el enemigo murió mientras esperábamos
 	if esta_muerto:
 		return
-
+	
+	animacion.play("idle") #aqui se modifica la animacion que se reproduce cuando esta persiguiendo xd
 	persiguiendo = true
 	jugador.personaje_muerto.connect(_on_jugador_muerto)
 	area_activacion.set_deferred("disabled", true)
@@ -105,6 +103,7 @@ func _on_activate_body_entered(body: Node2D) -> void:
 func _on_jugador_muerto() -> void:
 	persiguiendo = false
 	velocity = Vector2.ZERO
+	animacion.play("idle") #se puede poner animacion para cuando el jugador muera
 
 
 func _on_environment_area_entered(_area: Area2D) -> void:

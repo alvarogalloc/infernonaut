@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://c0hk5gs57qou1"]
+
+[ext_resource type="Script" uid="uid://7csws16yl5y3" path="res://scenes/enemigos/cobarde/cobarde.gd" id="1_cobarde"]
+[ext_resource type="Texture2D" uid="uid://d4k34drnkv5va" path="res://misc_sprites/light.png" id="2_luz"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cuerpo"]
+size = Vector2(300, 400)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_activacion"]
+radius = 1000.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pinchos"]
+size = Vector2(251, 302)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ataque"]
+resource_local_to_scene = true
+size = Vector2(10, 120)
+
+[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo")]
+collision_layer = 20
+collision_mask = 40
+motion_mode = 1
+script = ExtResource("1_cobarde")
+collision = NodePath("CollisionShape2D")
+hitboxDead = NodePath("Area2D/CollisionShape2D")
+area_activacion = NodePath("activate/areaActivacion")
+boca = NodePath("boca")
+hitbox_ataque = NodePath("boca/hitboxAtaque")
+shape_ataque = NodePath("boca/hitboxAtaque/CollisionShape2D")
+placeholder_ataque = NodePath("boca/hitboxAtaque/PlaceholderAtaque")
+telegrafo = NodePath("boca/hitboxAtaque/Telegrafo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=881320718]
+shape = SubResource("RectangleShape2D_cuerpo")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1257010295]
+
+[node name="PlaceholderCuerpo" type="ColorRect" parent="." unique_id=1575589538]
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+mouse_filter = 2
+color = Color(0.5, 0.2, 0.7, 0.6)
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1465130051]
+collision_layer = 20
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2000959025]
+shape = SubResource("RectangleShape2D_cuerpo")
+
+[node name="activate" type="Area2D" parent="." unique_id=1733836007]
+collision_layer = 64
+
+[node name="areaActivacion" type="CollisionShape2D" parent="activate" unique_id=617821147]
+shape = SubResource("CircleShape2D_activacion")
+
+[node name="environment" type="Area2D" parent="." unique_id=785227648]
+collision_layer = 0
+collision_mask = 128
+
+[node name="pinchos" type="CollisionShape2D" parent="environment" unique_id=1105480854]
+position = Vector2(-24.5, 140)
+shape = SubResource("RectangleShape2D_pinchos")
+
+[node name="boca" type="Marker2D" parent="." unique_id=126285089]
+position = Vector2(0, 80)
+
+[node name="hitboxAtaque" type="Area2D" parent="boca" unique_id=1669268999]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="boca/hitboxAtaque" unique_id=852789226]
+shape = SubResource("RectangleShape2D_ataque")
+disabled = true
+
+[node name="PlaceholderAtaque" type="ColorRect" parent="boca/hitboxAtaque" unique_id=53335237]
+visible = false
+mouse_filter = 2
+color = Color(0.9, 0.1, 0.1, 0.7)
+
+[node name="Telegrafo" type="Line2D" parent="boca/hitboxAtaque" unique_id=2018196004]
+visible = false
+points = PackedVector2Array(0, 0, 100, 0)
+width = 120.0
+default_color = Color(1, 0.2, 0.2, 0.25)
+
+[node name="enemy_emission" type="PointLight2D" parent="." unique_id=714241537]
+position = Vector2(-17, -10)
+scale = Vector2(20.875, 23.1875)
+texture = ExtResource("2_luz")
+texture_scale = 0.5
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="body_entered" from="activate" to="." method="_on_activate_body_entered"]
+[connection signal="body_exited" from="activate" to="." method="_on_activate_body_exited"]
+[connection signal="area_entered" from="environment" to="." method="_on_environment_area_entered"]
+[connection signal="area_entered" from="boca/hitboxAtaque" to="." method="_on_hitbox_ataque_area_entered"]

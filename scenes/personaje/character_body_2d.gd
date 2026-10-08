@@ -394,7 +394,10 @@ func _morir() -> void:
 	await get_tree().create_timer(Constantes.TIEMPO_FADE_MUERTE).timeout
 	personaje_muerto.emit()
 
-
+func morir() -> void:
+	_morir()
+	
+	
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
 func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
 	_morir()

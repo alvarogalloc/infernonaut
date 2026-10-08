@@ -61,6 +61,7 @@ shape = SubResource("RectangleShape2D_g4v7s")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1681357401]
 sprite_frames = ExtResource("1_mi7pn")
 animation = &"idle"
+frame_progress = 0.017647449
 
 [node name="reticula" type="Sprite2D" parent="." unique_id=999005961]
 texture_filter = 1
