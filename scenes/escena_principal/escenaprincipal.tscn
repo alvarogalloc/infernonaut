@@ -2,32 +2,37 @@
 
 [ext_resource type="PackedScene" uid="uid://b80j1nxalek7b" path="res://scenes/personaje/character_body_2d.tscn" id="1_qvqrr"]
 [ext_resource type="PackedScene" uid="uid://8spqkjufaju3" path="res://scenes/enemigos/enemigo_1.tscn" id="2_64fjh"]
-[ext_resource type="Script" uid="uid://8e7f4yxax57t" path="res://scenes/escena_principal/camera_2d_2.gd" id="2_rtjyt"]
+[ext_resource type="PackedScene" path="res://scenes/escena_principal/room_camera.tscn" id="2_roomcam"]
 [ext_resource type="PackedScene" uid="uid://dnpgr1lyo8ujn" path="res://scenes/habitaciones/habitacion1/habitacion_1.tscn" id="4_evked"]
 [ext_resource type="PackedScene" uid="uid://bv56pr7uq6cuq" path="res://scenes/habitaciones/habitacion2/habitacion_2.tscn" id="5_f8pa6"]
 [ext_resource type="PackedScene" uid="uid://bi7nd6vs8mdnu" path="res://scenes/habitaciones/habitacion3/habitacion_3.tscn" id="6_c0dd2"]
 [ext_resource type="PackedScene" uid="uid://coeqb1xqdg6xc" path="res://scenes/habitaciones/habitacionSecreta/habitacion_secreta.tscn" id="7_ik20d"]
 [ext_resource type="PackedScene" uid="uid://br4lmf5aa7ih1" path="res://scenes/habitaciones/habitacion4/habitacion_4.tscn" id="7_qdi7g"]
-[ext_resource type="PackedScene" uid="uid://hipkjjgb34qq" path="res://scenes/torch.tscn" id="9_xnjis"]
 [ext_resource type="PackedScene" uid="uid://baerc1j1f4yfm" path="res://scenes/obstaculos/pincho/pincho.tscn" id="10_0wckv"]
 [ext_resource type="Script" uid="uid://cvbdtjpik6ip1" path="res://scenes/escena_principal/escena_principal.gd" id="11_muerte"]
+[ext_resource type="Script" uid="uid://jucc1nbnfatm" path="res://scenes/escena_principal/transicion_salas.gd" id="12_trans"]
+[ext_resource type="Shader" uid="uid://b3dahyk5qxgu0" path="res://scenes/escena_principal/transicion_wipe.gdshader" id="13_wipe"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trans"]
+shader = ExtResource("13_wipe")
+shader_parameter/progreso = 0.0
+shader_parameter/direccion = Vector2(1, 0)
+shader_parameter/filo = 0.28
+shader_parameter/color_oscuridad = Color(0.02, 0, 0.03, 1)
 
 [node name="escenaprincipal" type="Node" unique_id=1133823808]
 script = ExtResource("11_muerte")
 
+[node name="Camera2D2" parent="." unique_id=41825619 instance=ExtResource("2_roomcam")]
+position = Vector2(1321, -694)
+margen_trigger = Vector2(250, 250)
+
 [node name="personaje" parent="." unique_id=1272821337 instance=ExtResource("1_qvqrr")]
 position = Vector2(1321, -694)
-scale = Vector2(0.145, 0.145)
-
-[node name="Camera2D2" type="Camera2D" parent="personaje" unique_id=41825619]
-offset = Vector2(1, 1)
-ignore_rotation = false
-zoom = Vector2(1.205, 1.205)
-position_smoothing_enabled = true
-script = ExtResource("2_rtjyt")
+scale = Vector2(0.25, 0.25)
 
 [node name="enemigo1" parent="." unique_id=1158425960 instance=ExtResource("2_64fjh")]
-position = Vector2(31.999878, -638)
+position = Vector2(-1230.9999, -638)
 scale = Vector2(0.175, 0.175)
 
 [node name="enemigo2" parent="." unique_id=2070730415 instance=ExtResource("2_64fjh")]
@@ -69,12 +74,23 @@ position = Vector2(-2044, 2546)
 position = Vector2(-3827, 1276)
 
 [node name="darken_scene" type="CanvasModulate" parent="." unique_id=232747731]
-color = Color(0.1764706, 0.1764706, 0.1764706, 1)
-
-[node name="torch" parent="." unique_id=1912709740 instance=ExtResource("9_xnjis")]
-position = Vector2(547, -904)
-scale = Vector2(2.65, 2.65)
+color = Color(0.49354583, 0.4935454, 0.4935456, 1)
 
 [node name="pincho" parent="." unique_id=936065860 instance=ExtResource("10_0wckv")]
 z_index = -11
 position = Vector2(1111, -566)
+
+[node name="TransicionSalas" type="Node" parent="." unique_id=-1194967295]
+script = ExtResource("12_trans")
+
+[node name="Capa" type="CanvasLayer" parent="TransicionSalas" unique_id=-1194967294]
+layer = 50
+
+[node name="Color" type="ColorRect" parent="TransicionSalas/Capa" unique_id=-1194967293]
+material = SubResource("ShaderMaterial_trans")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

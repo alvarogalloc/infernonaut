@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/juego/pantalla_carga.gd" id="1_carga"]
+
+[node name="Carga" type="CanvasLayer"]
+script = ExtResource("1_carga")
+
+[node name="Fondo" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.02, 0.03, 1)
+
+[node name="Texto" type="Label" parent="."]
+offset_left = 460.0
+offset_top = 430.0
+offset_right = 1460.0
+offset_bottom = 490.0
+theme_override_font_sizes/font_size = 52
+text = "GENERANDO MAZMORRA"
+horizontal_alignment = 1
+
+[node name="Barra" type="ColorRect" parent="."]
+offset_left = 830.0
+offset_top = 620.0
+offset_right = 1090.0
+offset_bottom = 638.0
+color = Color(0.85, 0.18, 0.14, 1)

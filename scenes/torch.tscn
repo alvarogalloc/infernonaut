@@ -83,6 +83,8 @@ color = Color(0.7810376, 0.3269104, 0.08940659, 1)
 texture = ExtResource("2_my26j")
 texture_scale = 0.1
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PointLight2D" unique_id=1322224053]
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2076714407]
 sprite_frames = SubResource("SpriteFrames_ltfmc")
-frame_progress = 0.39733738
+frame_progress = 0.5330465

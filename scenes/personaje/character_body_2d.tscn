@@ -5,6 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://dknl85uqhy43e" path="res://sprites/crosshair.png" id="3_2qcng"]
 [ext_resource type="Script" uid="uid://cul8koogc28xv" path="res://scenes/personaje/sprite_trail.gd" id="4_gl5o5"]
 [ext_resource type="PackedScene" uid="uid://b3qls31p3imcj" path="res://scenes/HUD+/BloodHud/blood_hud.tscn" id="5_brr8y"]
+[ext_resource type="AudioStream" path="res://sfx/dash_fuerte.wav" id="7_sfxr"]
+[ext_resource type="AudioStream" path="res://sfx/dash_normal.wav" id="8_sfxn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(463, 462)
@@ -14,6 +16,24 @@ size = Vector2(245, 596)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(468, 465)
+
+[sub_resource type="Gradient" id="Gradient_dashfade"]
+colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dashfade"]
+gradient = SubResource("Gradient_dashfade")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dash"]
+direction = Vector3(0, 0, 0)
+spread = 55.0
+initial_velocity_min = 200.0
+initial_velocity_max = 520.0
+gravity = Vector3(0, 0, 0)
+damping_min = 260.0
+damping_max = 420.0
+scale_min = 6.0
+scale_max = 16.0
+color_ramp = SubResource("GradientTexture1D_dashfade")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
 size = Vector2(254.2857, 477.8573)
@@ -30,6 +50,9 @@ area_environment = NodePath("environment")
 emisionidle = NodePath("areaidle/emisionidle")
 emisiondash = NodePath("areadash/emisiondash")
 reticula = NodePath("reticula")
+dash_hitstop = 0.05
+sfx_fuerte = ExtResource("7_sfxr")
+sfx_normal = ExtResource("8_sfxn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=501302772]
 position = Vector2(-13.5, 11)
@@ -64,6 +87,24 @@ disabled = true
 
 [node name="spriteTrail" type="Node" parent="." unique_id=1528965698]
 script = ExtResource("4_gl5o5")
+process_mode = 4
+ghost_interval = 0.05
+ghost_fade_time = 0.2
+ghost_alpha = 0.35
+ghost_tint = Color(0.6989926, 0.68100226, 0.7077221, 1)
+
+[node name="DashParticles" type="GPUParticles2D" parent="." unique_id=1392847150]
+z_index = -1
+emitting = false
+amount = 90
+lifetime = 0.65
+explosiveness = 0.25
+randomness = 0.5
+process_material = SubResource("ParticleProcessMaterial_dash")
+
+[node name="DashSfx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_sfxr")
+volume_db = -6.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1513592264]
 scale = Vector2(2.385, 2.385)

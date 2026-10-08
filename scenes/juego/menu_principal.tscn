@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/juego/menu_principal.gd" id="1_menu"]
+
+[node name="Menu" type="CanvasLayer"]
+script = ExtResource("1_menu")
+
+[node name="Fondo" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.03, 0.04, 1)
+
+[node name="Titulo" type="Label" parent="."]
+offset_left = 560.0
+offset_top = 300.0
+offset_right = 1360.0
+offset_bottom = 400.0
+theme_override_font_sizes/font_size = 90
+text = "INFERNONAUT"
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="."]
+offset_left = 560.0
+offset_top = 410.0
+offset_right = 1360.0
+offset_bottom = 450.0
+theme_override_font_sizes/font_size = 28
+text = "dungeon crawler de dashes"
+horizontal_alignment = 1
+
+[node name="BotonIniciar" type="Button" parent="."]
+offset_left = 810.0
+offset_top = 520.0
+offset_right = 1110.0
+offset_bottom = 580.0
+theme_override_font_sizes/font_size = 36
+text = "INICIAR"
+
+[node name="BotonSalir" type="Button" parent="."]
+offset_left = 810.0
+offset_top = 610.0
+offset_right = 1110.0
+offset_bottom = 670.0
+theme_override_font_sizes/font_size = 36
+text = "SALIR"

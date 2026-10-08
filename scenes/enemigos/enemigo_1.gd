@@ -19,6 +19,7 @@ var speed: float
 var jugador: Node2D = null
 var persiguiendo: bool = false
 var esta_muerto: bool = false #Estado de muerte
+@onready var _muerte_particles := get_node_or_null("MuerteParticles")
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -40,13 +41,12 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 
-func trigger_dim_light() -> void:
-	# registra un tween que apaga la luz del enemigo caído.
-	# Ya no hace queue_free() al terminar por lo que el cadáver se queda en la habitación en vez de desaparecer.
-	var tween = create_tween()
-	const dim_duration=1.5
-	tween.tween_property($enemy_emission, "energy", 0.0, dim_duration)
-	tween.tween_property($enemy_emission, "texture_scale", 0.0, dim_duration)
+func _emitir_muerte() -> void:
+	# Partículas de muerte (sangre). Ya no hace queue_free() al terminar:
+	# el cadáver se queda en la sala.
+	if _muerte_particles != null:
+		_muerte_particles.restart()
+		_muerte_particles.emitting = true
 
 
 ## FUNCION UNICA DE MUERTE: antes estaba duplicada en
@@ -58,7 +58,7 @@ func _morir() -> void:
 		return
 
 	esta_muerto = true
-	trigger_dim_light()
+	_emitir_muerte()
 	persiguiendo = false
 	animacion.play("butcher")
 

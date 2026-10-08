@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="INFERNONAUT"
-run/main_scene="uid://cfrpbb33x2vu6"
+run/main_scene="res://scenes/juego/juego.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
