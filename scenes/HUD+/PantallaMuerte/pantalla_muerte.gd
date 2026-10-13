@@ -13,10 +13,12 @@ func _ready() -> void:
 	boton_reiniciar.pressed.connect(_on_boton_reiniciar_pressed)
 	boton_salir.pressed.connect(_on_boton_salir_pressed)
 	boton_reiniciar.grab_focus()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _on_boton_reiniciar_pressed() -> void:
 	reiniciar_solicitado.emit()
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 
 func _on_boton_salir_pressed() -> void:

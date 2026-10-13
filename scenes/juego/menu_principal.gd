@@ -12,6 +12,7 @@ func _ready() -> void:
 	%BotonSemilla.pressed.connect(_on_nueva_semilla)
 	semilla_input.text = str(randi())
 	$BotonIniciar.grab_focus()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 ## Semilla de la caja: entero válido = ese; inválido/vacío = aleatoria.
@@ -28,6 +29,7 @@ func _on_nueva_semilla() -> void:
 
 func _on_iniciar() -> void:
 	iniciar_solicitado.emit(_seed_actual())
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 
 func _on_salir() -> void:

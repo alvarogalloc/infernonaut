@@ -44,7 +44,9 @@ INFERNONAUT - UNIDADES Y ESPECIFICACIONES DE SALAS
 - 2 plantillas curadas (0 = 5 salas; 1 = bloque 3x2) + contenido por
   arquetipo de sala (inicio/combate/trampa/tesoro/meta) según la distancia
   a la sala inicial. Laberintos DFS distintos por semilla.
-- TileSet blockout embebido: res://tile_sets/blockout.png (60 px, capa 4 pared).
+- TileSet embebido, atlas 1 fila (60 px, capa 4 pared) compuesto en runtime a
+  partir de res://sprites/: suelo1.png (FLOOR/PATH), suelo2.png (BLOOD, mezcla
+  de suelo) y pared.png (WALL).
 
 5. GRUPOS / CAPAS DE FÍSICA (project.godot)
 -------------------------------------------

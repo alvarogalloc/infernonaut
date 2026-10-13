@@ -1,16 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bxja1mcg7ghe4"]
 
-[ext_resource type="Script" path="res://scenes/juego/menu_principal.gd" id="1_menu"]
+[ext_resource type="Script" uid="uid://d2wc84kvieq88" path="res://scenes/juego/menu_principal.gd" id="1_menu"]
 
-[node name="Menu" type="CanvasLayer"]
+[node name="Menu" type="CanvasLayer" unique_id=1064020194]
 script = ExtResource("1_menu")
 
-[node name="Fondo" type="ColorRect" parent="."]
+[node name="Fondo" type="ColorRect" parent="." unique_id=1973759556]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0.06, 0.03, 0.04, 1)
 
-[node name="Titulo" type="Label" parent="."]
+[node name="Titulo" type="Label" parent="." unique_id=1851370890]
 offset_left = 560.0
 offset_top = 300.0
 offset_right = 1360.0
@@ -19,7 +20,7 @@ theme_override_font_sizes/font_size = 90
 text = "INFERNONAUT"
 horizontal_alignment = 1
 
-[node name="Subtitulo" type="Label" parent="."]
+[node name="Subtitulo" type="Label" parent="." unique_id=176438863]
 offset_left = 560.0
 offset_top = 410.0
 offset_right = 1360.0
@@ -28,7 +29,7 @@ theme_override_font_sizes/font_size = 28
 text = "dungeon crawler de dashes"
 horizontal_alignment = 1
 
-[node name="BotonIniciar" type="Button" parent="."]
+[node name="BotonIniciar" type="Button" parent="." unique_id=2137547594]
 offset_left = 810.0
 offset_top = 520.0
 offset_right = 1110.0
@@ -36,7 +37,7 @@ offset_bottom = 580.0
 theme_override_font_sizes/font_size = 36
 text = "INICIAR"
 
-[node name="BotonSalir" type="Button" parent="."]
+[node name="BotonSalir" type="Button" parent="." unique_id=140581861]
 offset_left = 810.0
 offset_top = 610.0
 offset_right = 1110.0
@@ -44,24 +45,24 @@ offset_bottom = 670.0
 theme_override_font_sizes/font_size = 36
 text = "SALIR"
 
-[node name="FilaSemilla" type="HBoxContainer" parent="."]
+[node name="FilaSemilla" type="HBoxContainer" parent="." unique_id=809283996]
 offset_left = 770.0
 offset_top = 700.0
 offset_right = 1150.0
 offset_bottom = 760.0
 
-[node name="SemillaInput" type="LineEdit" parent="FilaSemilla"]
+[node name="SemillaInput" type="LineEdit" parent="FilaSemilla" unique_id=775266614]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
-placeholder_text = "semilla (número)"
-text = "0"
 tooltip_text = "Semilla del mundo: mismo número = mismo nivel. Vacío o inválido = aleatoria."
+theme_override_font_sizes/font_size = 24
+text = "0"
+placeholder_text = "semilla (número)"
 
-[node name="BotonSemilla" type="Button" parent="FilaSemilla"]
+[node name="BotonSemilla" type="Button" parent="FilaSemilla" unique_id=1490375198]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Generar una semilla aleatoria en la caja"
 theme_override_font_sizes/font_size = 24
 text = "Nueva"
-tooltip_text = "Generar una semilla aleatoria en la caja"

@@ -40,7 +40,8 @@ signal personaje_muerto #podemos hacer que emita una señal con la palabra signa
 @export var emisionidle: CollisionShape2D #para desactivar la hitbox del personaje
 @export var emisiondash: CollisionShape2D #para desactivar la hitbox del dash
 
-@export var reticula : Sprite2D #para el sprite de la reticula
+##@export var reticula : Sprite2D #para el sprite de la reticula
+@export var reticula_anim : AnimatedSprite2D
 
 @export_group("Dash Alcance (unidades de juego)")
 ## Dash fuerte (click izq, ataque): 10 tiles = 600 px = 20 m
@@ -106,6 +107,7 @@ func _ready():
 	timer_recarga.one_shot = true
 	timer_recarga.timeout.connect(_on_timer_recarga_timeout)
 	add_child(timer_recarga)
+	reticula_anim.play("idle")
 
 
 func _process(delta):
@@ -155,6 +157,8 @@ func _reposo() -> void:
 	emisiondash.set_deferred("disabled", true)
 	if animacion != null and animacion.animation != &"idle":
 		animacion.play("idle")
+	if reticula_anim != null and reticula_anim.animation != &"idle":
+		reticula_anim.play("idle")
 	_reticula_idle()
 
 
@@ -171,14 +175,14 @@ func _aplicar_dash(delta: float) -> void:
 		emisionidle.set_deferred("disabled", _dash_fuerte)
 		emisiondash.set_deferred("disabled", not _dash_fuerte)
 		move_and_slide()
-	reticula.global_position = _dash_to
+	reticula_anim.global_position = _dash_to
 	if _dash_prog >= 1.0:
 		_fin_dash()
 
 
 func _reticula_idle() -> void:
 	var mouse_offset = get_global_mouse_position() - global_position
-	reticula.global_position = global_position + mouse_offset.limit_length(_alcance(true))
+	reticula_anim.global_position = global_position + mouse_offset.limit_length(_alcance(true))
 
 
 # para decidir cual animacion
@@ -384,6 +388,10 @@ func _fin_dash() -> void:
 	target_position = global_position
 	velocity = Vector2.ZERO
 	_on_llegada()
+	if animacion != null and animacion.animation != &"idle":
+		animacion.play("idle")
+	if reticula_anim != null and reticula_anim.animation != &"idle":
+		reticula_anim.play("idle")
 	_siguiente_dash()
 
 

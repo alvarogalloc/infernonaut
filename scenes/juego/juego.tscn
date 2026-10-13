@@ -7,4 +7,4 @@ script = ExtResource("1_juego")
 densidad_cobarde = 5.0
 densidad_pincho = 0.0
 densidad_antorcha = 5.0
-densidad_recompensa = 5.0
+densidad_recompensa = 500.0

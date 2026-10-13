@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c5n56sqscl4k5" path="res://scenes/HUD+/BloodHud/blood_hud.gd" id="1_pgm5i"]
 [ext_resource type="Texture2D" uid="uid://d1dhe28336c8y" path="res://sprites/vial.png" id="2_jejpu"]
 [ext_resource type="Texture2D" uid="uid://ch0ytqxjugk1q" path="res://sprites/vial_full.png" id="3_477mq"]
+[ext_resource type="Texture2D" uid="uid://dpp5n6ecpqgvq" path="res://sprites/HUDidea.png" id="4_hudidea"]
 
 [node name="BloodHud" type="Control" unique_id=1171745085]
 layout_mode = 3
@@ -11,12 +12,22 @@ offset_right = 114.0
 offset_bottom = 100.0
 script = ExtResource("1_pgm5i")
 
-[node name="Vial1" type="TextureProgressBar" parent="." unique_id=1225444452]
+[node name="Fondo" type="TextureRect" parent="." unique_id=1968096807]
 layout_mode = 0
 offset_left = 1.0
-offset_top = 8.0
-offset_right = 41.0
-offset_bottom = 48.0
+offset_right = 195.0
+offset_bottom = 97.0
+texture = ExtResource("4_hudidea")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Vial1" type="TextureProgressBar" parent="." unique_id=1225444452]
+layout_mode = 0
+offset_left = 144.99998
+offset_top = 47.0
+offset_right = 184.99998
+offset_bottom = 87.0
+rotation = 0.33161256
 value = 100.0
 fill_mode = 3
 texture_under = ExtResource("2_jejpu")
@@ -24,9 +35,11 @@ texture_progress = ExtResource("3_477mq")
 
 [node name="Vial2" type="TextureProgressBar" parent="." unique_id=608295253]
 layout_mode = 0
-offset_left = 38.0
-offset_right = 78.0
-offset_bottom = 40.0
+offset_left = 162.99998
+offset_top = 20.999996
+offset_right = 202.99998
+offset_bottom = 60.999996
+rotation = 0.33161256
 value = 100.0
 fill_mode = 3
 texture_under = ExtResource("2_jejpu")
@@ -34,10 +47,11 @@ texture_progress = ExtResource("3_477mq")
 
 [node name="Vial3" type="TextureProgressBar" parent="." unique_id=1446964371]
 layout_mode = 0
-offset_left = 74.0
-offset_top = 12.0
-offset_right = 114.0
-offset_bottom = 52.0
+offset_left = 182.99998
+offset_top = -2.0
+offset_right = 222.99998
+offset_bottom = 38.0
+rotation = 0.33161256
 value = 100.0
 fill_mode = 3
 texture_under = ExtResource("2_jejpu")

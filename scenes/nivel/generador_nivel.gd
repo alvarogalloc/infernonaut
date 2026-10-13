@@ -11,10 +11,10 @@ extends RefCounted
 const TILE := 60
 const RU := Vector2i(32, 18) ## 1 unidad de sala = 32x18 tiles
 const PX := Vector2(TILE * RU.x, TILE * RU.y) ## 1920x1080
-const FLOOR := Vector2i(0, 0)
-const WALL := Vector2i(1, 0)
-const PATH := Vector2i(2, 0)
-const BLOOD := Vector2i(3, 0)
+const FLOOR := Vector2i(0, 0) ## suelo base (suelo1.png)
+const WALL := Vector2i(1, 0) ## pared (pared.png)
+const PATH := Vector2i(2, 0) ## corredor por pared (suelo1.png)
+const BLOOD := Vector2i(3, 0) ## variante de suelo (suelo2.png)
 const STRIDE := 4 ## celda interior 3 tiles + separador de 1
 const PUERTA_TILES := 2
 
@@ -34,7 +34,9 @@ const RUTA_META := "res://scenes/objetivo/objetivo.tscn"
 const RUTA_RECOMPENSA := "res://scenes/recompensas/recompensa.tscn"
 const RUTA_GESTOR := "res://scenes/escena_principal/transicion_salas.gd"
 const RUTA_WIPE := "res://scenes/escena_principal/transicion_wipe.gdshader"
-const RUTA_TILES := "res://tile_sets/blockout.png"
+const RUTA_SUELO1 := "res://sprites/suelo1.png"
+const RUTA_SUELO2 := "res://sprites/suelo2.png"
+const RUTA_PARED := "res://sprites/t3.png"
 const RUTA_PUERTA_TEX := "res://sprites/puerta.png"
 
 const ESC_RECOMPENSA := 1.0
@@ -196,7 +198,7 @@ func _tileset() -> TileSet:
 	ts.add_physics_layer(0)
 	ts.set_physics_layer_collision_layer(0, 8)
 	var src := TileSetAtlasSource.new()
-	src.texture = load(RUTA_TILES)
+	src.texture = _atlas()
 	src.texture_region_size = Vector2i(TILE, TILE)
 	ts.add_source(src, 0)
 	for c in [FLOOR, WALL, PATH, BLOOD]:
@@ -210,13 +212,35 @@ func _tileset() -> TileSet:
 	return ts
 
 
+## Atlas 240x60 en runtime: cada sprite (256 px) escalado a un tile de 60 px.
+func _atlas() -> ImageTexture:
+	var img := Image.create_empty(TILE * 4, TILE, false, Image.FORMAT_RGBA8)
+	_blit(img, FLOOR, RUTA_SUELO1)
+	_blit(img, WALL, RUTA_PARED)
+	_blit(img, PATH, RUTA_SUELO1)
+	_blit(img, BLOOD, RUTA_SUELO2)
+	return ImageTexture.create_from_image(img)
+
+
+func _blit(img: Image, celda: Vector2i, ruta: String) -> void:
+	var sub := (load(ruta) as Texture2D).get_image()
+	sub.convert(Image.FORMAT_RGBA8)
+	sub.resize(TILE, TILE, Image.INTERPOLATE_LANCZOS)
+	img.blit_rect(sub, Rect2i(0, 0, TILE, TILE), Vector2i(celda.x * TILE, 0))
+
+
 func _llenar(layer: TileMapLayer, w: int, h: int) -> void:
 	var cols := w * RU.x
 	var rows := h * RU.y
 	for y in rows:
 		for x in cols:
 			var borde := x == 0 or y == 0 or x == cols - 1 or y == rows - 1
-			layer.set_cell(Vector2i(x, y), 0, WALL if borde else FLOOR)
+			layer.set_cell(Vector2i(x, y), 0, WALL if borde else _suelo())
+
+
+## Suelo aleatorio: mezcla suelo1.png (FLOOR) y suelo2.png (BLOOD).
+func _suelo() -> Vector2i:
+	return BLOOD if _rng.randf() < 0.5 else FLOOR
 
 
 func _maze(layer: TileMapLayer, w: int, h: int) -> Array:
@@ -266,11 +290,11 @@ func _abrir_celdas(layer: TileMapLayer, a: Vector2i, b: Vector2i) -> void:
 	if a.x != b.x:
 		var sx: int = maxi(a.x, b.x) * STRIDE
 		for dy in 3:
-			layer.set_cell(Vector2i(sx, 1 + a.y * STRIDE + dy), 0, FLOOR)
+			layer.set_cell(Vector2i(sx, 1 + a.y * STRIDE + dy), 0, _suelo())
 	else:
 		var sy: int = maxi(a.y, b.y) * STRIDE
 		for dx in 3:
-			layer.set_cell(Vector2i(1 + a.x * STRIDE + dx, sy), 0, FLOOR)
+			layer.set_cell(Vector2i(1 + a.x * STRIDE + dx, sy), 0, _suelo())
 
 
 func _conectar_puertas(s: Dictionary) -> void:

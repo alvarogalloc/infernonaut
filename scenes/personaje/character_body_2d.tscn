@@ -4,11 +4,115 @@
 [ext_resource type="SpriteFrames" uid="uid://paqn3dqqyx4y" path="res://scenes/personaje/sprite_frames_personaje.tres" id="1_mi7pn"]
 [ext_resource type="Texture2D" uid="uid://dknl85uqhy43e" path="res://sprites/crosshair.png" id="3_2qcng"]
 [ext_resource type="PackedScene" uid="uid://b3qls31p3imcj" path="res://scenes/HUD+/BloodHud/blood_hud.tscn" id="5_brr8y"]
-[ext_resource type="AudioStream" path="res://sfx/dash_fuerte.wav" id="7_sfxr"]
-[ext_resource type="AudioStream" path="res://sfx/dash_normal.wav" id="8_sfxn"]
+[ext_resource type="Texture2D" uid="uid://bu4ulx77ia5pb" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0000.png" id="6_ykme1"]
+[ext_resource type="Texture2D" uid="uid://1kffb2m8mnj6" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0001.png" id="7_c2aj1"]
+[ext_resource type="AudioStream" uid="uid://dtudjuup4wngo" path="res://sfx/dash_fuerte.wav" id="7_sfxr"]
+[ext_resource type="Texture2D" uid="uid://bkct3ee17eala" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0002.png" id="8_6whsl"]
+[ext_resource type="AudioStream" uid="uid://s4lf0weetsxa" path="res://sfx/dash_normal.wav" id="8_sfxn"]
+[ext_resource type="Texture2D" uid="uid://bw82kah66aoo1" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0003.png" id="9_3x5oc"]
+[ext_resource type="Texture2D" uid="uid://dhfbs5sukv631" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0004.png" id="10_5b2vf"]
+[ext_resource type="Texture2D" uid="uid://bephjhk2clxwt" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0005.png" id="11_r1y1n"]
+[ext_resource type="Texture2D" uid="uid://l7u0qlv3u7lf" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0006.png" id="12_1fkk6"]
+[ext_resource type="Texture2D" uid="uid://cickntbyg18su" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0007.png" id="13_4r0ij"]
+[ext_resource type="Texture2D" uid="uid://c66y601tuywsg" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0008.png" id="14_r6lib"]
+[ext_resource type="Texture2D" uid="uid://cll8tarvlu8ya" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0009.png" id="15_3jhl2"]
+[ext_resource type="Texture2D" uid="uid://hrio7tgrlxkh" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0010.png" id="16_obvgw"]
+[ext_resource type="Texture2D" uid="uid://cc3xkwkpyai0v" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0011.png" id="17_ibvcc"]
+[ext_resource type="Texture2D" uid="uid://br8alc5v7o7h1" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0012.png" id="18_4yf7w"]
+[ext_resource type="Texture2D" uid="uid://lnnwbwyop6sh" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0013.png" id="19_g1w23"]
+[ext_resource type="Texture2D" uid="uid://dmaup1enirfdu" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0014.png" id="20_7g5n6"]
+[ext_resource type="Texture2D" uid="uid://djarsn2tjasuk" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0015.png" id="21_fdpey"]
+[ext_resource type="Texture2D" uid="uid://rcyxa3l3ak15" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0016.png" id="22_it2xc"]
+[ext_resource type="Texture2D" uid="uid://doijiss5igm5y" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0017.png" id="23_oi2p4"]
+[ext_resource type="Texture2D" uid="uid://bjdulghjomqy7" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0018.png" id="24_jm54y"]
+[ext_resource type="Texture2D" uid="uid://cu8ja51esttjn" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0019.png" id="25_q5mbq"]
+[ext_resource type="Texture2D" uid="uid://771pl4xewbbr" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0020.png" id="26_aes5x"]
+[ext_resource type="Texture2D" uid="uid://dqcashut2hab3" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0021.png" id="27_x60db"]
+[ext_resource type="Texture2D" uid="uid://my4xg4bvto5q" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0022.png" id="28_juaqg"]
+[ext_resource type="Texture2D" uid="uid://djodclsn760i" path="res://sprites/spritesheets/reticulaIdle/Línea de tiempo 1_0023.png" id="29_5qlwn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(463, 462)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_ykme1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_c2aj1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6whsl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_3x5oc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_5b2vf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_r1y1n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_1fkk6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_4r0ij")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_r6lib")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_3jhl2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_obvgw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ibvcc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_4yf7w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_g1w23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_7g5n6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_fdpey")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_it2xc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_oi2p4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_jm54y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_q5mbq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_aes5x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_x60db")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_juaqg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_5qlwn")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 30.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
 size = Vector2(245, 596)
@@ -73,7 +177,7 @@ scale_min = 24.0
 scale_max = 48.0
 color_ramp = SubResource("GradientTexture1D_aurasombra")
 
-[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "area_environment", "emisionidle", "emisiondash", "reticula")]
+[node name="personaje" type="CharacterBody2D" unique_id=1272821337 node_paths=PackedStringArray("bloodHud", "animacion", "area_idle", "area_dash", "area_environment", "emisionidle", "emisiondash", "reticula_anim")]
 scale = Vector2(0.7, 0.7)
 collision_mask = 40
 script = ExtResource("1_2ehrf")
@@ -84,7 +188,7 @@ area_dash = NodePath("areadash")
 area_environment = NodePath("environment")
 emisionidle = NodePath("areaidle/emisionidle")
 emisiondash = NodePath("areadash/emisiondash")
-reticula = NodePath("reticula")
+reticula_anim = NodePath("reticula_anim")
 dash_hitstop = 0.05
 sfx_fuerte = ExtResource("7_sfxr")
 sfx_normal = ExtResource("8_sfxn")
@@ -99,10 +203,18 @@ animation = &"idle"
 frame_progress = 0.017647449
 
 [node name="reticula" type="Sprite2D" parent="." unique_id=999005961]
+visible = false
 texture_filter = 1
 position = Vector2(-5.714264, 3.0517578e-05)
 scale = Vector2(12.585803, 9.362872)
 texture = ExtResource("3_2qcng")
+
+[node name="reticula_anim" type="AnimatedSprite2D" parent="." unique_id=399594223]
+position = Vector2(-4.8674583, -19.866243)
+scale = Vector2(2.966775, 3.0182135)
+sprite_frames = SubResource("SpriteFrames_g4v7s")
+animation = &"idle"
+frame_progress = 0.061124846
 
 [node name="areaidle" type="Area2D" parent="." unique_id=1876981566]
 collision_mask = 148
@@ -130,7 +242,7 @@ explosiveness = 0.25
 randomness = 0.5
 process_material = SubResource("ParticleProcessMaterial_dash")
 
-[node name="DashSfx" type="AudioStreamPlayer" parent="."]
+[node name="DashSfx" type="AudioStreamPlayer" parent="." unique_id=1216321646]
 stream = ExtResource("7_sfxr")
 volume_db = -6.0
 
