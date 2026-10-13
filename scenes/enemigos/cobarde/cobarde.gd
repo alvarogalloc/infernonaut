@@ -44,6 +44,7 @@ var _normal_pared: Vector2 = Vector2.ZERO
 var _objetivos: Array = [] ## Puntos de impacto (globales) del ataque en curso
 var _telegrafos: Array = []
 var _proyectiles: Array = []
+var _caza_bloqueada_hasta := -1 ## gracia anti-caza: no reacciona hasta (ms)
 
 
 func _ready() -> void:
@@ -62,7 +63,7 @@ func _physics_process(delta: float) -> void:
 		Estado.INACTIVO:
 			# Solo reacciona si además lo ve: una pared delante no dispara
 			# la detección, aunque el jugador esté dentro del área.
-			if _jugador_en_area and Vision.ve_a(self, jugador):
+			if not _caza_pausada() and _jugador_en_area and Vision.ve_a(self, jugador):
 				_cambiar_estado(Estado.REACCIONANDO)
 		Estado.REACCIONANDO:
 			_actualizar_vista(delta)
@@ -213,6 +214,28 @@ func _on_environment_area_entered(_area: Area2D) -> void:
 
 
 # ------------------------------------------------------ AREA DE ACTIVACION
+
+## true mientras dura la gracia anti-caza (transición de sala): registra al
+## jugador pero NO reacciona hasta que expire.
+func _caza_pausada() -> bool:
+	return Time.get_ticks_msec() < _caza_bloqueada_hasta
+
+
+## Pausa la reacción de caza hasta `reanudar_en_ticks` (ms absoluto).
+func pausar_caza(reanudar_en_ticks: int) -> void:
+	_caza_bloqueada_hasta = reanudar_en_ticks
+
+
+## Vuelve, limpio, al estado INACTIVO (suelta al jugador y sus marcadores).
+func detener_persecucion() -> void:
+	if _estado != Estado.MUERTO:
+		_cambiar_estado(Estado.INACTIVO)
+	if jugador != null and is_instance_valid(jugador) \
+			and jugador.personaje_muerto.is_connected(_on_jugador_muerto):
+		jugador.personaje_muerto.disconnect(_on_jugador_muerto)
+	jugador = null
+	_jugador_en_area = false
+
 
 func _on_activate_body_entered(body: Node2D) -> void:
 	if _estado == Estado.MUERTO or not body.is_in_group(Constantes.GRUPO_PERSONAJES):

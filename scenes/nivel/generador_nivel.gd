@@ -39,36 +39,22 @@ const RUTA_PUERTA_TEX := "res://sprites/puerta.png"
 
 const ESC_RECOMPENSA := 1.0
 const BLOQUEO_PINCHO := 1 ## radio (en tiles) que bloquea un pincho en la BFS
-const PROB_COBARDE := 0.6 ## probabilidad de que el primer enemigo sea cobarde
-
-## Mapa de entidades que puede generar el nivel. `generar()` acepta un dict
-## parcial para sobreescribir cuáles aparecen (probar una semilla sólo con
-## pinchos, sólo sin antorchas, ...). Las claves que falten conservan su
-## valor por defecto; desactivar una entidad la elimina para TODA semilla.
-const ENTIDADES := {
-	"enemigo_1": true, ## melé que persigue
-	"cobarde": true, ## lanzador a distancia
-	"pincho": true, ## trampa de suelo
-	"antorcha": true, ## luz de pared
-	"recompensa": true, ## escudo / dash sombra
-}
+const DESPEJE_PUERTA := TILE * 3.0 ## px: nada de enemigos/pinchos tan cerca del hueco
 
 var _rng := RandomNumberGenerator.new()
 var _ts: TileSet
-var _densidad := 1.0 ## multiplicador de enemigos por sala
 var _n_puerta := 0
-var _entidades := ENTIDADES
+var _densidades_activas: Dictionary = {}
 
 
 ## Devuelve un Node2D listo para añadir al árbol. plantilla < 0 = aleatoria.
-## `densidad_enemigos` escala cuántos enemigos genera cada sala (1.0 = base).
-## `entidades` = dict parcial del mapa ENTIDADES (ver ahí) para fijar qué
-## entidades aparecen para esta semilla.
-func generar(semilla: int, plantilla: int = -1, densidad_enemigos: float = 1.0, entidades: Dictionary = {}) -> Node2D:
-	_densidad = maxf(densidad_enemigos, 0.0)
-	_entidades = ENTIDADES.duplicate()
-	for k in entidades:
-		_entidades[k] = bool(entidades[k])
+## `densidades_entidad` = dict parcial de Constantes.DENSIDADES_ENTIDAD
+## (0.0 = ninguna, 1.0 = base); las claves que falten usan el valor por
+## defecto. Un único dict alimenta el menú y el generador.
+func generar(semilla: int, plantilla: int = -1, densidades_entidad: Dictionary = {}) -> Node2D:
+	_densidades_activas = Constantes.DENSIDADES_ENTIDAD.duplicate()
+	for k in densidades_entidad:
+		_densidades_activas[k] = maxf(float(densidades_entidad[k]), 0.0)
 	if plantilla < 0:
 		_rng.seed = semilla
 		plantilla = _rng.randi() % 2
@@ -107,8 +93,16 @@ func _construir(plantilla: int) -> Dictionary:
 		salas.append({"gx": spec[1], "gy": spec[2], "w": spec[3], "h": spec[4], "layer": layer, "room": room, "nombre": spec[0], "centros": centros, "enemigos": [], "cand_pinchos": []})
 
 	var specs_puerta: Array = []
+	var puertas_por_sala: Array = [] ## centros de puerta locales a cada sala
+	for _i in salas.size():
+		puertas_por_sala.append([])
 	for d in puertas:
-		specs_puerta.append(_abrir_puerta(salas[d[0]], salas[d[1]], d[2], d[0]))
+		var spec := _abrir_puerta(salas[d[0]], salas[d[1]], d[2], d[0])
+		specs_puerta.append(spec)
+		var puerta_global: Vector2 = (salas[d[0]].room as Node2D).position \
+				+ Vector2(spec.pos)
+		for idx in [d[0], d[1]]:
+			puertas_por_sala[idx].append(puerta_global - (salas[idx].room as Node2D).position)
 	for s in salas:
 		_conectar_puertas(s)
 		_atmosfera(s)
@@ -128,7 +122,7 @@ func _construir(plantilla: int) -> Dictionary:
 		elif arquetipos[i] == "tesoro":
 			## La celda de la recompensa queda protegida: sin enemigo/pincho.
 			protegida = salas[i].centros[0]
-		_contenido(salas[i], arquetipos[i], protegida)
+		_contenido(salas[i], arquetipos[i], protegida, puertas_por_sala[i])
 	_colocar_pinchos(salas, idx_meta, celda_meta, celda_inicio)
 	_meta(salas[idx_meta], root, celda_meta)
 	_ganchos_salas(salas, specs_puerta)
@@ -319,62 +313,126 @@ func _atmosfera(s: Dictionary) -> void:
 				layer.set_cell(Vector2i(x, y), 0, BLOOD)
 
 
-## Contenido curado por arquetipo. `protegida` = celda sin enemigo/pincho.
-## Los pinchos se validan después (_colocar_pinchos) para no bloquear el paso.
-func _contenido(s: Dictionary, tipo: String, protegida: Vector2i) -> void:
+## Contenido curado por arquetipo: el core solo PROPONE una celda candidata;
+## quién puede ocuparla lo deciden las reglas composables (_resolver_colocacion),
+## no este código. Así el core queda mínimo y añadir/ajustar una condición de
+## mundo = añadir una regla, sin tocar el generador.
+## `protegida` = celda sin enemigo/pincho; `puertas_locales` = centros de puerta.
+## Los pinchos se validan aparte (_colocar_pinchos) para no bloquear el paso.
+## Cada tipo se escala con su densidad (Constantes.DENSIDADES_ENTIDAD);
+## densidad 0.0 = ese tipo no aparece.
+func _contenido(s: Dictionary, tipo: String, protegida: Vector2i, puertas_locales: Array) -> void:
 	var room: Node2D = s.room
 	var centros: Array = s.centros
-	var base_e := 2
-	var max_p := 1
+	var base_enemigos := 2
+	var base_pinchos := 1
 	match tipo:
 		"inicio":
-			base_e = 1
-			max_p = 0
+			base_enemigos = 1
+			base_pinchos = 0
 		"combate":
-			base_e = 4
-			max_p = 1
+			base_enemigos = 4
+			base_pinchos = 1
 		"trampa":
-			base_e = 2
-			max_p = 3
+			base_enemigos = 2
+			base_pinchos = 3
 		"tesoro":
-			base_e = 2
-			max_p = 1
+			base_enemigos = 2
+			base_pinchos = 1
 		"meta":
-			base_e = 3
-			max_p = 1
-	var max_e := int(round(base_e * _densidad))
-	var ne := 0
-	var np := 0
-	var nt := 0
+			base_enemigos = 3
+			base_pinchos = 1
+	var max_enemigos_sala := int(ceil(base_enemigos * _densidades_activas["densidad_enemigo_mele"]))
+	var max_pinchos_sala := int(ceil(base_pinchos * _densidades_activas["densidad_pincho"]))
+	var max_antorchas_sala := int(ceil(4.0 * _densidades_activas["densidad_antorcha"]))
+	var num_enemigos_actual := 0
+	var num_pinchos_actual := 0
+	var num_antorchas_actual := 0
 	var k := 0
-	while k < centros.size() and (ne < max_e or np < max_p or nt < 4):
+	while k < centros.size() and (num_enemigos_actual < max_enemigos_sala or num_pinchos_actual < max_pinchos_sala or num_antorchas_actual < max_antorchas_sala):
 		var celda: Vector2i = centros[k]
-		if celda == protegida:
+		var colocacion := _resolver_colocacion({
+			"sala": s, "celda": celda, "pos": _celda_local(s, celda),
+			"protegida": protegida, "puertas": puertas_locales, "tipo": tipo,
+		})
+		if colocacion.is_empty():
 			k += 1
 			continue
-		var p := _celda_local(s, celda)
-		if nt < 4 and k % 3 == 0:
-			if _entidades["antorcha"]:
+		var p: Vector2 = colocacion.pos
+		if num_antorchas_actual < max_antorchas_sala and k % 3 == 0:
+			if _densidades_activas["densidad_antorcha"] > 0.0:
 				var ant := _pone(room, RUTA_ANTORCHA, "antorcha_%d" % k, p + Vector2(0, -TILE * 0.5), ESC_ANTORCHA)
 				ant.z_index = Constantes.Z_ANTORCHA
-			nt += 1
-		elif ne < max_e and k % 2 == 1:
-			if _entidades["enemigo_1"]:
-				var es_cobarde: bool = _entidades["cobarde"] and tipo in ["combate", "tesoro"] and ne == 0 and _rng.randf() < PROB_COBARDE
-				var en := _pone(room, RUTA_COBARDE if es_cobarde else RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
+			num_antorchas_actual += 1
+		elif num_enemigos_actual < max_enemigos_sala and k % 2 == 1:
+			if _densidades_activas["densidad_enemigo_mele"] > 0.0:
+				var usa_variante_cobarde: bool = _densidades_activas["densidad_cobarde"] > 0.0 \
+						and tipo in ["combate", "tesoro"] and num_enemigos_actual == 0 \
+						and _rng.randf() < clampf(Constantes.PROB_COBARDE * _densidades_activas["densidad_cobarde"], 0.0, 1.0)
+				var en := _pone(room, RUTA_COBARDE if usa_variante_cobarde else RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
 				s.enemigos.append(en)
-				ne += 1
-		elif np < max_p and k % 2 == 0:
-			if _entidades["pincho"]:
+				num_enemigos_actual += 1
+		elif num_pinchos_actual < max_pinchos_sala and k % 2 == 0:
+			if _densidades_activas["densidad_pincho"] > 0.0:
 				s.cand_pinchos.append(celda)
-				np += 1
+				num_pinchos_actual += 1
 		k += 1
-	if tipo == "tesoro" and _entidades["recompensa"]:
+	var densidad_recompensa: float = _densidades_activas["densidad_recompensa"]
+	if tipo == "tesoro" and _rng.randf() < densidad_recompensa:
 		var rec: Node2D = load(RUTA_RECOMPENSA).instantiate()
 		rec.name = "recompensa"
 		rec.tipo = "escudo" if _rng.randf() < 0.5 else "dash_sombra"
 		rec.position = _celda_local(s, protegida)
 		room.add_child(rec)
+
+
+## --- Colocación por reglas (worldgen) ---------------------------------
+## El core propone una celda y pregunta a estas reglas composables, en orden.
+## Cada regla recibe la "plaza" {sala, celda, pos, protegida, puertas, tipo}:
+##   true    -> pasa
+##   false   -> rechazada; el core prueba la SIGUIENTE celda candidata
+##   Vector2 -> muta la posición propuesta y se sigue con las demás reglas
+## Añadir una condición de colocación = añadir una función a esta lista.
+func _reglas_colocacion() -> Array:
+	return [
+		_regla_dentro_de_la_sala,
+		_regla_fuera_de_protegida,
+		_regla_lejos_de_puertas,
+	]
+
+
+func _resolver_colocacion(plaza: Dictionary) -> Dictionary:
+	for regla in _reglas_colocacion():
+		var r: Variant = regla.call(plaza)
+		if r == false:
+			return {}
+		if r is Vector2:
+			plaza.pos = r
+	return plaza
+
+
+## El contenido nunca cae en el marco de paredes: muta la posición hacia dentro.
+func _regla_dentro_de_la_sala(plaza: Dictionary) -> Variant:
+	var s: Dictionary = plaza.sala
+	var dentro := Vector2(
+		clampf(plaza.pos.x, TILE, (s.w * RU.x - 1) * TILE),
+		clampf(plaza.pos.y, TILE, (s.h * RU.y - 1) * TILE)
+	)
+	return dentro if dentro != plaza.pos else true
+
+
+## La celda protegida (inicio/meta/recompensa) queda limpia.
+func _regla_fuera_de_protegida(plaza: Dictionary) -> bool:
+	return plaza.celda != plaza.protegida
+
+
+## Nada a menos de DESPEJE_PUERTA px del hueco de una puerta: entrar por la
+## puerta (spawn junto a ella) nunca cae sobre un enemigo/pincho/antorcha.
+func _regla_lejos_de_puertas(plaza: Dictionary) -> bool:
+	for dp in plaza.puertas:
+		if plaza.pos.distance_to(dp) < DESPEJE_PUERTA:
+			return false
+	return true
 
 
 ## Trampas/pinchos: instakill -> NUNCA se colocan sobre el corredor
@@ -388,13 +446,13 @@ func _colocar_pinchos(salas: Array, idx_meta: int, celda_meta: Vector2i, celda_i
 	var ruta := _ruta_principal(salas, inicio, meta)
 	var bloqueados := {}
 	for s in salas:
-		for c in s.cand_pinchos:
-			var g: Vector2i = Vector2i((s.room as Node2D).position / TILE) + c
-			if ruta.has(g):
+		for celda_candidata in s.cand_pinchos:
+			var celda_global_pincho: Vector2i = Vector2i((s.room as Node2D).position / TILE) + celda_candidata
+			if ruta.has(celda_global_pincho):
 				continue
-			if _pincho_ok(salas, inicio, meta, bloqueados, s, c):
-				_crear_pincho(s, c)
-				_marcar_pincho(bloqueados, s, c)
+			if _pincho_ok(salas, inicio, meta, bloqueados, s, celda_candidata):
+				_crear_pincho(s, celda_candidata)
+				_marcar_pincho(bloqueados, s, celda_candidata)
 
 
 func _crear_pincho(s: Dictionary, celda: Vector2i) -> void:

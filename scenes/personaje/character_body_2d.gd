@@ -87,10 +87,12 @@ var _cola : Array[Vector2] = [] ## polling de dashes cortos
 var dashes_lanzados : int = 0 ## contador (tests/telemetría)
 
 ## Mejoras (recompensas de salas "tesoro")
-var golpes_extra : int = 0 ## escudos que absorben un golpe letal
-var cargas_sombra : int = 0 ## dashes sombra disponibles
+var escudos_restantes : int = 0 ## escudos que absorben un golpe letal
+var cargas_dash_sombra : int = 10 ## dashes sombra disponibles
 var _invulnerable_hasta : int = 0 ## instante (ms) durante el que se ignora daño
 @onready var _dash_particles: GPUParticles2D = get_node_or_null("DashParticles")
+@onready var _aura_escudo: GPUParticles2D = get_node_or_null("AuraProteccion")
+@onready var _aura_sombra: GPUParticles2D = get_node_or_null("AuraDashSombra")
 @onready var _sfx: AudioStreamPlayer = get_node_or_null("DashSfx")
 
 #FUNCION _ready()
@@ -107,11 +109,30 @@ func _ready():
 
 
 func _process(delta):
+	_actualizar_aura()
 	if bloodHud != null:
 		var porcentaje = 0.0
 		if not timer_recarga.is_stopped():
 			porcentaje = (1.0 - (timer_recarga.time_left / tiempo_recarga)) * 100.0
 		bloodHud.actualizar_cargas(cargas_actuales, porcentaje)
+		bloodHud.mostrar_mejoras(escudos_restantes, cargas_dash_sombra)
+
+
+## Aura visible de mejoras activas: escudo = brillo dorado; dash sombra =
+## matiz oscuro del sprite. Ambas se reflejan además en el HUD.
+func _actualizar_aura() -> void:
+	var escudo_activo := escudos_restantes > 0
+	var sombra_activa := cargas_dash_sombra > 0
+	if _aura_escudo != null:
+		if escudo_activo and not _aura_escudo.emitting:
+			_aura_escudo.restart()
+		_aura_escudo.emitting = escudo_activo
+	if _aura_sombra != null:
+		if sombra_activa and not _aura_sombra.emitting:
+			_aura_sombra.restart()
+		_aura_sombra.emitting = sombra_activa
+	if animacion != null:
+		animacion.self_modulate = Color(0.5, 0.5, 0.65) if sombra_activa else Color.WHITE
 
 
 func _physics_process(delta):
@@ -242,9 +263,9 @@ func _intentar_dash_fuerte() -> void:
 ## Dash sombra: atraviesa paredes. Aterriza en el último punto libre hacia
 ## el cursor (nunca dentro de una pared).
 func _intentar_dash_sombra() -> void:
-	if cargas_sombra <= 0:
+	if cargas_dash_sombra <= 0:
 		return
-	cargas_sombra -= 1
+	cargas_dash_sombra -= 1
 	dash_sombra_hacia(get_global_mouse_position())
 
 
@@ -479,10 +500,10 @@ func morir() -> void:
 func golpear() -> void:
 	if _muerto or Time.get_ticks_msec() < _invulnerable_hasta:
 		return
-	if golpes_extra > 0:
-		golpes_extra -= 1
+	if escudos_restantes > 0:
+		escudos_restantes -= 1
 		_invulnerable_hasta = Time.get_ticks_msec() + 800
-		_feedback_escudo()
+		_feedback_proteccion()
 		return
 	_morir()
 
@@ -490,18 +511,23 @@ func golpear() -> void:
 ## Mejora de una sala "tesoro" (recogible).
 func aplicar_recompensa(tipo: String) -> void:
 	if tipo == "escudo":
-		golpes_extra = mini(golpes_extra + 1, 1)
+		escudos_restantes = mini(escudos_restantes + 1, 1)
 	elif tipo == "dash_sombra":
-		cargas_sombra += SOMBRA_POR_RECOMPENSA
-	_feedback_escudo()
+		cargas_dash_sombra += SOMBRA_POR_RECOMPENSA
+	_feedback_proteccion()
 
 
-func _feedback_escudo() -> void:
+## Blink del sprite + burst de aura al absorber un golpe o recoger un
+## escudo: feedback claro de que la protección está activa.
+func _feedback_proteccion() -> void:
 	if animacion == null:
 		return
 	var tw := create_tween()
 	tw.tween_property(animacion, "modulate", Color(1, 1, 1, 0.3), 0.08)
 	tw.tween_property(animacion, "modulate", Color.WHITE, 0.08)
+	if _aura_escudo != null:
+		_aura_escudo.restart()
+		_aura_escudo.emitting = true
 
 
 ##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra

@@ -38,21 +38,29 @@ func _process(_delta: float) -> bool:
 
 
 func _probar_mejoras() -> void:
-	_jugador.golpes_extra = 0
-	_jugador.cargas_sombra = 0
+	_jugador.escudos_restantes = 0
+	_jugador.cargas_dash_sombra = 0
 	_jugador.aplicar_recompensa("escudo")
-	_eq("escudo: +1 golpe", _jugador.golpes_extra, 1)
+	_eq("escudo: +1 golpe", _jugador.escudos_restantes, 1)
+	_jugador._actualizar_aura()
+	_ok("aura escudo activa con escudo", _jugador._aura_escudo != null and _jugador._aura_escudo.emitting)
 	_jugador.golpear()
 	_eq("escudo absorbe el golpe letal", _jugador._muerto, false)
-	_eq("escudo gastado tras golpear", _jugador.golpes_extra, 0)
+	_eq("escudo gastado tras golpear", _jugador.escudos_restantes, 0)
 	_jugador._invulnerable_hasta = 0 ## sin invulnerabilidad residual de franja
+	_jugador._actualizar_aura()
+	_ok("aura escudo apagada sin escudo", _jugador._aura_escudo == null or not _jugador._aura_escudo.emitting)
 	_jugador.golpear()
 	_eq("segundo golpe ya mata", _jugador._muerto, true)
-	_jugador.golpes_extra = 0
-	_jugador.cargas_sombra = 0
+	_jugador._muerto = false
+	_jugador.escudos_restantes = 0
+	_jugador.cargas_dash_sombra = 0
 	_jugador.cargas_actuales = 1
 	_jugador.aplicar_recompensa("dash_sombra")
-	_eq("dash sombra: +5 cargas", _jugador.cargas_sombra, 5)
+	_eq("dash sombra: +5 cargas", _jugador.cargas_dash_sombra, 5)
+	_jugador._actualizar_aura()
+	_ok("aura sombra activa con cargas", _jugador._aura_sombra != null and _jugador._aura_sombra.emitting)
+	_ok("dash sombra oscurece el sprite", _jugador.animacion.self_modulate == Color(0.5, 0.5, 0.65))
 
 
 func _comprobar_nivel(nivel: Node2D, caso: Array) -> void:

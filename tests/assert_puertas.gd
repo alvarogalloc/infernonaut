@@ -3,7 +3,7 @@ extends SceneTree
 ##  - cada conexión crea UNA barrera (hija de la sala dueña)
 ##  - las salas con enemigos empiezan con las puertas cerradas
 ##  - al morir TODOS los enemigos de una sala se abren sus puertas
-##  - `generar(semilla, plantilla, densidad_enemigos)` escala los enemigos
+##  - `generar(semilla, plantilla, densidades_entidad)` escala los enemigos
 ## Uso: godot --headless --fixed-fps 60 --script res://tests/assert_puertas.gd
 
 var _nivel: Node2D
@@ -86,12 +86,16 @@ func _tras_abrir() -> void:
 
 
 func _densidad() -> void:
-	var n0 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, 0.0))
-	var n1 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, 1.0))
-	var n2 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, 2.0))
+	var n0 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, _dens(0.0)))
+	var n1 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, _dens(1.0)))
+	var n2 := _contar_enemigos(GeneradorNivel.new().generar(777, 0, _dens(2.0)))
 	_eq("densidad 0 -> 0 enemigos", n0, 0)
 	_ok("densidad 1 -> hay enemigos", n1 > 0)
 	_ok("densidad 2 > densidad 1", n2 > n1)
+
+
+func _dens(valor: float) -> Dictionary:
+	return {"densidad_enemigo_mele": valor, "densidad_cobarde": valor}
 
 
 func _salas() -> Array:

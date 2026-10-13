@@ -28,6 +28,7 @@ var esta_muerto: bool = false #Estado de muerte
 var _jugador_en_area: bool = false
 var _tiempo_sin_ver: float = 0.0
 var _ultimo_visto := Vector2.ZERO
+var _caza_bloqueada_hasta := -1 ## gracia anti-caza: no inicia la caza hasta (ms)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -58,14 +59,42 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		# Si siguió en el área pero falló la detección inicial (pared), la
 		# re-intenta en cuanto gana la línea de vista.
-		if _jugador_en_area and is_instance_valid(jugador) and Vision.ve_a(self, jugador):
+		if not _caza_pausada() and _jugador_en_area and is_instance_valid(jugador) and Vision.ve_a(self, jugador):
 			_iniciar_persecucion()
 
 	move_and_slide()
 
 
+## true mientras dura la gracia anti-caza (transición de sala): el enemigo
+## ve al jugador pero NO inicia ni retoma la caza hasta que expire.
+func _caza_pausada() -> bool:
+	return Time.get_ticks_msec() < _caza_bloqueada_hasta
+
+
+## Pausa el inicio/retome de la caza hasta `reanudar_en_ticks` (ms absoluto).
+func pausar_caza(reanudar_en_ticks: int) -> void:
+	_caza_bloqueada_hasta = reanudar_en_ticks
+
+
+## Vuelve al estado de reposo (patrulla/idle): se llama al abandonar la sala
+## para que al re-entrar nadie siga persiguiendo al jugador.
+func detener_persecucion() -> void:
+	if persiguiendo:
+		persiguiendo = false
+		velocity = Vector2.ZERO
+		animacion.play("idle")
+		_tiempo_sin_ver = 0.0
+		_ultimo_visto = Vector2.ZERO
+		area_activacion.set_deferred("disabled", false)
+	if jugador != null and is_instance_valid(jugador) \
+			and jugador.personaje_muerto.is_connected(_on_jugador_muerto):
+		jugador.personaje_muerto.disconnect(_on_jugador_muerto)
+	jugador = null
+	_jugador_en_area = false
+
+
 func _iniciar_persecucion() -> void:
-	if persiguiendo or esta_muerto or not is_instance_valid(jugador):
+	if _caza_pausada() or persiguiendo or esta_muerto or not is_instance_valid(jugador):
 		return
 	if not Vision.ve_a(self, jugador):
 		return

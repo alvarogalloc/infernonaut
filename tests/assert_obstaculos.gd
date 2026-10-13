@@ -68,20 +68,20 @@ func _verificar(nivel: Node2D, caso: Array) -> void:
 	_eq(etq + " meta alcanzable evitando pinchos", alcanzable, true)
 
 
-## Apagar entidades con el mapa de ENTIDADES las quita del nivel entero.
+## Apagar una entidad con densidad 0.0 la quita del nivel entero.
 func _mapa_entidades() -> void:
 	var escenas := {
-		"pincho": "pincho.tscn",
-		"antorcha": "torch.tscn",
-		"enemigo_1": "enemigo_1.tscn",
-		"cobarde": "cobarde.tscn",
+		"densidad_pincho": "pincho.tscn",
+		"densidad_antorcha": "torch.tscn",
+		"densidad_enemigo_mele": "enemigo_1.tscn",
+		"densidad_cobarde": "cobarde.tscn",
 	}
-	for tipo in escenas:
-		var cfg := {tipo: false}
-		var nivel := GeneradorNivel.new().generar(7, 0, 1.0, cfg)
+	for clave in escenas:
+		var cfg := {clave: 0.0}
+		var nivel := GeneradorNivel.new().generar(7, 0, cfg)
 		root.add_child(nivel)
-		var n := _contar_escena(nivel, escenas[tipo])
-		_eq("entidades[%s]=false lo elimina" % tipo, n, 0)
+		var n := _contar_escena(nivel, escenas[clave])
+		_eq("densidad %s = 0.0 elimina la entidad" % clave, n, 0)
 		root.remove_child(nivel)
 		nivel.free()
 

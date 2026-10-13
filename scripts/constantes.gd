@@ -16,6 +16,19 @@ const GRUPO_PERSONAJES := "personajes"
 const GRUPO_ATAQUE_PERSONAJE := "ataque_personaje"
 const GRUPO_ENEMIGOS := "enemigos"
 
+## Densidades de generación por tipo de entidad (0.0 = ninguna). Única fuente
+## de verdad: el generador escala sus bases con estas claves y el menú crea un
+## control por cada una. Se ajustan en la interfaz, no hay valores horneados.
+const DENSIDADES_ENTIDAD := {
+	"densidad_enemigo_mele": 1.0, ## enemigo que persigue
+	"densidad_cobarde": 1.0, ## lanzador a distancia (escalona a PROB_COBARDE)
+	"densidad_pincho": 1.0, ## trampa de suelo
+	"densidad_antorcha": 1.0, ## luz de pared
+	"densidad_recompensa": 1.0, ## escudo / dash sombra (probabilidad 0..1)
+}
+## Probabilidad base (con densidad 1.0) de que el primer enemigo sea cobarde.
+const PROB_COBARDE := 0.6
+
 ## ---------------------------------------------------------------- Capas Z
 ## Bandas de dibujo (z_index) de todo lo que vive en el mundo, de atrás a
 ## delante. Regla: cada tipo de cosa ocupa SU banda — nunca reutilices un

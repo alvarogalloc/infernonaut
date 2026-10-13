@@ -8,8 +8,14 @@ const CARGA := preload("res://scenes/juego/pantalla_carga.tscn")
 const MUERTE := preload("res://scenes/HUD+/PantallaMuerte/pantalla_muerte.tscn")
 const PAUSA := preload("res://scenes/HUD+/PantallaPausa/pantalla_pausa.tscn")
 
-## Multiplicador de enemigos por sala que se pasa al generador.
-@export var densidad_enemigos: float = 1.0
+@export_group("Densidades de entidad")
+## Escalas aplicadas al generar el nivel (1.0 = normal, 0.0 = sin esa entidad,
+## 2.0 = el doble). Se ajustan desde el inspector de juego.tscn.
+@export var densidad_enemigo_mele: float = 1.0
+@export var densidad_cobarde: float = 1.0
+@export var densidad_pincho: float = 1.0
+@export var densidad_antorcha: float = 1.0
+@export var densidad_recompensa: float = 1.0
 
 var _menu: CanvasLayer = null
 var _carga: CanvasLayer = null
@@ -54,7 +60,7 @@ func _iniciar_partida(semilla: int) -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var generador := GeneradorNivel.new()
-	_nivel = generador.generar(_semilla, -1, densidad_enemigos)
+	_nivel = generador.generar(_semilla, -1, _densidades())
 	add_child(_nivel)
 	# Mínimo de tiempo en pantalla para que se vea la animación.
 	await get_tree().create_timer(0.7).timeout
@@ -98,6 +104,17 @@ func _cerrar_pausa() -> void:
 	get_tree().paused = false
 
 
-## Reinicio desde pausa o muerte: nueva partida con la misma semilla.
+## Reinicio desde pausa o muerte: nueva partida con la MISMA semilla.
 func _reiniciar() -> void:
 	_iniciar_partida(_semilla)
+
+
+## Densidades de entidad tomadas de los exports del inspector.
+func _densidades() -> Dictionary:
+	return {
+		"densidad_enemigo_mele": densidad_enemigo_mele,
+		"densidad_cobarde": densidad_cobarde,
+		"densidad_pincho": densidad_pincho,
+		"densidad_antorcha": densidad_antorcha,
+		"densidad_recompensa": densidad_recompensa,
+	}
