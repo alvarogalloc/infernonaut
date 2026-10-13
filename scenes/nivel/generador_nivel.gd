@@ -37,7 +37,7 @@ const RUTA_WIPE := "res://scenes/escena_principal/transicion_wipe.gdshader"
 const RUTA_SUELO1 := "res://sprites/suelo1.png"
 const RUTA_SUELO2 := "res://sprites/suelo2.png"
 const RUTA_PARED := "res://sprites/t3.png"
-const RUTA_PUERTA_TEX := "res://sprites/puerta.png"
+const RUTA_PUERTA_TEX := "res://sprites/door.png"
 
 const ESC_RECOMPENSA := 1.0
 const BLOQUEO_PINCHO := 1 ## radio (en tiles) que bloquea un pincho en la BFS
