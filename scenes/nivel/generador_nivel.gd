@@ -41,16 +41,34 @@ const ESC_RECOMPENSA := 1.0
 const BLOQUEO_PINCHO := 1 ## radio (en tiles) que bloquea un pincho en la BFS
 const PROB_COBARDE := 0.6 ## probabilidad de que el primer enemigo sea cobarde
 
+## Mapa de entidades que puede generar el nivel. `generar()` acepta un dict
+## parcial para sobreescribir cuáles aparecen (probar una semilla sólo con
+## pinchos, sólo sin antorchas, ...). Las claves que falten conservan su
+## valor por defecto; desactivar una entidad la elimina para TODA semilla.
+const ENTIDADES := {
+	"enemigo_1": true, ## melé que persigue
+	"cobarde": true, ## lanzador a distancia
+	"pincho": true, ## trampa de suelo
+	"antorcha": true, ## luz de pared
+	"recompensa": true, ## escudo / dash sombra
+}
+
 var _rng := RandomNumberGenerator.new()
 var _ts: TileSet
 var _densidad := 1.0 ## multiplicador de enemigos por sala
 var _n_puerta := 0
+var _entidades := ENTIDADES
 
 
 ## Devuelve un Node2D listo para añadir al árbol. plantilla < 0 = aleatoria.
 ## `densidad_enemigos` escala cuántos enemigos genera cada sala (1.0 = base).
-func generar(semilla: int, plantilla: int = -1, densidad_enemigos: float = 1.0) -> Node2D:
+## `entidades` = dict parcial del mapa ENTIDADES (ver ahí) para fijar qué
+## entidades aparecen para esta semilla.
+func generar(semilla: int, plantilla: int = -1, densidad_enemigos: float = 1.0, entidades: Dictionary = {}) -> Node2D:
 	_densidad = maxf(densidad_enemigos, 0.0)
+	_entidades = ENTIDADES.duplicate()
+	for k in entidades:
+		_entidades[k] = bool(entidades[k])
 	if plantilla < 0:
 		_rng.seed = semilla
 		plantilla = _rng.randi() % 2
@@ -81,7 +99,7 @@ func _construir(plantilla: int) -> Dictionary:
 		var layer := TileMapLayer.new()
 		layer.name = "blockout"
 		layer.tile_set = _ts
-		layer.z_index = -11
+		layer.z_index = Constantes.Z_TILEMAP
 		_llenar(layer, spec[3], spec[4])
 		var centros := _maze(layer, spec[3], spec[4])
 		room.add_child(layer)
@@ -336,18 +354,22 @@ func _contenido(s: Dictionary, tipo: String, protegida: Vector2i) -> void:
 			continue
 		var p := _celda_local(s, celda)
 		if nt < 4 and k % 3 == 0:
-			_pone(room, RUTA_ANTORCHA, "antorcha_%d" % k, p + Vector2(0, -TILE * 0.5), ESC_ANTORCHA)
+			if _entidades["antorcha"]:
+				var ant := _pone(room, RUTA_ANTORCHA, "antorcha_%d" % k, p + Vector2(0, -TILE * 0.5), ESC_ANTORCHA)
+				ant.z_index = Constantes.Z_ANTORCHA
 			nt += 1
 		elif ne < max_e and k % 2 == 1:
-			var es_cobarde := tipo in ["combate", "tesoro"] and ne == 0 and _rng.randf() < PROB_COBARDE
-			var en := _pone(room, RUTA_COBARDE if es_cobarde else RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
-			s.enemigos.append(en)
-			ne += 1
+			if _entidades["enemigo_1"]:
+				var es_cobarde: bool = _entidades["cobarde"] and tipo in ["combate", "tesoro"] and ne == 0 and _rng.randf() < PROB_COBARDE
+				var en := _pone(room, RUTA_COBARDE if es_cobarde else RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
+				s.enemigos.append(en)
+				ne += 1
 		elif np < max_p and k % 2 == 0:
-			s.cand_pinchos.append(celda)
-			np += 1
+			if _entidades["pincho"]:
+				s.cand_pinchos.append(celda)
+				np += 1
 		k += 1
-	if tipo == "tesoro":
+	if tipo == "tesoro" and _entidades["recompensa"]:
 		var rec: Node2D = load(RUTA_RECOMPENSA).instantiate()
 		rec.name = "recompensa"
 		rec.tipo = "escudo" if _rng.randf() < 0.5 else "dash_sombra"
@@ -355,14 +377,21 @@ func _contenido(s: Dictionary, tipo: String, protegida: Vector2i) -> void:
 		room.add_child(rec)
 
 
-## Regla de pasabilidad de pinchos: instakill -> nunca en un sitio que corte
-## el camino salida->meta, ni en celdas protegidas. Los que cortan se tiran.
+## Trampas/pinchos: instakill -> NUNCA se colocan sobre el corredor
+## garantizado salida->meta (la ruta principal queda despejada, así una sala
+## no puede volverse imposible), y además se valida que no corten la
+## conexión por otra vía. Nuevos obstáculos: reutiliza cand_pinchos o añade
+## su lista de candidatas; la invariante la garantiza _ruta_principal.
 func _colocar_pinchos(salas: Array, idx_meta: int, celda_meta: Vector2i, celda_inicio: Vector2i) -> void:
 	var meta: Vector2i = Vector2i((salas[idx_meta].room as Node2D).position) / TILE + celda_meta
 	var inicio: Vector2i = Vector2i((salas[0].room as Node2D).position) / TILE + celda_inicio
+	var ruta := _ruta_principal(salas, inicio, meta)
 	var bloqueados := {}
 	for s in salas:
 		for c in s.cand_pinchos:
+			var g: Vector2i = Vector2i((s.room as Node2D).position / TILE) + c
+			if ruta.has(g):
+				continue
 			if _pincho_ok(salas, inicio, meta, bloqueados, s, c):
 				_crear_pincho(s, c)
 				_marcar_pincho(bloqueados, s, c)
@@ -387,16 +416,7 @@ func _pincho_ok(salas: Array, inicio: Vector2i, meta: Vector2i, bloqueados: Dict
 
 ## true si desde `inicio` se llega a `meta` sin pisar tiles bloqueados.
 func _alcanza_evitando(salas: Array, inicio: Vector2i, meta: Vector2i, bloqueados: Dictionary) -> bool:
-	var walk := {}
-	for s in salas:
-		var layer: TileMapLayer = s.layer
-		var base := Vector2i((s.room as Node2D).position / TILE)
-		var used: Rect2i = layer.get_used_rect()
-		for y in range(used.position.y, used.end.y):
-			for x in range(used.position.x, used.end.x):
-				var cel := Vector2i(x, y)
-				if layer.get_cell_atlas_coords(cel) != WALL:
-					walk[base + cel] = true
+	var walk := _caminables(salas)
 	if not walk.has(inicio) or not walk.has(meta):
 		return false
 	var visto := {inicio: true}
@@ -410,6 +430,51 @@ func _alcanza_evitando(salas: Array, inicio: Vector2i, meta: Vector2i, bloqueado
 				visto[n] = true
 				cola.append(n)
 	return visto.has(meta)
+
+
+## Tiles transitables (todo tile que no es pared) en coordenadas globales.
+func _caminables(salas: Array) -> Dictionary:
+	var walk := {}
+	for s in salas:
+		var layer: TileMapLayer = s.layer
+		var base := Vector2i((s.room as Node2D).position / TILE)
+		var used: Rect2i = layer.get_used_rect()
+		for y in range(used.position.y, used.end.y):
+			for x in range(used.position.x, used.end.x):
+				var cel := Vector2i(x, y)
+				if layer.get_cell_atlas_coords(cel) != WALL:
+					walk[base + cel] = true
+	return walk
+
+
+## Un corredor de tiles garantizado salida->meta (BFS con padres). Los
+## obstáculos solo se colocan FUERA de él: el camino del jugador nunca se
+## bloquea. Devuelve {} si no hay conexión (no debería pasar: el nivel se
+## generó conexo).
+func _ruta_principal(salas: Array, inicio: Vector2i, meta: Vector2i) -> Dictionary:
+	var walk := _caminables(salas)
+	if not walk.has(inicio) or not walk.has(meta):
+		return {}
+	var padres := {inicio: inicio}
+	var cola: Array = [inicio]
+	var dirs := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+	while cola.size() > 0:
+		var c: Vector2i = cola.pop_back()
+		if c == meta:
+			var ruta := {}
+			var cur := meta
+			while true:
+				ruta[cur] = true
+				if cur == inicio:
+					break
+				cur = padres[cur]
+			return ruta
+		for d in dirs:
+			var n: Vector2i = c + d
+			if walk.has(n) and not padres.has(n):
+				padres[n] = c
+				cola.append(n)
+	return {}
 
 
 func _pone(padre: Node, ruta: String, nombre: String, pos: Vector2, esc: float) -> Node2D:
@@ -493,7 +558,7 @@ func _crear_puerta(spec: Dictionary) -> Puerta:
 	p.position = spec.pos
 	p.collision_layer = 8 ## capa "pared" (project.godot)
 	p.collision_mask = 0
-	p.z_index = -1
+	p.z_index = Constantes.Z_PUERTA
 	var forma := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
 	rect.size = spec.tam
@@ -551,16 +616,7 @@ func _primera_capa(n: Node) -> TileMapLayer:
 
 
 func _conectado(salas: Array) -> bool:
-	var walk := {}
-	for s in salas:
-		var layer: TileMapLayer = s.layer
-		var base := Vector2i((s.room as Node2D).position / TILE)
-		var used: Rect2i = layer.get_used_rect()
-		for y in range(used.position.y, used.end.y):
-			for x in range(used.position.x, used.end.x):
-				var cel := Vector2i(x, y)
-				if layer.get_cell_atlas_coords(cel) != WALL:
-					walk[base + cel] = true
+	var walk := _caminables(salas)
 	var claves := walk.keys()
 	if claves.is_empty():
 		return false

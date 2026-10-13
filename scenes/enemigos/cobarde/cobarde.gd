@@ -150,8 +150,11 @@ func _marcar_objetivos() -> void:
 		_objetivos.append(t)
 		var tel: Node2D = _instanciar_script(RUTA_TELEGRAFO)
 		tel.set("radio", radio_dano)
+		# El telégrafo vive en la sala, NO como hijo del cobarde: así no hereda
+		# su escala (0.175) ni su transform. Se coloca por global_position
+		# DESPUÉS de entrar al árbol (antes duplicaba el offset del padre).
+		get_parent().add_child(tel)
 		tel.global_position = t
-		add_child(tel)
 		_telegrafos.append(tel)
 
 

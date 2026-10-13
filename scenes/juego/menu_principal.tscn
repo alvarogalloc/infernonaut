@@ -43,3 +43,25 @@ offset_right = 1110.0
 offset_bottom = 670.0
 theme_override_font_sizes/font_size = 36
 text = "SALIR"
+
+[node name="FilaSemilla" type="HBoxContainer" parent="."]
+offset_left = 770.0
+offset_top = 700.0
+offset_right = 1150.0
+offset_bottom = 760.0
+
+[node name="SemillaInput" type="LineEdit" parent="FilaSemilla"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+placeholder_text = "semilla (número)"
+text = "0"
+tooltip_text = "Semilla del mundo: mismo número = mismo nivel. Vacío o inválido = aleatoria."
+
+[node name="BotonSemilla" type="Button" parent="FilaSemilla"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Nueva"
+tooltip_text = "Generar una semilla aleatoria en la caja"

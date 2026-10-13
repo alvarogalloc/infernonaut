@@ -42,6 +42,10 @@ var _ruido := FastNoiseLite.new()
 var _ruido_t: int = 0
 var _target_pos: Vector2 = Vector2.ZERO
 var _room_zoom: Vector2 = Vector2.ONE
+## FastNoiseLite devuelve NaN cuando coord * frequencia >= ~1e10 (glitch del
+## motor), así que las coordenadas que se pasan al ruido deben ser pequeñas.
+const _RUIDO_X := 1000 ## recorte del seed como coordenada (freq 5 * 1e3 ≪ 1e10)
+const _RUIDO_CANAL := 100.0 ## separa los dos canales (X/Y) del temblor
 
 
 func _ready() -> void:
@@ -69,8 +73,8 @@ func _process(delta: float) -> void:
 	_kick = _kick.move_toward(Vector2.ZERO, kick_recuperacion * delta)
 	_trauma = maxf(_trauma - shake_decay * delta, 0.0)
 	var temblor := Vector2(
-		_ruido.get_noise_2d(_ruido.seed % 1000, _ruido_t),
-		_ruido.get_noise_2d(_ruido.seed % 1000 + 100.0, _ruido_t)
+		_ruido.get_noise_2d(_ruido.seed % _RUIDO_X, _ruido_t),
+		_ruido.get_noise_2d(_ruido.seed % _RUIDO_X + _RUIDO_CANAL, _ruido_t)
 	) * shake_max * _trauma * _trauma
 	offset = _kick + temblor
 	if _jugador != null and is_instance_valid(_jugador):

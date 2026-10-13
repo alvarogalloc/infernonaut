@@ -8,7 +8,7 @@ var _pulso := 0.0
 
 
 func _ready() -> void:
-	z_index = -5
+	z_index = Constantes.Z_DECOR_SUELO
 	queue_redraw()
 
 

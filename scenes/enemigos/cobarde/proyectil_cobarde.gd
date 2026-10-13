@@ -21,7 +21,7 @@ func configurar(origen: Vector2, destino: Vector2, duracion: float, altura: floa
 	_duracion = maxf(duracion, 0.05)
 	_altura = altura
 	global_position = origen
-	z_index = 5
+	z_index = Constantes.Z_PROYECTIL
 
 
 func _draw() -> void:
