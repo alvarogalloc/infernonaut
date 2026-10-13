@@ -35,9 +35,12 @@ INFERNONAUT - UNIDADES Y ESPECIFICACIONES DE SALAS
   Menú aislado: res://scenes/juego/menu_principal.tscn
   Carga aislada: res://scenes/juego/pantalla_carga.tscn (barra animada)
 - El nivel NO se guarda: se genera en runtime con
-  res://scenes/nivel/generador_nivel.gd (GeneradorNivel.generar(semilla, plantilla)).
+  res://scenes/nivel/generador_nivel.gd
+  (GeneradorNivel.generar(semilla, plantilla, densidad_enemigos)).
   Verifica que el nivel sea un solo componente conexo (siempre pasable) y
   reintenta con otra sub-semilla si no lo es.
+- `densidad_enemigos` (float, 1.0 = base) escala cuántos enemigos pone cada
+  sala; `scenes/juego/juego.gd` lo expone con @export.
 - 2 plantillas curadas (0 = 5 salas; 1 = bloque 3x2) + contenido por
   arquetipo de sala (inicio/combate/trampa/tesoro/meta) según la distancia
   a la sala inicial. Laberintos DFS distintos por semilla.
@@ -82,10 +85,33 @@ Unidad de referencia: 1 tile = 60 px = 2 m.
   antorchas, pinchos y enemigos. La META está en la sala_3x1.
 - El test assert_proto verifica que TODO el nivel es un solo componente conexo.
 
-8. ESCALAS DE ENTIDADES (alineadas a la unidad)
------------------------------------------------
-1 tile = 60 px = 2 m. Escalas usadas en el nivel (tools/gen_proto.gd):
-  jugador 0.16 | enemigo 0.175 | pincho 0.35 | antorcha 1.5 | meta 1.1
-Los sprites traen padding, por eso la escala se fija por el tamaño jugable
-(hitbox) y no por el frame completo. Ajustar aquí si cambia el arte.
+8. PUERTAS BLOQUEADAS POR ENEMIGOS
+------------------------------------
+- Cada conexión entre salas genera UNA barrera (scenes/nivel/puerta.gd,
+  class_name Puerta) hija de la sala dueña: 2x2 tiles, collision_layer 4
+  (pared), sprite res://sprites/puerta.png.
+- Cada sala tiene un controlador (scenes/nivel/sala.gd, class_name Sala).
+  Cuenta sus enemigos (señal `murio` de enemigo_1.gd) y abre TODAS sus
+  puertas cuando no queda ninguno vivo. Una puerta ya abierta desactiva su
+  colisión y se desvanece.
+- Regla de retirada: la conexión A->B está bloqueada hasta limpiar A (la
+  puerta la posee A). Al limpiar A se puede cruzar a B; las puertas de B
+  siguen cerradas hasta limpiar B.
+- La barrera cerrada mantiene al jugador fuera del marco de la sala vecina
+  (> puerta_margen), así que no hay cambio de cámara sin haber limpiado.
+- Test: tests/assert_puertas.gd (barreras por conexión, cierre inicial,
+  apertura al matar, y escalado de densidad).
+
+9. MATERIAL SIN USO
+-------------------
+- Los ficheros que no usa ni el juego ni los tests viven en `unused/`
+  (con `unused/.gdignore` para que Godot ni los importe). Incluye el addon
+  phantom_camera (no activado) y assets antiguos (ghost, tile_sets viejos,
+  sprites sueltos, spritesheets de Infernonaut/Mentiroso no usados).
+
+10. ESCALAS DE ENTIDADES (alineadas a la unidad)
+-------------------------------------------------
+1 tile = 60 px = 2 m. Referencia de diseño para el arte; el valor real vive
+en la escala de cada .tscn (jugador, enemigos, pincho, antorcha, meta), porque
+los sprites traen padding y se calibra por el tamaño jugable (hitbox).
 

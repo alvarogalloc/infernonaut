@@ -96,4 +96,5 @@ shape = SubResource("RectangleShape2D_yf5fn")
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="body_entered" from="activate" to="." method="_on_activate_body_entered"]
+[connection signal="body_exited" from="activate" to="." method="_on_activate_body_exited"]
 [connection signal="area_entered" from="environment" to="." method="_on_environment_area_entered"]

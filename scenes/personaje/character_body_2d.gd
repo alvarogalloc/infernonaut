@@ -48,6 +48,12 @@ signal personaje_muerto #podemos hacer que emita una señal con la palabra signa
 ## Dash normal (click der, movimiento): 5 tiles = 300 px = 10 m
 @export var dash_normal_tiles: float = 5.0
 
+@export_group("Dash Sombra")
+## Dash sombra (click central, mejora): atraviesa paredes y aterriza en el
+## último punto libre hacia el cursor.
+@export var dash_sombra_tiles: float = 12.0
+const SOMBRA_POR_RECOMPENSA := 5
+
 @export_group("Dash Tween")
 @export var dash_fuerte_dur: float = 0.30 ## s de un dash fuerte a máxima distancia
 @export var dash_normal_dur: float = 0.22 ## s de un dash normal a máxima distancia
@@ -67,6 +73,8 @@ signal personaje_muerto #podemos hacer que emita una señal con la palabra signa
 
 var _dashing : bool = false
 var _dash_fuerte : bool = false
+var _dash_sombra : bool = false
+var _sombra_mask_previa : int = 0
 var _dash_from : Vector2 = Vector2.ZERO
 var _dash_to : Vector2 = Vector2.ZERO
 var _dash_prog : float = 0.0
@@ -77,6 +85,11 @@ var _hitstop_active : bool = false
 const COLA_MAX := 4
 var _cola : Array[Vector2] = [] ## polling de dashes cortos
 var dashes_lanzados : int = 0 ## contador (tests/telemetría)
+
+## Mejoras (recompensas de salas "tesoro")
+var golpes_extra : int = 0 ## escudos que absorben un golpe letal
+var cargas_sombra : int = 0 ## dashes sombra disponibles
+var _invulnerable_hasta : int = 0 ## instante (ms) durante el que se ignora daño
 @onready var _dash_particles: GPUParticles2D = get_node_or_null("DashParticles")
 @onready var _sfx: AudioStreamPlayer = get_node_or_null("DashSfx")
 
@@ -124,17 +137,19 @@ func _reposo() -> void:
 	_reticula_idle()
 
 
-## Aplica la posición interpolada por el Tween con colisión. move_and_slide
-## DESLIZA a lo largo de las paredes: el dash no se corta al chocar, sigue su
-## recorrido pegado al muro y termina al completar la interpolación.
+## Aplica la posición interpolada por el Tween. El dash normal/fuerte usa
+## colisión; el dash sombra fija la posición directamente (atraviesa paredes).
 func _aplicar_dash(delta: float) -> void:
-	_actualizar_animacion_direccional(_dash_from.direction_to(_dash_to))
 	var deseada := _dash_from.lerp(_dash_to, _dash_prog)
-	velocity = (deseada - global_position) / maxf(delta, 0.001)
-	# Solo el dash fuerte daña (hitbox de dash); el normal es vulnerable.
-	emisionidle.set_deferred("disabled", _dash_fuerte)
-	emisiondash.set_deferred("disabled", not _dash_fuerte)
-	move_and_slide()
+	if _dash_sombra:
+		global_position = deseada
+	else:
+		_actualizar_animacion_direccional(_dash_from.direction_to(_dash_to))
+		velocity = (deseada - global_position) / maxf(delta, 0.001)
+		# Solo el dash fuerte daña (hitbox de dash); el normal es vulnerable.
+		emisionidle.set_deferred("disabled", _dash_fuerte)
+		emisiondash.set_deferred("disabled", not _dash_fuerte)
+		move_and_slide()
 	reticula.global_position = _dash_to
 	if _dash_prog >= 1.0:
 		_fin_dash()
@@ -171,6 +186,9 @@ func _input(event):
 	# CLICK DERECHO: dash normal, solo movimiento (no gasta viales)
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
 		_encolar_dash(get_global_mouse_position())
+	# CLICK CENTRAL: dash sombra, atraviesa paredes (gasta cargas de mejora)
+	elif event.button_index == MOUSE_BUTTON_MIDDLE:
+		_intentar_dash_sombra()
 
 
 ## Polling de dashes cortos: hasta COLA_MAX en cola, se ejecutan uno tras otro.
@@ -221,6 +239,56 @@ func _intentar_dash_fuerte() -> void:
 	dash_hacia(get_global_mouse_position(), true)
 
 
+## Dash sombra: atraviesa paredes. Aterriza en el último punto libre hacia
+## el cursor (nunca dentro de una pared).
+func _intentar_dash_sombra() -> void:
+	if cargas_sombra <= 0:
+		return
+	cargas_sombra -= 1
+	dash_sombra_hacia(get_global_mouse_position())
+
+
+func dash_sombra_hacia(destino: Vector2) -> void:
+	if _muerto or transicionando or _dashing:
+		return
+	var libre := _destino_libre(destino)
+	var desp := (libre - global_position).limit_length(dash_sombra_tiles * TILE_PX)
+	if desp.length() < 10.0:
+		return
+	_dash_from = global_position
+	_dash_to = global_position + desp
+	target_position = _dash_to
+	_dash_sombra = true
+	_sombra_mask_previa = collision_mask
+	collision_mask = 0 ## ignorar paredes durante la travesía
+	_lanzar_dash(false)
+
+
+func _destino_libre(destino: Vector2) -> Vector2:
+	var paso := destino.direction_to(global_position) * 16.0
+	if paso == Vector2.ZERO:
+		paso = Vector2.LEFT * 16.0
+	var p := destino
+	for _i in 600:
+		if _punto_libre(p):
+			return p
+		p += paso
+	return global_position
+
+
+func _punto_libre(v: Vector2) -> bool:
+	var space := get_world_2d().direct_space_state
+	if space == null:
+		return true
+	var zona := RectangleShape2D.new()
+	zona.size = Vector2(90, 90)
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = zona
+	q.transform = Transform2D(0.0, v)
+	q.collision_mask = 8 ## capa "pared"
+	return space.intersect_shape(q, 1).is_empty()
+
+
 ## Arranca el Tween que interpola `_dash_prog` 0->1. La duración escala con
 ## la distancia (dashes cortos no se sienten lentos) con ease-out para salir
 ## rápido y aterrizar suave.
@@ -269,6 +337,7 @@ func _parar_dash() -> void:
 		_dash_tween.kill()
 	_dash_tween = null
 	_dashing = false
+	_fin_estado_sombra()
 	dash_rapido = false
 	dash_lento = false
 	velocity = Vector2.ZERO
@@ -276,11 +345,19 @@ func _parar_dash() -> void:
 	_on_dash_end()
 
 
+## Restaura la máscara de colisión al terminar/cancelar un dash sombra.
+func _fin_estado_sombra() -> void:
+	if _dash_sombra:
+		_dash_sombra = false
+		collision_mask = _sombra_mask_previa
+
+
 ## Fin de dash normal (o por pared): limpia estado y da feedback de llegada.
 func _fin_dash() -> void:
 	if not _dashing:
 		return
 	_dashing = false
+	_fin_estado_sombra()
 	dash_rapido = false
 	dash_lento = false
 	target_position = global_position
@@ -396,11 +473,40 @@ func _morir() -> void:
 
 func morir() -> void:
 	_morir()
-	
-	
-##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
-func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
+
+
+## Recibe daño letal: lo absorbe el escudo (si queda) o muere.
+func golpear() -> void:
+	if _muerto or Time.get_ticks_msec() < _invulnerable_hasta:
+		return
+	if golpes_extra > 0:
+		golpes_extra -= 1
+		_invulnerable_hasta = Time.get_ticks_msec() + 800
+		_feedback_escudo()
+		return
 	_morir()
 
+
+## Mejora de una sala "tesoro" (recogible).
+func aplicar_recompensa(tipo: String) -> void:
+	if tipo == "escudo":
+		golpes_extra = mini(golpes_extra + 1, 1)
+	elif tipo == "dash_sombra":
+		cargas_sombra += SOMBRA_POR_RECOMPENSA
+	_feedback_escudo()
+
+
+func _feedback_escudo() -> void:
+	if animacion == null:
+		return
+	var tw := create_tween()
+	tw.tween_property(animacion, "modulate", Color(1, 1, 1, 0.3), 0.08)
+	tw.tween_property(animacion, "modulate", Color.WHITE, 0.08)
+
+
+##FUNCION PARA CUANDO MUERE, es decir cuando la hitbox detecta algo que entra
+func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
+	golpear()
+
 func _on_environment_area_entered(_area: Area2D) -> void:
-	_morir()
+	golpear()

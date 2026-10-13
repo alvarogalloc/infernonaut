@@ -1,8 +1,8 @@
 extends CanvasLayer
 
 ## Se emite cuando el jugador pide reanudar (botón o ESC dentro de esta
-## pantalla). escena_principal.gd la escucha para saber cuándo debe
-## quitar esta pantalla y despausar el juego.
+## pantalla). juego.gd la escucha para saber cuándo debe quitar esta
+## pantalla y despausar el juego.
 signal reanudar_solicitado
 
 @onready var boton_reanudar: Button = $Control/Panel/VBoxContainer/BotonReanudar

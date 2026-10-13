@@ -1,232 +1,205 @@
 extends CharacterBody2D
 
+## Cobarde: huye del jugador y, cada `intervalo_ataque` segundos, se detiene,
+## marca en el suelo 3 zonas "detrás de él" (hacia el jugador) y lanza 3
+## proyectiles arqueados que caen en esas zonas e infligen daño de área.
+## Los telégrafos se ven desde el viento hasta aterrizar: el dodge es posicional.
+
+signal murio ## Se emite una vez al morir (Sala abre las puertas).
+
 enum Estado { INACTIVO, REACCIONANDO, HUYENDO, PREPARANDO, ATACANDO, MUERTO }
 
 @export_group("Huida")
-@export var velocidad_huida: float = 300.0
-@export var tiempo_deteccion: float = 0.6 ## Delay antes de empezar a huir
+@export var velocidad_huida: float = 380.0
+@export var tiempo_deteccion: float = 0.6
+## Segundos sin ver al jugador (ni área) para volver a INACTIVO.
+@export var tiempo_perder_vista: float = 1.5
 
 @export_group("Ataque")
-@export var intervalo_ataque: float = 2.5 ## Segundos huyendo antes de detenerse a atacar
-@export var tiempo_preparacion: float = 0.7 ## Parado con el telégrafo visible (ventana para esquivar)
-@export var tiempo_extension: float = 0.15 ## Lo que tarda la mano en llegar al punto marcado
-@export var duracion_ataque: float = 0.5 ## Tiempo total que la hitbox está activa (incluye la extensión)
-@export var tiempo_recuperacion: float = 0.5 ## Parado después del ataque, antes de volver a huir
-@export var ancho_ataque: float = 120.0
-@export var alcance_maximo: float = 1500.0
+@export var intervalo_ataque: float = 2.2 ## Segundos huyendo antes de atacar
+@export var tiempo_preparacion: float = 0.6 ## Telégrafos visibles antes de disparar
+@export var tiempo_vuelo: float = 0.9 ## Lo que tarda un proyectil en caer
+@export var altura_tiro: float = 240.0
+@export var radio_dano: float = 90.0 ## Radio de la zona que daña al aterrizar
+@export var separacion_objetivos: float = 110.0
+@export var distancia_base: float = 240.0 ## Distancia al primer objetivo
 
 @export_group("Nodos")
 @export var collision: CollisionShape2D
 @export var hitboxDead: CollisionShape2D
 @export var area_activacion: CollisionShape2D
-@export var boca: Marker2D ## Punto de donde sale la mano
-@export var hitbox_ataque: Area2D
-@export var shape_ataque: CollisionShape2D ## Su shape es local_to_scene (se redimensiona por instancia)
-@export var placeholder_ataque: ColorRect ## Visual provisional de la mano
-@export var telegrafo: Line2D ## Visual provisional de la advertencia
+@export var boca: Marker2D ## Punto de lanzamiento de los proyectiles
+
+const RUTA_PROYECTIL := "res://scenes/enemigos/cobarde/proyectil_cobarde.gd"
+const RUTA_TELEGRAFO := "res://scenes/enemigos/cobarde/telegrafo.gd"
 
 var jugador: Node2D = null
-
+var esta_muerto := false ## API común con enemigo_1.gd (Sala.configurar)
 var _estado: Estado = Estado.INACTIVO
 var _tiempo_estado: float = 0.0
 var _jugador_en_area: bool = false
+var _tiempo_sin_ver: float = 0.0
+var _ultimo_visto := Vector2.ZERO
 var _normal_pared: Vector2 = Vector2.ZERO
-
-# Datos del ataque en curso (se fijan al empezar PREPARANDO)
-var _angulo_ataque: float = 0.0
-var _largo_ataque: float = 0.0
-var _hitbox_activo: bool = false
+var _objetivos: Array = [] ## Puntos de impacto (globales) del ataque en curso
+var _telegrafos: Array = []
+var _proyectiles: Array = []
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
-	telegrafo.hide()
-	_apagar_hitbox_ataque()
+	add_to_group(Constantes.GRUPO_ENEMIGOS)
 
 
 func _physics_process(delta: float) -> void:
 	if _estado == Estado.MUERTO:
 		return
-
-	# Si el jugador desapareció (escena liberada, etc.) volvemos a reposo
 	if _estado != Estado.INACTIVO and not is_instance_valid(jugador):
 		_cambiar_estado(Estado.INACTIVO)
 		return
-
 	_tiempo_estado += delta
-
 	match _estado:
+		Estado.INACTIVO:
+			# Solo reacciona si además lo ve: una pared delante no dispara
+			# la detección, aunque el jugador esté dentro del área.
+			if _jugador_en_area and Vision.ve_a(self, jugador):
+				_cambiar_estado(Estado.REACCIONANDO)
 		Estado.REACCIONANDO:
-			if _tiempo_estado >= tiempo_deteccion:
+			_actualizar_vista(delta)
+			if _tiempo_sin_ver >= tiempo_perder_vista:
+				_cambiar_estado(Estado.INACTIVO)
+			elif _tiempo_estado >= tiempo_deteccion:
 				_cambiar_estado(Estado.HUYENDO)
 		Estado.HUYENDO:
+			_actualizar_vista(delta)
 			_huir()
-			if _tiempo_estado >= intervalo_ataque:
+			if _tiempo_sin_ver >= tiempo_perder_vista:
+				_cambiar_estado(Estado.INACTIVO)
+			elif _tiempo_estado >= intervalo_ataque:
 				_cambiar_estado(Estado.PREPARANDO)
 		Estado.PREPARANDO:
 			if _tiempo_estado >= tiempo_preparacion:
 				_cambiar_estado(Estado.ATACANDO)
-		Estado.ATACANDO:
-			_actualizar_ataque()
 
 
 func _cambiar_estado(nuevo: Estado) -> void:
 	if _estado == Estado.MUERTO:
 		return
-
 	_estado = nuevo
 	_tiempo_estado = 0.0
-
-	# Limpieza al salir de PREPARANDO / ATACANDO, sin importar por qué se salió
-	if nuevo != Estado.PREPARANDO:
-		telegrafo.hide()
-	if nuevo != Estado.ATACANDO:
-		_apagar_hitbox_ataque()
-
+	_tiempo_sin_ver = 0.0
+	if nuevo != Estado.PREPARANDO and nuevo != Estado.ATACANDO:
+		_limpiar_marcadores()
 	match nuevo:
 		Estado.INACTIVO:
 			velocity = Vector2.ZERO
-			# ANIMACION: idle
 		Estado.REACCIONANDO:
 			velocity = Vector2.ZERO
-			# ANIMACION: detection
 		Estado.HUYENDO:
 			pass
-			# ANIMACION: correr / huir
 		Estado.PREPARANDO:
 			velocity = Vector2.ZERO
-			_iniciar_telegrafo()
-			# ANIMACION: abrir la boca / preparar ataque
+			_marcar_objetivos()
 		Estado.ATACANDO:
 			velocity = Vector2.ZERO
-			_iniciar_ataque()
-			# ANIMACION: la mano saliendo de la boca
+			_lanzar_ataque()
 		Estado.MUERTO:
 			velocity = Vector2.ZERO
-			# ANIMACION: muerte
+			_limpiar_marcadores()
 
 
 # ---------------------------------------------------------------- HUIDA
 
+## Actualiza memoria de vista. Devuelve true si el jugador es visible.
+func _actualizar_vista(delta: float) -> void:
+	if is_instance_valid(jugador) and Vision.ve_a(self, jugador):
+		_ultimo_visto = jugador.global_position
+		_tiempo_sin_ver = 0.0
+	else:
+		_tiempo_sin_ver += delta
+
+
 func _huir() -> void:
-	var dir := jugador.global_position.direction_to(global_position) # dirección contraria al jugador
+	var origen := _ultimo_visto if _tiempo_sin_ver > 0.0 else jugador.global_position
+	var dir := origen.direction_to(global_position)
 	if dir.is_zero_approx():
 		dir = Vector2.from_angle(randf() * TAU)
-
-	# Si el frame anterior chocó con una pared y esta dirección empuja contra ella,
-	# nos deslizamos a lo largo de la pared (hacia el lado que más nos aleja del jugador).
 	if _normal_pared != Vector2.ZERO and dir.dot(_normal_pared) < 0.0:
 		var tangente := _normal_pared.orthogonal()
 		if tangente.dot(dir) < 0.0:
 			tangente = -tangente
 		dir = tangente
-
 	velocity = dir * velocidad_huida
 	move_and_slide()
-
-	if get_slide_collision_count() > 0:
-		_normal_pared = get_slide_collision(0).get_normal()
-	else:
-		_normal_pared = Vector2.ZERO
+	_normal_pared = get_slide_collision(0).get_normal() if get_slide_collision_count() > 0 else Vector2.ZERO
 
 
 # --------------------------------------------------------------- ATAQUE
 
-## Fija a dónde irá la mano (posición del jugador EN ESTE MOMENTO, no lo sigue)
-## y muestra el telégrafo para que el jugador pueda esquivar.
-func _iniciar_telegrafo() -> void:
-	var origen := boca.global_position
-	var hacia := jugador.global_position - origen
-	_largo_ataque = clampf(hacia.length(), 20.0, alcance_maximo)
-	_angulo_ataque = hacia.angle()
-
-	hitbox_ataque.global_rotation = _angulo_ataque
-	telegrafo.width = ancho_ataque
-	telegrafo.points = PackedVector2Array([Vector2.ZERO, Vector2(_largo_ataque, 0.0)])
-	telegrafo.show()
-
-
-func _iniciar_ataque() -> void:
-	_hitbox_activo = true
-	_establecer_largo_ataque(0.0)
-	placeholder_ataque.show()
-	shape_ataque.set_deferred("disabled", false)
+## 3 objetivos en abanico "detrás de él" (hacia el jugador): en la dirección
+## contraria a su huida, escalonados en distancia y desplazados en perpendicular.
+func _marcar_objetivos() -> void:
+	_objetivos.clear()
+	var dir := jugador.global_position.direction_to(global_position)
+	if dir.is_zero_approx():
+		dir = Vector2.from_angle(randf() * TAU)
+	var perp := dir.orthogonal()
+	for i in 3:
+		var lateral := (-1.0 + i) * separacion_objetivos
+		var t := global_position + dir * (distancia_base + i * separacion_objetivos) + perp * lateral
+		_objetivos.append(t)
+		var tel: Node2D = _instanciar_script(RUTA_TELEGRAFO)
+		tel.set("radio", radio_dano)
+		tel.global_position = t
+		add_child(tel)
+		_telegrafos.append(tel)
 
 
-func _actualizar_ataque() -> void:
-	if _hitbox_activo:
-		# La mano crece desde la boca hasta el punto marcado
-		var progreso := 1.0
-		if tiempo_extension > 0.0:
-			progreso = clampf(_tiempo_estado / tiempo_extension, 0.0, 1.0)
-		_establecer_largo_ataque(_largo_ataque * progreso)
-
-		if _tiempo_estado >= duracion_ataque:
-			_apagar_hitbox_ataque()
-
-	# Terminó el ataque + recuperación: volver a huir (o a reposo si el jugador ya se fue)
-	if _tiempo_estado >= duracion_ataque + tiempo_recuperacion:
-		if _jugador_en_area:
-			_cambiar_estado(Estado.HUYENDO)
-		else:
-			_cambiar_estado(Estado.INACTIVO)
+func _lanzar_ataque() -> void:
+	for t in _objetivos:
+		var pro: Node2D = _instanciar_script(RUTA_PROYECTIL)
+		pro.radio_dano = radio_dano
+		pro.configurar(boca.global_position, t, tiempo_vuelo, altura_tiro)
+		pro.aterrizo.connect(_limpiar_marcadores)
+		get_tree().root.add_child(pro)
+		_proyectiles.append(pro)
 
 
-## Redimensiona la hitbox y el placeholder. La hitbox sale desde la boca (origen local 0,0)
-## y se extiende en +X; el nodo ya está rotado hacia el objetivo.
-func _establecer_largo_ataque(largo: float) -> void:
-	largo = maxf(largo, 1.0)
-	(shape_ataque.shape as RectangleShape2D).size = Vector2(largo, ancho_ataque)
-	shape_ataque.position = Vector2(largo * 0.5, 0.0)
-	placeholder_ataque.position = Vector2(0.0, -ancho_ataque * 0.5)
-	placeholder_ataque.size = Vector2(largo, ancho_ataque)
+## Los scripts son sencillos (Node2D puro) y no tienen .tscn.
+static func _instanciar_script(ruta: String) -> Node2D:
+	var n := Node2D.new()
+	n.set_script(load(ruta))
+	return n
 
 
-func _apagar_hitbox_ataque() -> void:
-	_hitbox_activo = false
-	shape_ataque.set_deferred("disabled", true)
-	placeholder_ataque.hide()
-
-
-## La mano toca al jugador. Se detecta el area "idle" del personaje, que ya se
-## desactiva durante el dash fuerte, así que el dash fuerte atraviesa la mano.
-func _on_hitbox_ataque_area_entered(area: Area2D) -> void:
-	var objetivo := area.get_parent()
-	if objetivo and objetivo.is_in_group(Constantes.GRUPO_PERSONAJES):
-		objetivo.morir()
+func _limpiar_marcadores() -> void:
+	for tel in _telegrafos:
+		if is_instance_valid(tel):
+			tel.queue_free()
+	_telegrafos.clear()
+	for p in _proyectiles:
+		if is_instance_valid(p) and p.aterrizo.is_connected(_limpiar_marcadores):
+			p.aterrizo.disconnect(_limpiar_marcadores)
+	_proyectiles.clear()
 
 
 # ---------------------------------------------------------------- MUERTE
 
-func trigger_dim_light() -> void:
-	var luz := get_node_or_null("enemy_emission") as PointLight2D
-	if luz == null:
-		return
-	var tween := create_tween()
-	const dim_duration := 1.5
-	tween.tween_property(luz, "energy", 0.0, dim_duration)
-	tween.tween_property(luz, "texture_scale", 0.0, dim_duration)
-
-
 func _morir() -> void:
 	if _estado == Estado.MUERTO:
 		return
-
-	_cambiar_estado(Estado.MUERTO) # también apaga la hitbox de ataque y el telégrafo
-	trigger_dim_light()
-
+	_cambiar_estado(Estado.MUERTO)
+	esta_muerto = true
 	collision.set_deferred("disabled", true)
 	hitboxDead.set_deferred("disabled", true)
 	area_activacion.set_deferred("disabled", true)
+	murio.emit()
 
 
-# Detecta el golpe (dash fuerte) que mata al enemigo
 func _on_area_2d_area_entered(_area: Area2D) -> void:
 	if not _area.is_in_group(Constantes.GRUPO_ATAQUE_PERSONAJE) or _estado == Estado.MUERTO:
 		return
-
 	_morir()
-
 	var jugador_actual := get_tree().get_first_node_in_group(Constantes.GRUPO_PERSONAJES)
 	if jugador_actual:
 		jugador_actual.recargar_carga_por_kill()
@@ -241,25 +214,18 @@ func _on_environment_area_entered(_area: Area2D) -> void:
 func _on_activate_body_entered(body: Node2D) -> void:
 	if _estado == Estado.MUERTO or not body.is_in_group(Constantes.GRUPO_PERSONAJES):
 		return
-
 	jugador = body
 	_jugador_en_area = true
-
 	if not jugador.personaje_muerto.is_connected(_on_jugador_muerto):
 		jugador.personaje_muerto.connect(_on_jugador_muerto)
-
-	if _estado == Estado.INACTIVO:
-		_cambiar_estado(Estado.REACCIONANDO)
+	# El paso a REACCIONANDO lo decide _physics_process según la línea de
+	# vista: entrar al área con una pared delante no dispara la detección.
 
 
 func _on_activate_body_exited(body: Node2D) -> void:
 	if body != jugador:
 		return
-
 	_jugador_en_area = false
-
-	# Si estaba huyendo, deja de hacerlo. Si está en pleno ataque lo termina
-	# (ver _actualizar_ataque) y luego pasa a reposo.
 	if _estado == Estado.REACCIONANDO or _estado == Estado.HUYENDO:
 		_cambiar_estado(Estado.INACTIVO)
 

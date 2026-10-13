@@ -27,19 +27,30 @@ const ESC_META := 1.1
 const RUTA_CAMARA := "res://scenes/escena_principal/room_camera.tscn"
 const RUTA_JUGADOR := "res://scenes/personaje/character_body_2d.tscn"
 const RUTA_ENEMIGO := "res://scenes/enemigos/enemigo_1.tscn"
+const RUTA_COBARDE := "res://scenes/enemigos/cobarde/cobarde.tscn"
 const RUTA_PINCHO := "res://scenes/obstaculos/pincho/pincho.tscn"
 const RUTA_ANTORCHA := "res://scenes/torch.tscn"
 const RUTA_META := "res://scenes/objetivo/objetivo.tscn"
+const RUTA_RECOMPENSA := "res://scenes/recompensas/recompensa.tscn"
 const RUTA_GESTOR := "res://scenes/escena_principal/transicion_salas.gd"
 const RUTA_WIPE := "res://scenes/escena_principal/transicion_wipe.gdshader"
 const RUTA_TILES := "res://tile_sets/blockout.png"
+const RUTA_PUERTA_TEX := "res://sprites/puerta.png"
+
+const ESC_RECOMPENSA := 1.0
+const BLOQUEO_PINCHO := 1 ## radio (en tiles) que bloquea un pincho en la BFS
+const PROB_COBARDE := 0.6 ## probabilidad de que el primer enemigo sea cobarde
 
 var _rng := RandomNumberGenerator.new()
 var _ts: TileSet
+var _densidad := 1.0 ## multiplicador de enemigos por sala
+var _n_puerta := 0
 
 
 ## Devuelve un Node2D listo para añadir al árbol. plantilla < 0 = aleatoria.
-func generar(semilla: int, plantilla: int = -1) -> Node2D:
+## `densidad_enemigos` escala cuántos enemigos genera cada sala (1.0 = base).
+func generar(semilla: int, plantilla: int = -1, densidad_enemigos: float = 1.0) -> Node2D:
+	_densidad = maxf(densidad_enemigos, 0.0)
 	if plantilla < 0:
 		_rng.seed = semilla
 		plantilla = _rng.randi() % 2
@@ -55,6 +66,7 @@ func generar(semilla: int, plantilla: int = -1) -> Node2D:
 
 func _construir(plantilla: int) -> Dictionary:
 	_ts = _tileset()
+	_n_puerta = 0
 	var def := _plantilla(plantilla)
 	var defs: Array = def[0]
 	var puertas: Array = def[1]
@@ -74,10 +86,11 @@ func _construir(plantilla: int) -> Dictionary:
 		var centros := _maze(layer, spec[3], spec[4])
 		room.add_child(layer)
 		root.add_child(room)
-		salas.append({"gx": spec[1], "gy": spec[2], "w": spec[3], "h": spec[4], "layer": layer, "room": room, "nombre": spec[0], "centros": centros})
+		salas.append({"gx": spec[1], "gy": spec[2], "w": spec[3], "h": spec[4], "layer": layer, "room": room, "nombre": spec[0], "centros": centros, "enemigos": [], "cand_pinchos": []})
 
+	var specs_puerta: Array = []
 	for d in puertas:
-		_abrir_puerta(salas[d[0]], salas[d[1]], d[2])
+		specs_puerta.append(_abrir_puerta(salas[d[0]], salas[d[1]], d[2], d[0]))
 	for s in salas:
 		_conectar_puertas(s)
 		_atmosfera(s)
@@ -94,10 +107,15 @@ func _construir(plantilla: int) -> Dictionary:
 			protegida = celda_inicio
 		elif i == idx_meta:
 			protegida = celda_meta
+		elif arquetipos[i] == "tesoro":
+			## La celda de la recompensa queda protegida: sin enemigo/pincho.
+			protegida = salas[i].centros[0]
 		_contenido(salas[i], arquetipos[i], protegida)
+	_colocar_pinchos(salas, idx_meta, celda_meta, celda_inicio)
 	_meta(salas[idx_meta], root, celda_meta)
+	_ganchos_salas(salas, specs_puerta)
 
-	var sp := _celda_mundo(salas[0], celda_inicio)
+	var sp := (salas[0].room as Node2D).position + _celda_local(salas[0], celda_inicio)
 	var cam: Camera2D = load(RUTA_CAMARA).instantiate()
 	cam.name = "Camera2D"
 	cam.position = sp
@@ -284,27 +302,29 @@ func _atmosfera(s: Dictionary) -> void:
 
 
 ## Contenido curado por arquetipo. `protegida` = celda sin enemigo/pincho.
+## Los pinchos se validan después (_colocar_pinchos) para no bloquear el paso.
 func _contenido(s: Dictionary, tipo: String, protegida: Vector2i) -> void:
 	var room: Node2D = s.room
 	var centros: Array = s.centros
-	var max_e := 2
+	var base_e := 2
 	var max_p := 1
 	match tipo:
 		"inicio":
-			max_e = 1
+			base_e = 1
 			max_p = 0
 		"combate":
-			max_e = 4
+			base_e = 4
 			max_p = 1
 		"trampa":
-			max_e = 2
+			base_e = 2
 			max_p = 3
 		"tesoro":
-			max_e = 2
+			base_e = 2
 			max_p = 1
 		"meta":
-			max_e = 3
+			base_e = 3
 			max_p = 1
+	var max_e := int(round(base_e * _densidad))
 	var ne := 0
 	var np := 0
 	var nt := 0
@@ -314,41 +334,111 @@ func _contenido(s: Dictionary, tipo: String, protegida: Vector2i) -> void:
 		if celda == protegida:
 			k += 1
 			continue
-		var p := _celda_mundo(s, celda)
+		var p := _celda_local(s, celda)
 		if nt < 4 and k % 3 == 0:
 			_pone(room, RUTA_ANTORCHA, "antorcha_%d" % k, p + Vector2(0, -TILE * 0.5), ESC_ANTORCHA)
 			nt += 1
 		elif ne < max_e and k % 2 == 1:
-			_pone(room, RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
+			var es_cobarde := tipo in ["combate", "tesoro"] and ne == 0 and _rng.randf() < PROB_COBARDE
+			var en := _pone(room, RUTA_COBARDE if es_cobarde else RUTA_ENEMIGO, "%s_enemigo_%d" % [s.nombre, k], p, ESC_ENEMIGO)
+			s.enemigos.append(en)
 			ne += 1
 		elif np < max_p and k % 2 == 0:
-			_pone(room, RUTA_PINCHO, "%s_pincho_%d" % [s.nombre, k], p, ESC_PINCHO)
+			s.cand_pinchos.append(celda)
 			np += 1
 		k += 1
+	if tipo == "tesoro":
+		var rec: Node2D = load(RUTA_RECOMPENSA).instantiate()
+		rec.name = "recompensa"
+		rec.tipo = "escudo" if _rng.randf() < 0.5 else "dash_sombra"
+		rec.position = _celda_local(s, protegida)
+		room.add_child(rec)
 
 
-func _pone(padre: Node, ruta: String, nombre: String, pos: Vector2, esc: float) -> void:
+## Regla de pasabilidad de pinchos: instakill -> nunca en un sitio que corte
+## el camino salida->meta, ni en celdas protegidas. Los que cortan se tiran.
+func _colocar_pinchos(salas: Array, idx_meta: int, celda_meta: Vector2i, celda_inicio: Vector2i) -> void:
+	var meta: Vector2i = Vector2i((salas[idx_meta].room as Node2D).position) / TILE + celda_meta
+	var inicio: Vector2i = Vector2i((salas[0].room as Node2D).position) / TILE + celda_inicio
+	var bloqueados := {}
+	for s in salas:
+		for c in s.cand_pinchos:
+			if _pincho_ok(salas, inicio, meta, bloqueados, s, c):
+				_crear_pincho(s, c)
+				_marcar_pincho(bloqueados, s, c)
+
+
+func _crear_pincho(s: Dictionary, celda: Vector2i) -> void:
+	_pone(s.room, RUTA_PINCHO, "%s_pincho_%d" % [s.nombre, celda.x * 1000 + celda.y], _celda_local(s, celda), ESC_PINCHO)
+
+
+func _marcar_pincho(bloqueados: Dictionary, s: Dictionary, celda: Vector2i) -> void:
+	var g := Vector2i((s.room as Node2D).position / TILE) + celda
+	for dy in range(-BLOQUEO_PINCHO, BLOQUEO_PINCHO + 1):
+		for dx in range(-BLOQUEO_PINCHO, BLOQUEO_PINCHO + 1):
+			bloqueados[g + Vector2i(dx, dy)] = true
+
+
+func _pincho_ok(salas: Array, inicio: Vector2i, meta: Vector2i, bloqueados: Dictionary, s: Dictionary, celda: Vector2i) -> bool:
+	var copia := bloqueados.duplicate()
+	_marcar_pincho(copia, s, celda)
+	return _alcanza_evitando(salas, inicio, meta, copia)
+
+
+## true si desde `inicio` se llega a `meta` sin pisar tiles bloqueados.
+func _alcanza_evitando(salas: Array, inicio: Vector2i, meta: Vector2i, bloqueados: Dictionary) -> bool:
+	var walk := {}
+	for s in salas:
+		var layer: TileMapLayer = s.layer
+		var base := Vector2i((s.room as Node2D).position / TILE)
+		var used: Rect2i = layer.get_used_rect()
+		for y in range(used.position.y, used.end.y):
+			for x in range(used.position.x, used.end.x):
+				var cel := Vector2i(x, y)
+				if layer.get_cell_atlas_coords(cel) != WALL:
+					walk[base + cel] = true
+	if not walk.has(inicio) or not walk.has(meta):
+		return false
+	var visto := {inicio: true}
+	var cola: Array = [inicio]
+	var dirs := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+	while cola.size() > 0:
+		var c: Vector2i = cola.pop_back()
+		for d in dirs:
+			var n: Vector2i = c + d
+			if walk.has(n) and not bloqueados.has(n) and not visto.has(n):
+				visto[n] = true
+				cola.append(n)
+	return visto.has(meta)
+
+
+func _pone(padre: Node, ruta: String, nombre: String, pos: Vector2, esc: float) -> Node2D:
 	var n: Node2D = load(ruta).instantiate()
 	n.name = nombre
 	n.position = pos
 	n.scale = Vector2(esc, esc)
 	padre.add_child(n)
+	return n
 
 
 func _meta(s: Dictionary, root: Node, celda: Vector2i) -> void:
 	var meta: Node2D = load(RUTA_META).instantiate()
 	meta.name = "meta"
-	meta.position = _celda_mundo(s, celda)
+	meta.position = (s.room as Node2D).position + _celda_local(s, celda)
 	meta.scale = Vector2(ESC_META, ESC_META)
 	root.add_child(meta)
 
 
-func _celda_mundo(s: Dictionary, celda: Vector2i) -> Vector2:
-	var room: Node2D = s.room
-	return room.position + Vector2(celda) * TILE + Vector2(TILE, TILE) * 0.5
+## Centro (en píxeles) de `celda`, LOCAL a la sala (para nodos hijos de la
+## sala). Para nodos hijos de `root` súmale `room.position`.
+func _celda_local(_s: Dictionary, celda: Vector2i) -> Vector2:
+	return Vector2(celda) * TILE + Vector2(TILE, TILE) * 0.5
 
 
-func _abrir_puerta(a: Dictionary, b: Dictionary, lado: String) -> void:
+## Excava el hueco de la puerta en ambas salas y devuelve la geometría de
+## la barrera (dueño = índice de la sala `a`). La barrera es un nodo hijo de
+## la sala `a`; su `pos` es local a esa sala.
+func _abrir_puerta(a: Dictionary, b: Dictionary, lado: String, dueno: int) -> Dictionary:
 	var la: TileMapLayer = a.layer
 	var lb: TileMapLayer = b.layer
 	if lado == "E":
@@ -359,14 +449,60 @@ func _abrir_puerta(a: Dictionary, b: Dictionary, lado: String) -> void:
 			var gry := centro - PUERTA_TILES / 2 + fila
 			la.erase_cell(Vector2i(a.w * RU.x - 1, gry - a.gy * RU.y))
 			lb.erase_cell(Vector2i(0, gry - b.gy * RU.y))
-	else:
-		var lo := maxi(a.gx, b.gx) * RU.x
-		var hi := mini(a.gx + a.w, b.gx + b.w) * RU.x
-		var centro := (lo + hi) / 2
-		for col in PUERTA_TILES:
-			var gcx := centro - PUERTA_TILES / 2 + col
-			la.erase_cell(Vector2i(gcx - a.gx * RU.x, a.h * RU.y - 1))
-			lb.erase_cell(Vector2i(gcx - b.gx * RU.x, 0))
+		return {
+			"dueno": dueno,
+			"pos": Vector2(a.w * RU.x * TILE, (centro - a.gy * RU.y) * TILE),
+			"tam": Vector2(PUERTA_TILES * TILE, PUERTA_TILES * TILE),
+		}
+	var lo := maxi(a.gx, b.gx) * RU.x
+	var hi := mini(a.gx + a.w, b.gx + b.w) * RU.x
+	var centro := (lo + hi) / 2
+	for col in PUERTA_TILES:
+		var gcx := centro - PUERTA_TILES / 2 + col
+		la.erase_cell(Vector2i(gcx - a.gx * RU.x, a.h * RU.y - 1))
+		lb.erase_cell(Vector2i(gcx - b.gx * RU.x, 0))
+	return {
+		"dueno": dueno,
+		"pos": Vector2((centro - a.gx * RU.x) * TILE, a.h * RU.y * TILE),
+		"tam": Vector2(PUERTA_TILES * TILE, PUERTA_TILES * TILE),
+	}
+
+
+## Crea las barreras (hijas de su sala dueña) y un controlador Sala por
+## sala. Cada Sala abre sus puertas cuando mueren todos sus enemigos.
+func _ganchos_salas(salas: Array, specs: Array) -> void:
+	var por_sala: Array = []
+	for _i in salas.size():
+		por_sala.append([])
+	for spec in specs:
+		var p := _crear_puerta(spec)
+		(salas[spec.dueno].room as Node).add_child(p)
+		por_sala[spec.dueno].append(p)
+	for i in salas.size():
+		var s: Dictionary = salas[i]
+		var ctrl := Sala.new()
+		ctrl.name = "controlador_sala"
+		(s.room as Node).add_child(ctrl)
+		ctrl.configurar(s.enemigos, por_sala[i])
+
+
+func _crear_puerta(spec: Dictionary) -> Puerta:
+	var p := Puerta.new()
+	p.name = "puerta_%d" % _n_puerta
+	_n_puerta += 1
+	p.position = spec.pos
+	p.collision_layer = 8 ## capa "pared" (project.godot)
+	p.collision_mask = 0
+	p.z_index = -1
+	var forma := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = spec.tam
+	forma.shape = rect
+	p.add_child(forma)
+	var spr := Sprite2D.new()
+	spr.texture = load(RUTA_PUERTA_TEX)
+	p.add_child(spr)
+	return p
 
 
 func _transicion(root: Node) -> void:

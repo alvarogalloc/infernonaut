@@ -12,11 +12,7 @@ radius = 1000.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pinchos"]
 size = Vector2(251, 302)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ataque"]
-resource_local_to_scene = true
-size = Vector2(10, 120)
-
-[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo")]
+[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca")]
 collision_layer = 20
 collision_mask = 40
 motion_mode = 1
@@ -25,10 +21,6 @@ collision = NodePath("CollisionShape2D")
 hitboxDead = NodePath("Area2D/CollisionShape2D")
 area_activacion = NodePath("activate/areaActivacion")
 boca = NodePath("boca")
-hitbox_ataque = NodePath("boca/hitboxAtaque")
-shape_ataque = NodePath("boca/hitboxAtaque/CollisionShape2D")
-placeholder_ataque = NodePath("boca/hitboxAtaque/PlaceholderAtaque")
-telegrafo = NodePath("boca/hitboxAtaque/Telegrafo")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=881320718]
 shape = SubResource("RectangleShape2D_cuerpo")
@@ -67,24 +59,6 @@ shape = SubResource("RectangleShape2D_pinchos")
 [node name="boca" type="Marker2D" parent="." unique_id=126285089]
 position = Vector2(0, 80)
 
-[node name="hitboxAtaque" type="Area2D" parent="boca" unique_id=1669268999]
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="boca/hitboxAtaque" unique_id=852789226]
-shape = SubResource("RectangleShape2D_ataque")
-disabled = true
-
-[node name="PlaceholderAtaque" type="ColorRect" parent="boca/hitboxAtaque" unique_id=53335237]
-visible = false
-mouse_filter = 2
-color = Color(0.9, 0.1, 0.1, 0.7)
-
-[node name="Telegrafo" type="Line2D" parent="boca/hitboxAtaque" unique_id=2018196004]
-visible = false
-points = PackedVector2Array(0, 0, 100, 0)
-width = 120.0
-default_color = Color(1, 0.2, 0.2, 0.25)
-
 [node name="enemy_emission" type="PointLight2D" parent="." unique_id=714241537]
 position = Vector2(-17, -10)
 scale = Vector2(20.875, 23.1875)
@@ -95,4 +69,3 @@ texture_scale = 0.5
 [connection signal="body_entered" from="activate" to="." method="_on_activate_body_entered"]
 [connection signal="body_exited" from="activate" to="." method="_on_activate_body_exited"]
 [connection signal="area_entered" from="environment" to="." method="_on_environment_area_entered"]
-[connection signal="area_entered" from="boca/hitboxAtaque" to="." method="_on_hitbox_ataque_area_entered"]

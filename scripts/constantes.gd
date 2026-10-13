@@ -14,3 +14,4 @@ const TIEMPO_FADE_MUERTE := 0.5
 ## Grupos usados para identificar nodos por tipo
 const GRUPO_PERSONAJES := "personajes"
 const GRUPO_ATAQUE_PERSONAJE := "ataque_personaje"
+const GRUPO_ENEMIGOS := "enemigos"

@@ -7,6 +7,9 @@ const CARGA := preload("res://scenes/juego/pantalla_carga.tscn")
 const MUERTE := preload("res://scenes/HUD+/PantallaMuerte/pantalla_muerte.tscn")
 const PAUSA := preload("res://scenes/HUD+/PantallaPausa/pantalla_pausa.tscn")
 
+## Multiplicador de enemigos por sala que se pasa al generador.
+@export var densidad_enemigos: float = 1.0
+
 var _menu: CanvasLayer = null
 var _carga: CanvasLayer = null
 var _pausa: CanvasLayer = null
@@ -46,7 +49,7 @@ func _iniciar_partida() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var generador := GeneradorNivel.new()
-	_nivel = generador.generar(randi())
+	_nivel = generador.generar(randi(), -1, densidad_enemigos)
 	add_child(_nivel)
 	# Mínimo de tiempo en pantalla para que se vea la animación.
 	await get_tree().create_timer(0.7).timeout

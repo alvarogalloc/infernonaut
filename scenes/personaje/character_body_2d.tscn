@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://crqe27y17ss77" path="res://scenes/personaje/character_body_2d.gd" id="1_2ehrf"]
 [ext_resource type="SpriteFrames" uid="uid://paqn3dqqyx4y" path="res://scenes/personaje/sprite_frames_personaje.tres" id="1_mi7pn"]
 [ext_resource type="Texture2D" uid="uid://dknl85uqhy43e" path="res://sprites/crosshair.png" id="3_2qcng"]
-[ext_resource type="Script" uid="uid://cul8koogc28xv" path="res://scenes/personaje/sprite_trail.gd" id="4_gl5o5"]
 [ext_resource type="PackedScene" uid="uid://b3qls31p3imcj" path="res://scenes/HUD+/BloodHud/blood_hud.tscn" id="5_brr8y"]
 [ext_resource type="AudioStream" path="res://sfx/dash_fuerte.wav" id="7_sfxr"]
 [ext_resource type="AudioStream" path="res://sfx/dash_normal.wav" id="8_sfxn"]
@@ -85,14 +84,6 @@ position = Vector2(-13.999999, 10.499999)
 scale = Vector2(0.99999994, 0.99999994)
 shape = SubResource("RectangleShape2D_57qmd")
 disabled = true
-
-[node name="spriteTrail" type="Node" parent="." unique_id=1528965698]
-script = ExtResource("4_gl5o5")
-process_mode = 4
-ghost_interval = 0.05
-ghost_fade_time = 0.2
-ghost_alpha = 0.35
-ghost_tint = Color(0.6989926, 0.68100226, 0.7077221, 1)
 
 [node name="DashParticles" type="GPUParticles2D" parent="." unique_id=1392847150]
 z_index = -1

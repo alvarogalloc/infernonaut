@@ -64,25 +64,16 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
-	# Kick/shake mínimo (se puede simplificar luego)
-	if _kick == Vector2.ZERO and _trauma <= 0.0:
-		if offset != Vector2.ZERO:
-			offset = Vector2.ZERO
-		# seguir jugador: foco con clamp según el tipo de sala
-		if _jugador != null and is_instance_valid(_jugador):
-			_target_pos = _foco(_jugador.global_position)
-		global_position = global_position.lerp(_target_pos, smooth_speed * delta)
-		return
-	# ... código existente de kick/shake truncado abajo: simplificar
+	# Kick/shake del dash (solo tiene efecto si el jugador llama a patada_dash).
 	_ruido_t += 1
 	_kick = _kick.move_toward(Vector2.ZERO, kick_recuperacion * delta)
 	_trauma = maxf(_trauma - shake_decay * delta, 0.0)
 	var temblor := Vector2(
-		_ruido.get_noise_2d(_ruido.seed, _ruido_t),
-		_ruido.get_noise_2d(_ruido.seed + 100, _ruido_t)
+		_ruido.get_noise_2d(_ruido.seed % 1000, _ruido_t),
+		_ruido.get_noise_2d(_ruido.seed % 1000 + 100.0, _ruido_t)
 	) * shake_max * _trauma * _trauma
 	offset = _kick + temblor
-	if _jugador != null:
+	if _jugador != null and is_instance_valid(_jugador):
 		_target_pos = _foco(_jugador.global_position)
 	global_position = global_position.lerp(_target_pos, smooth_speed * delta)
 
@@ -199,7 +190,7 @@ func _draw() -> void:
 	for cuarto in _habitaciones:
 		if not is_instance_valid(cuarto):
 			continue
-		var sala := _a_local(_rect_de(cuarto))
+		var sala := _a_local(_rect_cacheado(cuarto))
 		var zona := _a_local(_trigger_de(cuarto))
 		var puerta := _a_local(_rect_cacheado(cuarto).grow(puerta_margen))
 		draw_rect(sala, Color(0.2, 1.0, 0.4, 0.10), true) # relleno cuarto
@@ -291,15 +282,10 @@ func _rect_cacheado(cuarto: Node2D) -> Rect2:
 	return rect
 
 
-## Rect global que ocupa una habitación (unión de sus TileMapLayers).
-func _rect_de(cuarto: Node2D) -> Rect2:
-	return _rect_cacheado(cuarto)
-
-
 ## Zona que dispara el cambio: el cuarto encogido por el margen.
 ## Lo de fuera (puertas/pasillos) lo cubre _sala_vecina con puerta_margen.
 func _trigger_de(cuarto: Node2D) -> Rect2:
-	var rect := _rect_de(cuarto)
+	var rect := _rect_cacheado(cuarto)
 	return rect.grow_individual(-margen_trigger.x, -margen_trigger.y, -margen_trigger.x, -margen_trigger.y)
 
 
@@ -342,7 +328,7 @@ func _vista_media() -> Vector2:
 func _foco(p: Vector2) -> Vector2:
 	if _actual == null or not is_instance_valid(_actual):
 		return p
-	var r := _rect_de(_actual)
+	var r := _rect_cacheado(_actual)
 	var m := _vista_media()
 	var c := r.get_center()
 	var f := p
@@ -358,7 +344,7 @@ func _foco(p: Vector2) -> Vector2:
 
 
 func _centro(cuarto: Node2D) -> Vector2:
-	return _rect_de(cuarto).get_center()
+	return _rect_cacheado(cuarto).get_center()
 
 
 ## Cuarto cuyo trigger contiene el punto, o el más cercano si está en una puerta/pasillo.
