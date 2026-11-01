@@ -34,6 +34,7 @@ signal murio
 @export var shape_ataque: CollisionShape2D ## Su shape es local_to_scene (se redimensiona por instancia)
 @export var placeholder_ataque: ColorRect ## Visual provisional de la mano
 @export var telegrafo: Line2D ## Visual provisional de la advertencia
+@export var animaciones: AnimatedSprite2D
 
 var jugador: Node2D = null
 
@@ -49,6 +50,7 @@ var _hitbox_activo: bool = false
 
 
 func _ready() -> void:
+	animaciones.play("idle")
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group(Constantes.GRUPO_ENEMIGOS) ## igual que enemigo_1: las puertas cuentan enemigos por grupo
 	telegrafo.hide()
@@ -106,7 +108,7 @@ func _cambiar_estado(nuevo: Estado) -> void:
 	match nuevo:
 		Estado.INACTIVO:
 			velocity = Vector2.ZERO
-			# ANIMACION: idle
+			animaciones.play("idle")
 		Estado.REACCIONANDO:
 			velocity = Vector2.ZERO
 			# ANIMACION: detection
