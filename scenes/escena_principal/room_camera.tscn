@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bop342pjpvnxh"]
 
 [ext_resource type="Script" uid="uid://8e7f4yxax57t" path="res://scenes/escena_principal/camera_2d_2.gd" id="1_cam"]
 
-[node name="RoomCamera" type="Camera2D"]
+[node name="RoomCamera" type="Camera2D" unique_id=1088260136]
 script = ExtResource("1_cam")

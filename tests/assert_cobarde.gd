@@ -1,8 +1,13 @@
 extends SceneTree
-## Cobarde: huye, telégrafa/ataca y hace daño de área; muere con murio y
-## recarga al jugador; se integra en el generador (hay cobardes, dentro de su
-## sala, en el grupo "enemigos").
+## Cobarde:
+##  - huye solo si el jugador entra en su área de activación (su distancia de siempre)
+##  - con el jugador lejos se queda plantado y sigue disparando mientras lo vea
+##  - si una pared se interpone deja de disparar y vuelve a reposo
+##  - el ataque LLEGA al jugador aunque el generador escale al enemigo (0.175)
+##  - muere con el dash, recarga al jugador y aparece en el generador en su sala
 ## Uso: godot --headless --fixed-fps 60 --script res://tests/assert_cobarde.gd
+
+const ESCALA := 0.175 ## la misma que ESC_ENEMIGO del generador
 
 var _espera := 3
 var _paso := 0
@@ -10,110 +15,148 @@ var _t := 0.0
 var _checks := 0
 var _fallos := 0
 
-var _cobarde: CharacterBody2D
-var _jugador: Node2D
+var _cob: CharacterBody2D
+var _jug: Node2D
+var _pared: StaticBody2D
 var _dist0 := 0.0
-var _estado0: int = -99
+var _pos_lejos := Vector2.ZERO
+var _alcance := 0.0
 var _murio_emitido := false
-var _tele_al_empezar_ataque := 0
-var _proyectiles_al_atacar := 0
-var _muerto_al_aterrizar := false
-var _integ_al_fin := false
-
-
-func _initialize() -> void:
-	pass
 
 
 func _process(delta: float) -> bool:
 	if _espera > 0:
 		_espera -= 1
-		# Spawn en el primer frame (dentro del árbol) para que _ready y los
-		# grupos de ambos nodos estén activos.
 		if _espera == 2:
-			_cobarde = load("res://scenes/enemigos/cobarde/cobarde.tscn").instantiate()
-			_cobarde.global_position = Vector2(1000, 1000)
-			root.add_child(_cobarde)
-			# El jugador real (misma señal y API que en partida).
-			_jugador = load("res://scenes/personaje/character_body_2d.tscn").instantiate()
-			_jugador.global_position = Vector2(1500, 1000)
-			root.add_child(_jugador)
+			_montar(Vector2.ZERO, Vector2(100, 0))
+			_dist0 = _cob.global_position.distance_to(_jug.global_position)
 		return false
+
 	_t += delta
 	match _paso:
 		0:
-			# Radió de activación ampliado para que el vuelo de huida no haga
-			# que el jugador salga del área antes de preparar el ataque.
-			var shape: CircleShape2D = _cobarde.area_activacion.shape.duplicate()
-			shape.radius = 5000.0
-			_cobarde.area_activacion.shape = shape
-			# Activar sin esperar a la física del área (llamada directa).
-			_cobarde._on_activate_body_entered(_jugador)
-			_dist0 = _cobarde.global_position.distance_to(_jugador.global_position)
-			_paso = 1
-		1:
-			# Tras detección + un tiempo: debe estar HUYENDO (distancia crece).
 			if _t > 1.0:
-				var d: float = _cobarde.global_position.distance_to(_jugador.global_position)
-				_ok("huye (se aleja del jugador)", d > _dist0)
-				_estado0 = _cobarde._estado
-				_paso = 2
+				_ok("huye al acercarse (se aleja del jugador)",
+						_cob.global_position.distance_to(_jug.global_position) > _dist0)
+				_eq("estado HUYENDO", _cob._estado, _cob.Estado.HUYENDO)
+				_siguiente()
+		1:
+			if _cob._estado == _cob.Estado.PREPARANDO:
+				_alcance = _cob._largo_ataque * ESCALA
+				var distancia: float = _cob.boca.global_position.distance_to(_jug.global_position)
+				_ok("alcance del ataque = distancia al jugador (%.0f vs %.0f)" % [_alcance, distancia],
+						absf(_alcance - distancia) < 5.0)
+				_jug.global_position = _cob.boca.global_position \
+						+ Vector2.RIGHT.rotated(_cob._angulo_ataque) * _alcance
+				_siguiente()
 		2:
-			# Tras intervalo_ataque: PREPARANDO con 3 telégrafos.
-			if _t > 1.0 + 2.2:
-				_eq("estado PREPARANDO", _cobarde._estado, _cobarde.Estado.PREPARANDO)
-				_eq("3 telégrafos", _cobarde._telegrafos.size(), 3)
-				_ok("3 objetivos marcados", _cobarde._objetivos.size() == 3)
-				# Colocar al jugador justo sobre el primer punto de impacto.
-				_jugador.global_position = _cobarde._objetivos[0]
-				_paso = 3
+			if _cob._estado == _cob.Estado.ATACANDO and _cob._tiempo_estado > 0.2:
+				var hitbox := (_cob.shape_ataque.shape as RectangleShape2D).size.x * ESCALA
+				_ok("la hitbox crece hasta el objetivo (%.0f de %.0f)" % [hitbox, _alcance],
+						absf(hitbox - _alcance) < 10.0)
+				_siguiente()
 		3:
-			# Tras preparación: ATACANDO con 3 proyectiles.
-			if _t > 1.0 + 2.2 + 0.6:
-				_eq("estado ATACANDO", _cobarde._estado, _cobarde.Estado.ATACANDO)
-				_eq("3 proyectiles", _cobarde._proyectiles.size(), 3)
-				_tele_al_empezar_ataque = _cobarde._telegrafos.size()
-				_paso = 4
+			if _cob._estado != _cob.Estado.ATACANDO:
+				_ok("el jugador parado en el telégrafo muere", _jug._muerto)
+				_muerte_por_dash()
+				_siguiente()
 		4:
-			# Tras el vuelo (~0.9s) el jugador en la zona debe haber recibido
-			# el golpe y los telégrafos haberse limpiado.
-			if _t > 1.0 + 2.2 + 0.6 + 1.4:
-				_ok("daño de área al aterrizar", _jugador._muerto)
-				_eq("telégrafos limpiados tras aterrizar", _cobarde._telegrafos.size(), 0)
-				_paso = 5
+			# Lejos y sin paredes: no huye, pero sigue disparando.
+			_montar(Vector2(3000, 0), Vector2(3800, 0))
+			_cob._on_activate_body_entered(_jug)
+			_cob._on_activate_body_exited(_jug) # el jugador se alejó del área
+			_pos_lejos = _cob.global_position
+			_siguiente()
 		5:
-			# Muerte: murio emitido y recarga otorgada al jugador (mismo flujo
-			# que una muerte por dash del jugador).
-			if _t > 1.0 + 2.2 + 0.6 + 1.4 + 0.5:
-				_jugador.cargas_actuales = 1
-				_cobarde.murio.connect(func(): _murio_emitido = true)
-				var ataques := Area2D.new()
-				ataques.add_to_group(Constantes.GRUPO_ATAQUE_PERSONAJE)
-				_cobarde._on_area_2d_area_entered(ataques)
-				_ok("muere y emite murio", _murio_emitido)
-				_ok("recarga al jugador al morir", _jugador.cargas_actuales == 2)
-				ataques.free()
-				_paso = 6
+			if _t > 1.0:
+				_eq("lejos: estado HUYENDO", _cob._estado, _cob.Estado.HUYENDO)
+				_ok("lejos: no huye (se queda quieto)",
+						_cob.global_position.distance_to(_pos_lejos) < 5.0)
+				_ok("lejos y a la vista: puede disparar", _cob._puede_disparar())
+				_crear_pared(Vector2(3000, 0), Vector2(3800, 0))
+				_siguiente()
 		6:
-			# Integración en el generador.
-			_integracion()
-			print("==== ASSERT COBARDE: ", _checks - _fallos, "/", _checks, " PASS ====")
-			print("RESULTADO: ", "FAIL" if _fallos > 0 else "OK")
-			quit(1 if _fallos > 0 else 0)
-			return true
+			if _t > 0.1:
+				_ok("con pared en medio: NO puede disparar", not _cob._puede_disparar())
+				_siguiente()
+		7:
+			# El temporizador de ataque vence con la pared puesta: no ataca.
+			if _cob._estado == _cob.Estado.INACTIVO:
+				_ok("con pared: no ataca y vuelve a reposo", true)
+				_pared.queue_free()
+				_siguiente()
+			elif _cob._estado == _cob.Estado.PREPARANDO:
+				_fallos += 1
+				print("FAIL con pared en medio disparó igual")
+				_pared.queue_free()
+				_siguiente()
+		8:
+			# Sin pared y lejos: vuelve a enganchar y dispara desde 800px.
+			if _cob._estado == _cob.Estado.PREPARANDO:
+				var alcance_lejos: float = _cob._largo_ataque * ESCALA
+				_ok("dispara desde lejos (%.0f px)" % alcance_lejos, absf(alcance_lejos - 800.0) < 30.0)
+				_integracion()
+				print("==== ASSERT COBARDE: ", _checks - _fallos, "/", _checks, " PASS ====")
+				print("RESULTADO: ", "FAIL" if _fallos > 0 else "OK")
+				quit(1 if _fallos > 0 else 0)
+				return true
 	return false
 
 
-## Huye de verdad (no solo por estado): distancia > inicial. Además el
-## estado de HUYENDO ya se comprobó en el paso 1, aquí se refuerza que la
-## variable de estado era HUYENDO al abandonar el paso 1.
+func _siguiente() -> void:
+	_paso += 1
+	_t = 0.0
+
+
+func _montar(pos_enemigo: Vector2, pos_jugador: Vector2) -> void:
+	if is_instance_valid(_cob):
+		_cob.queue_free()
+	if is_instance_valid(_jug):
+		_jug.queue_free()
+	# Mismo montaje que en partida: enemigo escalado por _pone() del generador.
+	_cob = load("res://scenes/enemigos/cobarde/cobarde.tscn").instantiate()
+	_cob.global_position = pos_enemigo
+	_cob.scale = Vector2(ESCALA, ESCALA)
+	root.add_child(_cob)
+	_jug = load("res://scenes/personaje/character_body_2d.tscn").instantiate()
+	_jug.global_position = pos_jugador
+	root.add_child(_jug)
+	# El contacto cuerpo a cuerpo con el enemigo mataría al jugador (su área
+	# idle lo detecta). Acá probamos el ataque a distancia, así que el jugador
+	# deja de detectar cuerpos pero sigue siendo detectable por la hitbox.
+	_jug.area_idle.monitoring = false
+
+
+func _crear_pared(desde: Vector2, hasta: Vector2) -> void:
+	_pared = StaticBody2D.new()
+	_pared.collision_layer = Vision.MASCARA_PARED
+	var forma := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(40, 1200)
+	forma.shape = rect
+	_pared.add_child(forma)
+	_pared.global_position = (desde + hasta) * 0.5
+	root.add_child(_pared)
+
+
+func _muerte_por_dash() -> void:
+	_jug.cargas_actuales = 1
+	_cob.murio.connect(func(): _murio_emitido = true)
+	var ataques := Area2D.new()
+	ataques.add_to_group(Constantes.GRUPO_ATAQUE_PERSONAJE)
+	_cob._on_area_2d_area_entered(ataques)
+	_ok("muere y emite murio", _murio_emitido)
+	_ok("recarga al jugador al morir", _jug.cargas_actuales == 2)
+	ataques.free()
+
+
+## Integración en el generador (varios seeds, cobarde dentro de su sala).
 func _integracion() -> void:
 	var gen := GeneradorNivel.new()
 	var cobardes := 0
 	var total := 0
 	for semilla in range(1, 26):
-		var plantilla := semilla % 2
-		var nivel: Node2D = gen.generar(semilla, plantilla)
+		var nivel: Node2D = gen.generar(semilla, semilla % 2)
 		root.add_child(nivel)
 		cobardes += _cosechar_cobardes(nivel)
 		_eq("nivel %d sin error" % semilla, nivel != null, true)
@@ -122,7 +165,6 @@ func _integracion() -> void:
 		total += 1
 	_ok("hay cobardes en el generador (varios seeds)", cobardes > 0)
 	_ok("hay más de un nivel probado", total >= 25)
-	_integ_al_fin = true
 
 
 func _cosechar_cobardes(nodo: Node) -> int:
@@ -133,8 +175,7 @@ func _cosechar_cobardes(nodo: Node) -> int:
 		_ok("cobarde en grupo enemigos", nodo.is_in_group(Constantes.GRUPO_ENEMIGOS))
 		var room := nodo.get_parent()
 		var layer: TileMapLayer = _capa(room)
-		var inside := _dentro(room, layer, nodo.position)
-		if not inside:
+		if not _dentro(layer, nodo.position):
 			_fallos += 1
 			print("FAIL cobarde fuera de su sala: ", nodo.name, " padre=", room.name)
 	for c in nodo.get_children():
@@ -152,7 +193,7 @@ func _capa(nodo: Node) -> TileMapLayer:
 	return null
 
 
-func _dentro(room: Node, layer: TileMapLayer, pos: Vector2) -> bool:
+func _dentro(layer: TileMapLayer, pos: Vector2) -> bool:
 	if layer == null:
 		return true
 	var used: Rect2i = layer.get_used_rect()

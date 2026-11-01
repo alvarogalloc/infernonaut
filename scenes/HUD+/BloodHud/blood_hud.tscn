@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c5n56sqscl4k5" path="res://scenes/HUD+/BloodHud/blood_hud.gd" id="1_pgm5i"]
 [ext_resource type="Texture2D" uid="uid://d1dhe28336c8y" path="res://sprites/vial.png" id="2_jejpu"]
 [ext_resource type="Texture2D" uid="uid://ch0ytqxjugk1q" path="res://sprites/vial_full.png" id="3_477mq"]
-[ext_resource type="Texture2D" uid="uid://dpp5n6ecpqgvq" path="res://sprites/HUDidea.png" id="4_hudidea"]
+[ext_resource type="SpriteFrames" path="res://scenes/HUD+/BloodHud/sprite_frames_hud.tres" id="4_fondoanim"]
 
 [node name="BloodHud" type="Control" unique_id=1171745085]
 layout_mode = 3
@@ -13,13 +13,20 @@ offset_bottom = 100.0
 script = ExtResource("1_pgm5i")
 
 [node name="Fondo" type="TextureRect" parent="." unique_id=1968096807]
+clip_contents = true
 layout_mode = 0
 offset_left = 1.0
 offset_right = 195.0
 offset_bottom = 97.0
-texture = ExtResource("4_hudidea")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="FondoAnim" type="AnimatedSprite2D" parent="Fondo" unique_id=1174987380]
+position = Vector2(98.8, 44.8)
+scale = Vector2(0.196, 0.196)
+sprite_frames = ExtResource("4_fondoanim")
+animation = &"fondo"
+autoplay = "fondo"
 
 [node name="Vial1" type="TextureProgressBar" parent="." unique_id=1225444452]
 layout_mode = 0
