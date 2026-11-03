@@ -17,6 +17,20 @@ signal murio
 ## abandonar la persecución. Evita el "parpadeo" al cruzar una puerta.
 @export var tiempo_perder_vista: float = 1.5
 
+@export_group("Patrulla")
+## RayCast2D hacia arriba / abajo. Solo UNO está activo a la vez: el del
+## sentido en que camina. Al chocar con una pared se apaga y se enciende el otro.
+@export var ray_arriba: RayCast2D
+@export var ray_abajo: RayCast2D
+@export var velocidad_patrulla: float = 80.0
+## Distancia extra (px) más allá del borde del cuerpo a la que el rayo detecta la pared.
+@export var margen_pared: float = 30.0
+## Nombres de las animaciones de caminata en sprite_frames_enemigo1.tres.
+## Si todavía no existen, se queda en "idle" sin dar error.
+@export var anim_caminar_arriba: StringName = &"walk_up"
+@export var anim_caminar_abajo: StringName = &"walk_down"
+@export_group("")
+
 var speed: float
 
 ## Variables para controlar la persecución
@@ -30,11 +44,19 @@ var _tiempo_sin_ver: float = 0.0
 var _ultimo_visto := Vector2.ZERO
 var _caza_bloqueada_hasta := -1 ## gracia anti-caza: no inicia la caza hasta (ms)
 
+## Patrulla: se sortea UNA vez por instancia (0 = quieto, 1 = patrulla).
+var patrulla_activa: bool = false
+var _dir_patrulla: int = 1 ## -1 = arriba, 1 = abajo
+var _detectando: bool = false ## true mientras suena la animación "detection"
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group(Constantes.GRUPO_ENEMIGOS)
 	speed = randf_range(min_speed, max_speed)
-	animacion.play("idle")
+	patrulla_activa = bool(randi_range(0, 1))
+	_dir_patrulla = -1 if randi_range(0, 1) == 0 else 1
+	_configurar_rayos()
+	_reanudar_patrulla()
 
 func _physics_process(delta: float) -> void:
 	# Si está muerto, detenemos por completo cualquier cálculo de movimiento
@@ -57,12 +79,92 @@ func _physics_process(delta: float) -> void:
 			velocity = global_position.direction_to(_ultimo_visto) * speed
 	else:
 		velocity = Vector2.ZERO
+		if patrulla_activa and not _detectando:
+			_patrullar()
 		# Si siguió en el área pero falló la detección inicial (pared), la
 		# re-intenta en cuanto gana la línea de vista.
-		if not _caza_pausada() and _jugador_en_area and is_instance_valid(jugador) and Vision.ve_a(self, jugador):
+		if not _detectando and not _caza_pausada() and _jugador_en_area and is_instance_valid(jugador) and Vision.ve_a(self, jugador):
 			_iniciar_persecucion()
 
 	move_and_slide()
+
+
+# ---------------------------------------------------------------- Patrulla
+
+## Coloca y dimensiona los rayos según la colisión del cuerpo, así siguen
+## bien aunque cambies el tamaño de la CollisionShape2D. Empiezan apagados.
+func _configurar_rayos() -> void:
+	var mitad_alto := 250.0
+	if collision.shape is RectangleShape2D:
+		mitad_alto = (collision.shape as RectangleShape2D).size.y * 0.5 * absf(collision.scale.y)
+	var largo := mitad_alto + margen_pared
+	ray_arriba.position = collision.position
+	ray_abajo.position = collision.position
+	ray_arriba.target_position = Vector2(0.0, -largo)
+	ray_abajo.target_position = Vector2(0.0, largo)
+	_desactivar_rayos()
+
+
+func _desactivar_rayos() -> void:
+	ray_arriba.enabled = false
+	ray_abajo.enabled = false
+
+
+## Enciende SOLO el rayo del sentido actual.
+func _activar_rayo_actual() -> void:
+	ray_arriba.enabled = _dir_patrulla < 0
+	ray_abajo.enabled = _dir_patrulla > 0
+
+
+func _rayo_actual() -> RayCast2D:
+	return ray_arriba if _dir_patrulla < 0 else ray_abajo
+
+
+## Camina en el sentido actual hasta que su rayo toque una pared; entonces
+## apaga ese rayo, enciende el opuesto y cambia de dirección.
+func _patrullar() -> void:
+	var rayo := _rayo_actual()
+	rayo.force_raycast_update()
+	if rayo.is_colliding():
+		_dir_patrulla *= -1
+		_activar_rayo_actual()
+		rayo = _rayo_actual()
+		rayo.force_raycast_update()
+		# Pared a ambos lados (pasillo sin espacio): se queda quieto.
+		if rayo.is_colliding():
+			velocity = Vector2.ZERO
+			_animar_patrulla()
+			return
+	velocity = Vector2(0.0, _dir_patrulla * velocidad_patrulla)
+	_animar_patrulla()
+
+
+func _animar_patrulla() -> void:
+	if velocity.y < 0.0:
+		_reproducir(anim_caminar_arriba)
+	elif velocity.y > 0.0:
+		_reproducir(anim_caminar_abajo)
+	else:
+		_reproducir(&"idle")
+
+
+## Reproduce `nombre` si existe en el SpriteFrames; si no, cae a "idle".
+func _reproducir(nombre: StringName) -> void:
+	if not animacion.sprite_frames.has_animation(nombre):
+		nombre = &"idle"
+	if animacion.animation != nombre or not animacion.is_playing():
+		animacion.play(nombre)
+
+
+## Vuelve al reposo: patrulla si le tocó patrullar, idle si le tocó estar quieto.
+func _reanudar_patrulla() -> void:
+	if esta_muerto or persiguiendo:
+		return
+	if patrulla_activa:
+		_activar_rayo_actual()
+	else:
+		_desactivar_rayos()
+		animacion.play("idle")
 
 
 ## true mientras dura la gracia anti-caza (transición de sala): el enemigo
@@ -79,10 +181,10 @@ func pausar_caza(reanudar_en_ticks: int) -> void:
 ## Vuelve al estado de reposo (patrulla/idle): se llama al abandonar la sala
 ## para que al re-entrar nadie siga persiguiendo al jugador.
 func detener_persecucion() -> void:
+	_detectando = false
 	if persiguiendo:
 		persiguiendo = false
 		velocity = Vector2.ZERO
-		animacion.play("idle")
 		_tiempo_sin_ver = 0.0
 		_ultimo_visto = Vector2.ZERO
 		area_activacion.set_deferred("disabled", false)
@@ -91,6 +193,7 @@ func detener_persecucion() -> void:
 		jugador.personaje_muerto.disconnect(_on_jugador_muerto)
 	jugador = null
 	_jugador_en_area = false
+	_reanudar_patrulla()
 
 
 func _iniciar_persecucion() -> void:
@@ -99,6 +202,8 @@ func _iniciar_persecucion() -> void:
 	if not Vision.ve_a(self, jugador):
 		return
 	persiguiendo = true
+	_detectando = false
+	_desactivar_rayos()
 	_ultimo_visto = jugador.global_position
 	_tiempo_sin_ver = 0.0
 	if not jugador.personaje_muerto.is_connected(_on_jugador_muerto):
@@ -109,8 +214,8 @@ func _iniciar_persecucion() -> void:
 func _perder_jugador() -> void:
 	persiguiendo = false
 	velocity = Vector2.ZERO
-	animacion.play("idle")
 	_tiempo_sin_ver = 0.0
+	_reanudar_patrulla()
 	# Re-activar la detección por si el jugador vuelve a entrar.
 	area_activacion.set_deferred("disabled", false)
 	if jugador != null and is_instance_valid(jugador) \
@@ -135,6 +240,7 @@ func _morir() -> void:
 		return
 
 	esta_muerto = true
+	_desactivar_rayos()
 	_emitir_muerte()
 	persiguiendo = false
 	animacion.play("butcher")
@@ -164,19 +270,27 @@ func _on_area_2d_area_entered(_area: Area2D) -> void:
 
 
 func _on_activate_body_entered(body: Node2D) -> void:
-	if not body.is_in_group(Constantes.GRUPO_PERSONAJES) or esta_muerto or persiguiendo:
+	if not body.is_in_group(Constantes.GRUPO_PERSONAJES) or esta_muerto or persiguiendo or _detectando:
 		return
 	jugador = body
 	_jugador_en_area = true
+	# Detecta al jugador: ambos rayos se apagan y se frena mientras "detection".
+	_detectando = true
+	_desactivar_rayos()
+	velocity = Vector2.ZERO
 	animacion.play("detection")
 	await get_tree().create_timer(0.6).timeout
-	# se verifica si el enemigo murió mientras esperábamos
-	if esta_muerto:
+	# se verifica si el enemigo murió (o se reseteó) mientras esperábamos
+	if esta_muerto or not _detectando:
 		return
+	_detectando = false
 	animacion.play("idle") # animación que se reproduce cuando está persiguiendo
 	# Solo persigue si hay línea de vista: una pared delante en el momento
 	# de entrar no dispara la caza (el re-intento lo hace _physics_process).
 	_iniciar_persecucion()
+	# Sin línea de vista no hubo caza: vuelve a lo que estaba haciendo.
+	if not persiguiendo:
+		_reanudar_patrulla()
 
 
 func _on_activate_body_exited(body: Node2D) -> void:
@@ -189,7 +303,7 @@ func _on_activate_body_exited(body: Node2D) -> void:
 func _on_jugador_muerto() -> void:
 	persiguiendo = false
 	velocity = Vector2.ZERO
-	animacion.play("idle") #se puede poner animacion para cuando el jugador muera
+	_reanudar_patrulla() # se puede poner animacion para cuando el jugador muera
 
 
 func _on_environment_area_entered(_area: Area2D) -> void:

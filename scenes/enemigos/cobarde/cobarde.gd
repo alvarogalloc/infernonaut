@@ -25,6 +25,15 @@ signal murio
 @export var ancho_ataque: float = 120.0
 @export var alcance_maximo: float = 1500.0
 
+@export_group("Animaciones de ataque")
+## Nombres en el SpriteFrames del AnimatedSprite2D (idealmente con Loop apagado).
+## Si alguna no existe, se queda en "idle" sin dar error.
+@export var anim_ataque_arriba: StringName = &"attack_up"
+@export var anim_ataque_abajo: StringName = &"attack_down"
+## Una sola animación para los dos lados: está dibujada mirando a la DERECHA
+## y se voltea (flip_h) cuando el ataque va hacia la izquierda.
+@export var anim_ataque_lado: StringName = &"attack_side"
+
 @export_group("Nodos")
 @export var collision: CollisionShape2D
 @export var hitboxDead: CollisionShape2D
@@ -47,6 +56,7 @@ var _jugador_en_area: bool = false
 var _angulo_ataque: float = 0.0
 var _largo_ataque: float = 0.0
 var _hitbox_activo: bool = false
+var _dir_ataque: Vector2 = Vector2.DOWN ## Una de las 4 direcciones cardinales hacia donde ataca
 
 
 func _ready() -> void:
@@ -99,6 +109,10 @@ func _cambiar_estado(nuevo: Estado) -> void:
 	_estado = nuevo
 	_tiempo_estado = 0.0
 
+	# El flip solo vale durante un ataque lateral; en cualquier otro estado se quita
+	if nuevo != Estado.ATACANDO:
+		animaciones.flip_h = false
+
 	# Limpieza al salir de PREPARANDO / ATACANDO, sin importar por qué se salió
 	if nuevo != Estado.PREPARANDO:
 		telegrafo.hide()
@@ -111,9 +125,11 @@ func _cambiar_estado(nuevo: Estado) -> void:
 			animaciones.play("idle")
 		Estado.REACCIONANDO:
 			velocity = Vector2.ZERO
-			# ANIMACION: detection
+			animaciones.play("detection")
 		Estado.HUYENDO:
-			pass
+			# Si venimos de un ataque, no nos quedamos congelados en su último frame
+			if _animacion_es_de_ataque():
+				_reproducir(&"idle")
 			# ANIMACION: correr / huir
 		Estado.PREPARANDO:
 			velocity = Vector2.ZERO
@@ -122,7 +138,7 @@ func _cambiar_estado(nuevo: Estado) -> void:
 		Estado.ATACANDO:
 			velocity = Vector2.ZERO
 			_iniciar_ataque()
-			# ANIMACION: la mano saliendo de la boca
+			_animar_ataque() # animación de la mano saliendo, según la dirección fijada
 		Estado.MUERTO:
 			velocity = Vector2.ZERO
 			# ANIMACION: muerte
@@ -181,11 +197,46 @@ func _iniciar_telegrafo() -> void:
 	# 0.175x su alcance real.
 	_largo_ataque = clampf(hacia.length(), 20.0, alcance_maximo) / maxf(global_scale.x, 0.001)
 	_angulo_ataque = hacia.angle()
+	_dir_ataque = _direccion_cardinal(hacia)
 
 	hitbox_ataque.global_rotation = _angulo_ataque
 	telegrafo.width = ancho_ataque
 	telegrafo.points = PackedVector2Array([Vector2.ZERO, Vector2(_largo_ataque, 0.0)])
 	telegrafo.show()
+
+
+## Reduce un vector a una de las 4 direcciones (gana el eje dominante).
+func _direccion_cardinal(v: Vector2) -> Vector2:
+	if absf(v.x) > absf(v.y):
+		return Vector2.RIGHT if v.x > 0.0 else Vector2.LEFT
+	return Vector2.DOWN if v.y > 0.0 else Vector2.UP
+
+
+## Nombre de la animación de ataque que corresponde a _dir_ataque.
+func _anim_ataque_actual() -> StringName:
+	if _dir_ataque == Vector2.UP:
+		return anim_ataque_arriba
+	if _dir_ataque == Vector2.LEFT or _dir_ataque == Vector2.RIGHT:
+		return anim_ataque_lado
+	return anim_ataque_abajo
+
+
+func _animar_ataque() -> void:
+	# La animación lateral está dibujada hacia la derecha: se voltea si ataca a la izquierda
+	animaciones.flip_h = _dir_ataque == Vector2.LEFT
+	_reproducir(_anim_ataque_actual())
+
+
+func _animacion_es_de_ataque() -> bool:
+	var n := animaciones.animation
+	return n == anim_ataque_arriba or n == anim_ataque_abajo or n == anim_ataque_lado
+
+
+## Reproduce `nombre` desde el inicio; si no existe en el SpriteFrames, cae a "idle".
+func _reproducir(nombre: StringName) -> void:
+	if not animaciones.sprite_frames.has_animation(nombre):
+		nombre = &"idle"
+	animaciones.play(nombre)
 
 
 func _iniciar_ataque() -> void:
