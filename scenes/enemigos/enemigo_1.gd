@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-## Se emite UNA vez cuando el enemigo muere. Lo usa el controlador de sala
-## (Sala) para abrir las puertas cuando no quedan enemigos vivos.
+## Se emite UNA vez cuando el enemigo muere. En el tutorial, el guardia
+## de la lección de dash fuerte lo usa para soltar su llave.
 signal murio
 
 @export var area_2d : Area2D

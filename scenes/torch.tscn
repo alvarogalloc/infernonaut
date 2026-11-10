@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://hipkjjgb34qq"]
 
+[ext_resource type="Script" path="res://scenes/torch.gd" id="1_torch"]
 [ext_resource type="Texture2D" uid="uid://pn6qvn27tjbh" path="res://misc_sprites/torch_spritesheet.png" id="1_d4v33"]
-[ext_resource type="Texture2D" uid="uid://d4k34drnkv5va" path="res://misc_sprites/light.png" id="2_my26j"]
+[ext_resource type="Texture2D" path="res://misc_sprites/light_suave.png" id="2_my26j"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ltfmc"]
 cull_mode = 1
@@ -68,10 +69,11 @@ animations = [{
 }],
 "loop": 1,
 "name": &"default",
-"speed": 5.0
+"speed": 9.0
 }]
 
 [node name="torch" type="Node2D" unique_id=1912709740]
+script = ExtResource("1_torch")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=1804734307]
 position = Vector2(-8, -1)
@@ -79,12 +81,13 @@ occluder = SubResource("OccluderPolygon2D_ltfmc")
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=173189413]
 position = Vector2(-1, -20)
-color = Color(0.7810376, 0.3269104, 0.08940659, 1)
+color = Color(0.9, 0.45, 0.16, 1)
+energy = 0.8
 texture = ExtResource("2_my26j")
-texture_scale = 0.1
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="PointLight2D" unique_id=1322224053]
+texture_scale = 0.35
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2076714407]
 sprite_frames = SubResource("SpriteFrames_ltfmc")
+animation = &"default"
+autoplay = "default"
 frame_progress = 0.5330465

@@ -17,7 +17,7 @@ offset_top = 430.0
 offset_right = 1460.0
 offset_bottom = 490.0
 theme_override_font_sizes/font_size = 52
-text = "GENERANDO MAZMORRA"
+text = "PREPARANDO SALA"
 horizontal_alignment = 1
 
 [node name="Barra" type="ColorRect" parent="." unique_id=1123870477]

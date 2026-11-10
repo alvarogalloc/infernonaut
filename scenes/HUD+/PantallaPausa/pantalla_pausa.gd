@@ -5,7 +5,7 @@ extends CanvasLayer
 ## pantalla y despausar el juego.
 signal reanudar_solicitado
 
-## Se emite al pedir reiniciar: juego.gd regenera la MISMA semilla.
+## Se emite al pedir reiniciar: juego.gd vuelve a montar la misma sala.
 signal reiniciar_solicitado
 
 @onready var boton_reanudar: Button = $Control/Panel/VBoxContainer/BotonReanudar

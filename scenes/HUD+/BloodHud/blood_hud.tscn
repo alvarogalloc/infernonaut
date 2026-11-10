@@ -1,38 +1,43 @@
-[gd_scene format=3 uid="uid://b3qls31p3imcj"]
+[gd_scene load_steps=8 format=3 uid="uid://b3qls31p3imcj"]
 
 [ext_resource type="Script" uid="uid://c5n56sqscl4k5" path="res://scenes/HUD+/BloodHud/blood_hud.gd" id="1_pgm5i"]
 [ext_resource type="Texture2D" uid="uid://d1dhe28336c8y" path="res://sprites/vial.png" id="2_jejpu"]
 [ext_resource type="Texture2D" uid="uid://ch0ytqxjugk1q" path="res://sprites/vial_full.png" id="3_477mq"]
 [ext_resource type="SpriteFrames" path="res://scenes/HUD+/BloodHud/sprite_frames_hud.tres" id="4_fondoanim"]
+[ext_resource type="Texture2D" path="res://sprites/ui/llave.svg" id="5_llave"]
+[ext_resource type="Texture2D" path="res://sprites/ui/escudo.svg" id="6_escudo"]
+[ext_resource type="Texture2D" path="res://sprites/ui/sombra.svg" id="7_sombra"]
 
-[node name="BloodHud" type="Control" unique_id=1171745085]
+[node name="BloodHud" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 114.0
-offset_bottom = 100.0
+offset_right = 320.0
+offset_bottom = 205.0
+mouse_filter = 2
 script = ExtResource("1_pgm5i")
 
-[node name="Fondo" type="TextureRect" parent="." unique_id=1968096807]
+[node name="Fondo" type="TextureRect" parent="."]
 clip_contents = true
 layout_mode = 0
 offset_left = 1.0
 offset_right = 195.0
 offset_bottom = 97.0
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="FondoAnim" type="AnimatedSprite2D" parent="Fondo" unique_id=1174987380]
+[node name="FondoAnim" type="AnimatedSprite2D" parent="Fondo"]
 position = Vector2(98.8, 44.8)
 scale = Vector2(0.196, 0.196)
 sprite_frames = ExtResource("4_fondoanim")
 animation = &"fondo"
 autoplay = "fondo"
 
-[node name="Vial1" type="TextureProgressBar" parent="." unique_id=1225444452]
+[node name="Vial1" type="TextureProgressBar" parent="."]
 layout_mode = 0
-offset_left = 144.99998
+offset_left = 145.0
 offset_top = 47.0
-offset_right = 184.99998
+offset_right = 185.0
 offset_bottom = 87.0
 rotation = 0.33161256
 value = 100.0
@@ -40,26 +45,92 @@ fill_mode = 3
 texture_under = ExtResource("2_jejpu")
 texture_progress = ExtResource("3_477mq")
 
-[node name="Vial2" type="TextureProgressBar" parent="." unique_id=608295253]
+[node name="Vial2" type="TextureProgressBar" parent="."]
 layout_mode = 0
-offset_left = 162.99998
-offset_top = 20.999996
-offset_right = 202.99998
-offset_bottom = 60.999996
+offset_left = 163.0
+offset_top = 21.0
+offset_right = 203.0
+offset_bottom = 61.0
 rotation = 0.33161256
 value = 100.0
 fill_mode = 3
 texture_under = ExtResource("2_jejpu")
 texture_progress = ExtResource("3_477mq")
 
-[node name="Vial3" type="TextureProgressBar" parent="." unique_id=1446964371]
+[node name="Vial3" type="TextureProgressBar" parent="."]
 layout_mode = 0
-offset_left = 182.99998
+offset_left = 183.0
 offset_top = -2.0
-offset_right = 222.99998
+offset_right = 223.0
 offset_bottom = 38.0
 rotation = 0.33161256
 value = 100.0
 fill_mode = 3
 texture_under = ExtResource("2_jejpu")
 texture_progress = ExtResource("3_477mq")
+
+[node name="Llave" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 105.0
+offset_right = 180.0
+offset_bottom = 133.0
+mouse_filter = 1
+tooltip_text = "LLAVES\nSe recogen en las salas y se gastan al abrir puertas."
+
+[node name="Icono" type="TextureRect" parent="Llave"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+mouse_filter = 1
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("5_llave")
+
+[node name="Cantidad" type="Label" parent="Llave"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "0"
+vertical_alignment = 1
+
+[node name="Escudo" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 139.0
+offset_right = 180.0
+offset_bottom = 167.0
+mouse_filter = 1
+tooltip_text = "ESCUDO\nAbsorbe 1 golpe letal. Se recoge en el suelo."
+
+[node name="Icono" type="TextureRect" parent="Escudo"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+mouse_filter = 1
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("6_escudo")
+
+[node name="Cantidad" type="Label" parent="Escudo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "0"
+vertical_alignment = 1
+
+[node name="Sombra" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 173.0
+offset_right = 260.0
+offset_bottom = 201.0
+mouse_filter = 1
+tooltip_text = "DASH SOMBRA\nClic central: atraviesa paredes y gasta 1 carga."
+
+[node name="Icono" type="TextureRect" parent="Sombra"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+mouse_filter = 1
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("7_sombra")
+
+[node name="Cantidad" type="Label" parent="Sombra"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "0"
+vertical_alignment = 1

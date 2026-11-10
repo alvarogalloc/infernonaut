@@ -89,7 +89,8 @@ var dashes_lanzados : int = 0 ## contador (tests/telemetría)
 
 ## Mejoras (recompensas de salas "tesoro")
 var escudos_restantes : int = 0 ## escudos que absorben un golpe letal
-var cargas_dash_sombra : int = 10 ## dashes sombra disponibles
+var cargas_dash_sombra : int = 0 ## dashes sombra disponibles (se recogen)
+var llaves : int = 0 ## las puertas consumen una al abrirse
 var _invulnerable_hasta : int = 0 ## instante (ms) durante el que se ignora daño
 @onready var _dash_particles: GPUParticles2D = get_node_or_null("DashParticles")
 @onready var _aura_escudo: GPUParticles2D = get_node_or_null("AuraProteccion")
@@ -117,7 +118,7 @@ func _process(delta):
 		if not timer_recarga.is_stopped():
 			porcentaje = (1.0 - (timer_recarga.time_left / tiempo_recarga)) * 100.0
 		bloodHud.actualizar_cargas(cargas_actuales, porcentaje)
-		bloodHud.mostrar_mejoras(escudos_restantes, cargas_dash_sombra)
+		bloodHud.mostrar_mejoras(escudos_restantes, cargas_dash_sombra, llaves)
 
 
 ## Aura visible de mejoras activas: escudo = brillo dorado; dash sombra =
@@ -482,6 +483,11 @@ func _on_timer_recarga_timeout() -> void:
 ## Recarga por matar un enemigo. La llama el enemigo cuando el jugador lo mata de un dash.
 func recargar_carga_por_kill() -> void:
 	_agregar_carga()
+
+
+## Recoge una llave. La puerta del tutorial la consume al abrirse.
+func agregar_llave() -> void:
+	llaves += 1
 
 
 ## FUNCION UNICA DE MUERTE

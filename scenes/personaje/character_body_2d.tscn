@@ -261,8 +261,8 @@ lifetime = 1.6
 process_material = SubResource("ParticleProcessMaterial_aurasombra")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1513592264]
-scale = Vector2(2.385, 2.385)
-transform = Transform2D(2.385, 0, 0, 2.385, 0, 0)
+scale = Vector2(1.6, 1.6)
+transform = Transform2D(1.6, 0, 0, 1.6, 0, 0)
 
 [node name="BloodHud" parent="CanvasLayer" unique_id=1171745085 instance=ExtResource("5_brr8y")]
 

@@ -24,7 +24,7 @@ var _pasos := [
 
 
 func _initialize() -> void:
-	_nivel = GeneradorNivel.new().generar(12345, 0)
+	_nivel = load("res://scenes/nivel/tutorial.tscn").instantiate()
 	root.add_child(_nivel)
 
 

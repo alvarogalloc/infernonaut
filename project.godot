@@ -25,6 +25,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 display_server/driver.linuxbsd="wayland"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+
 [global_group]
 
 ataque_personaje="hitbox que daña"

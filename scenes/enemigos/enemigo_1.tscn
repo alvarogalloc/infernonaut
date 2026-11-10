@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://x4826y415vid" path="res://scenes/enemigos/enemigo_1.gd" id="1_djrvw"]
 [ext_resource type="SpriteFrames" uid="uid://dfnop4k3ts0xf" path="res://scenes/enemigos/sprite_frames_enemigo1.tres" id="1_qa7oh"]
-[ext_resource type="Texture2D" uid="uid://d4k34drnkv5va" path="res://misc_sprites/light.png" id="3_iuhqk"]
+[ext_resource type="Texture2D" path="res://misc_sprites/light_suave.png" id="3_iuhqk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(381, 497)
@@ -73,9 +73,11 @@ shape = SubResource("CircleShape2D_g4v7s")
 
 [node name="enemy_emission" type="PointLight2D" parent="." unique_id=49399355]
 position = Vector2(-17, -10.0000305)
-scale = Vector2(20.875, 23.1875)
+scale = Vector2(10, 10)
+color = Color(0.9, 0.35, 0.3, 1)
 texture = ExtResource("3_iuhqk")
 texture_scale = 0.5
+energy = 0.35
 
 [node name="MuerteParticles" type="GPUParticles2D" parent="." unique_id=1120857332]
 scale = Vector2(6, 6)

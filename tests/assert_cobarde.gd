@@ -1,10 +1,10 @@
 extends SceneTree
 ## Cobarde:
-##  - huye solo si el jugador entra en su área de activación (su distancia de siempre)
-##  - con el jugador lejos se queda plantado y sigue disparando mientras lo vea
-##  - si una pared se interpone deja de disparar y vuelve a reposo
-##  - el ataque LLEGA al jugador aunque el generador escale al enemigo (0.175)
-##  - muere con el dash, recarga al jugador y aparece en el generador en su sala
+##  - huye si el jugador entra en su área de activación
+##  - con el jugador lejos se queda plantado y sigue atacando mientras lo vea
+##  - si una pared se interpone deja de atacar y vuelve a reposo
+##  - el ataque LLEGA al jugador aunque la escena lo escale (0.175)
+##  - muere con el dash, recarga al jugador y aparece en la arena del tutorial
 ## Uso: godot --headless --fixed-fps 60 --script res://tests/assert_cobarde.gd
 
 const ESCALA := 0.175 ## la misma que ESC_ENEMIGO del generador
@@ -150,21 +150,15 @@ func _muerte_por_dash() -> void:
 	ataques.free()
 
 
-## Integración en el generador (varios seeds, cobarde dentro de su sala).
+## Integración en la arena del tutorial (cobarde dentro de su sala).
 func _integracion() -> void:
-	var gen := GeneradorNivel.new()
-	var cobardes := 0
-	var total := 0
-	for semilla in range(1, 26):
-		var nivel: Node2D = gen.generar(semilla, semilla % 2)
-		root.add_child(nivel)
-		cobardes += _cosechar_cobardes(nivel)
-		_eq("nivel %d sin error" % semilla, nivel != null, true)
-		root.remove_child(nivel)
-		nivel.free()
-		total += 1
-	_ok("hay cobardes en el generador (varios seeds)", cobardes > 0)
-	_ok("hay más de un nivel probado", total >= 25)
+	var nivel: Node2D = load("res://scenes/nivel/tutorial.tscn").instantiate()
+	nivel.solo_arena = true
+	root.add_child(nivel)
+	var cobardes := _cosechar_cobardes(nivel)
+	_ok("la arena tiene cobarde", cobardes > 0)
+	root.remove_child(nivel)
+	nivel.free()
 
 
 func _cosechar_cobardes(nodo: Node) -> int:

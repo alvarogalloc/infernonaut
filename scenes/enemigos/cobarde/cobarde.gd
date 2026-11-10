@@ -10,7 +10,7 @@ extends CharacterBody2D
 ##   MUERTO
 
 enum Estado { INACTIVO, REACCIONANDO, HUYENDO, PREPARANDO, ATACANDO, MUERTO }
-signal murio 
+signal murio ## Se emite una vez al morir (el guardia del tutorial suelta la llave).
 
 @export_group("Huida")
 @export var velocidad_huida: float = 300.0
@@ -46,11 +46,11 @@ signal murio
 @export var animaciones: AnimatedSprite2D
 
 var jugador: Node2D = null
-
 var _estado: Estado = Estado.INACTIVO
-var esta_muerto := false ## API común con enemigo_1.gd (Sala.configurar)
+var esta_muerto := false ## API común con enemigo_1.gd
 var _tiempo_estado: float = 0.0
 var _jugador_en_area: bool = false
+var _caza_bloqueada_hasta := -1 ## gracia anti-caza al entrar a una sala
 
 # Datos del ataque en curso (se fijan al empezar PREPARANDO)
 var _angulo_ataque: float = 0.0
@@ -81,10 +81,12 @@ func _physics_process(delta: float) -> void:
 	match _estado:
 		Estado.INACTIVO:
 			# Vuelve a disparar en cuanto tenga línea de vista, aunque esté lejos.
-			if _puede_disparar():
+			if not _caza_pausada() and _despierta():
 				_cambiar_estado(Estado.REACCIONANDO)
 		Estado.REACCIONANDO:
-			if _tiempo_estado >= tiempo_deteccion:
+			if not _despierta():
+				_cambiar_estado(Estado.INACTIVO)
+			elif _tiempo_estado >= tiempo_deteccion:
 				_cambiar_estado(Estado.HUYENDO)
 		Estado.HUYENDO:
 			# Solo huye si el jugador está dentro del área de activación (su
@@ -184,6 +186,14 @@ func _puede_disparar() -> bool:
 	if global_position.distance_to(jugador.global_position) > alcance_maximo:
 		return false
 	return Vision.ve_a(self, jugador)
+
+
+## Reacciona si lo ve a tiro o si el jugador está dentro de su área de
+## activación y hay línea de vista (aunque esté lejos para disparar).
+func _despierta() -> bool:
+	if not is_instance_valid(jugador):
+		return false
+	return _puede_disparar() or (_jugador_en_area and Vision.ve_a(self, jugador))
 
 
 ## Fija a dónde irá la mano (posición del jugador EN ESTE MOMENTO, no lo sigue)
@@ -342,7 +352,7 @@ func _on_activate_body_entered(body: Node2D) -> void:
 	if not jugador.personaje_muerto.is_connected(_on_jugador_muerto):
 		jugador.personaje_muerto.connect(_on_jugador_muerto)
 
-	if _estado == Estado.INACTIVO:
+	if _estado == Estado.INACTIVO and not _caza_pausada() and _despierta():
 		_cambiar_estado(Estado.REACCIONANDO)
 
 
@@ -358,4 +368,23 @@ func _on_activate_body_exited(body: Node2D) -> void:
 func _on_jugador_muerto() -> void:
 	_jugador_en_area = false
 	jugador = null
+	_cambiar_estado(Estado.INACTIVO)
+
+
+## API de transición de salas: pausa la reacción hasta `reanudar_en_ticks` (ms).
+func pausar_caza(reanudar_en_ticks: int) -> void:
+	_caza_bloqueada_hasta = reanudar_en_ticks
+
+
+func _caza_pausada() -> bool:
+	return Time.get_ticks_msec() < _caza_bloqueada_hasta
+
+
+## Vuelve a reposo y suelta al jugador (se llama al abandonar la sala).
+func detener_persecucion() -> void:
+	if jugador != null and is_instance_valid(jugador) \
+			and jugador.personaje_muerto.is_connected(_on_jugador_muerto):
+		jugador.personaje_muerto.disconnect(_on_jugador_muerto)
+	jugador = null
+	_jugador_en_area = false
 	_cambiar_estado(Estado.INACTIVO)

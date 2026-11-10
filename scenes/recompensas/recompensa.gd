@@ -8,12 +8,15 @@ signal recogida
 @export var tipo := "escudo"
 var _t := 0.0
 var _recogido := false
+var _textura: Texture2D
 
 
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 1 ## cuerpo del jugador
 	body_entered.connect(_on_body_entered)
+	_textura = load("res://sprites/ui/%s.svg" % ("escudo" if tipo == "escudo" else "sombra"))
+	queue_redraw()
 
 
 func _process(delta: float) -> void:
@@ -24,9 +27,10 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var col := Color(0.5, 0.7, 1.0) if tipo == "dash_sombra" else Color(0.95, 0.8, 0.25)
-	draw_circle(Vector2.ZERO, 30.0, col)
-	draw_circle(Vector2.ZERO, 14.0, col.lightened(0.4))
-	draw_arc(Vector2.ZERO, 30.0, 0.0, TAU, 40, col.darkened(0.25), 4.0)
+	draw_circle(Vector2.ZERO, 40.0, Color(col, 0.16))
+	draw_circle(Vector2.ZERO, 30.0, Color(col, 0.24))
+	if _textura != null:
+		draw_texture_rect(_textura, Rect2(-34, -34, 68, 68), false)
 
 
 func _on_body_entered(body: Node2D) -> void:

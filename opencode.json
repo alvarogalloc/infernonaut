@@ -1,15 +1,14 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "godot": {
+    "godot-mcp": {
       "type": "local",
-      "command": ["godot-editor-mcp"]
-    },
-    "codebase-memory": {
-      "command": ["codebase-memory-mcp", "server"],
-      "enabled": true
+      "command": [
+        "godot-editor-mcp"
+      ]
     }
   },
-    "plugin": ["@dietrichgebert/ponytail"]
-
+  "plugin": [
+    "@dietrichgebert/ponytail"
+  ]
 }

@@ -1,36 +1,30 @@
 extends CanvasLayer
-## Menú principal aislado. Emite `iniciar_solicitado(semilla)` al pedir
-## partida: la semilla la decide la caja de texto (o el botón Nueva).
-signal iniciar_solicitado(semilla: int)
+## Menú principal. El tutorial está siempre disponible; la arena directa se
+## desbloquea cuando el tutorial se ha completado al menos una vez.
 
-@onready var semilla_input: LineEdit = %SemillaInput
+signal tutorial_solicitado
+signal arena_solicitada
 
 
 func _ready() -> void:
-	$BotonIniciar.pressed.connect(_on_iniciar)
-	$BotonSalir.pressed.connect(_on_salir)
-	%BotonSemilla.pressed.connect(_on_nueva_semilla)
-	semilla_input.text = str(randi())
-	$BotonIniciar.grab_focus()
+	$BotonTutorial.pressed.connect(_on_tutorial)
+	$BotonArena.pressed.connect(_on_arena)
+	$BotonSalir.pressed.connect(get_tree().quit)
+	var completo := Progreso.tutorial_completado()
+	$BotonArena.disabled = not completo
+	$BotonArena.tooltip_text = "Completa el tutorial una vez para desbloquear." \
+			if not completo else "Entra directamente a la arena."
+	$Estado.text = "TUTORIAL COMPLETADO — ARENA DESBLOQUEADA" if completo \
+			else "Completa el tutorial para desbloquear la arena."
+	$BotonTutorial.grab_focus()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
-## Semilla de la caja: entero válido = ese; inválido/vacío = aleatoria.
-func _seed_actual() -> int:
-	var t := semilla_input.text.strip_edges()
-	if t.is_valid_int():
-		return t.to_int()
-	return randi()
-
-
-func _on_nueva_semilla() -> void:
-	semilla_input.text = str(randi())
-
-
-func _on_iniciar() -> void:
-	iniciar_solicitado.emit(_seed_actual())
+func _on_tutorial() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	tutorial_solicitado.emit()
 
 
-func _on_salir() -> void:
-	get_tree().quit()
+func _on_arena() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	arena_solicitada.emit()
