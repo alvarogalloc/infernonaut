@@ -42,6 +42,7 @@ signal personaje_muerto #podemos hacer que emita una señal con la palabra signa
 
 ##@export var reticula : Sprite2D #para el sprite de la reticula
 @export var reticula_anim : AnimatedSprite2D
+@export var flecha: Line2D ## Linea que indica la dirección del click durante el dash.
 
 @export_group("Dash Alcance (unidades de juego)")
 ## Dash fuerte (click izq, ataque): 10 tiles = 600 px = 20 m
@@ -71,6 +72,7 @@ const SOMBRA_POR_RECOMPENSA := 5
 @export var vibracion_normal: float = 0.25 ## rumble del gamepad en dash normal (0 = off)
 @export var sfx_fuerte: AudioStream ## placeholder quien (ver sfx/)
 @export var sfx_normal: AudioStream
+@export var flecha_ancho: float = 8.0 ## grosor (px) de la línea de dirección del dash
 
 var _dashing : bool = false
 var _dash_fuerte : bool = false
@@ -109,6 +111,16 @@ func _ready():
 	timer_recarga.timeout.connect(_on_timer_recarga_timeout)
 	add_child(timer_recarga)
 	reticula_anim.play("idle")
+	if flecha != null:
+		# top_level: ignora la escala (0.7) y el movimiento del personaje.
+		# Sus puntos se dan en coordenadas GLOBALES del mundo.
+		flecha.top_level = true
+		flecha.global_position = Vector2.ZERO
+		flecha.z_index = Constantes.Z_EFECTO
+		flecha.width = flecha_ancho
+		flecha.begin_cap_mode = Line2D.LINE_CAP_ROUND
+		flecha.end_cap_mode = Line2D.LINE_CAP_ROUND
+		flecha.hide()
 
 
 func _process(delta):
@@ -160,6 +172,8 @@ func _reposo() -> void:
 		animacion.play("idle")
 	if reticula_anim != null and reticula_anim.animation != &"idle":
 		reticula_anim.play("idle")
+	if flecha != null:
+		flecha.hide()
 	_reticula_idle()
 
 
@@ -176,7 +190,12 @@ func _aplicar_dash(delta: float) -> void:
 		emisionidle.set_deferred("disabled", _dash_fuerte)
 		emisiondash.set_deferred("disabled", not _dash_fuerte)
 		move_and_slide()
-	reticula_anim.global_position = _dash_to
+	# La retícula SIEMPRE sigue al mouse (nunca se bloquea).
+	_reticula_idle()
+	# La línea se "consume": su inicio sigue al personaje y su final queda
+	# fijo en el destino, así se va borrando conforme la recorres.
+	if flecha != null and flecha.visible:
+		flecha.points = PackedVector2Array([global_position, _dash_to])
 	if _dash_prog >= 1.0:
 		_fin_dash()
 
@@ -332,7 +351,18 @@ func _lanzar_dash(es_fuerte: bool) -> void:
 	_dash_tween.tween_property(self, "_dash_prog", 1.0, dur) \
 		.set_trans(Tween.TRANS_QUINT if es_fuerte else Tween.TRANS_CUBIC) \
 		.set_ease(Tween.EASE_OUT)
+	_mostrar_flecha()
 	_on_dash_start_snappy()
+
+
+## Línea de origen -> destino del dash, del color del tipo de dash. Arranca
+## completa; _aplicar_dash la acorta cada frame mientras el personaje avanza.
+func _mostrar_flecha() -> void:
+	if flecha == null:
+		return
+	flecha.default_color = color_fuerte if _dash_fuerte else color_normal
+	flecha.points = PackedVector2Array([_dash_from, _dash_to])
+	flecha.show()
 
 
 ## Llamado por el gestor de transicion entre salas.
@@ -369,6 +399,8 @@ func _parar_dash() -> void:
 	velocity = Vector2.ZERO
 	_cola.clear()
 	_on_dash_end()
+	if flecha != null:
+		flecha.hide()
 
 
 ## Restaura la máscara de colisión al terminar/cancelar un dash sombra.
@@ -393,6 +425,8 @@ func _fin_dash() -> void:
 		animacion.play("idle")
 	if reticula_anim != null and reticula_anim.animation != &"idle":
 		reticula_anim.play("idle")
+	if flecha != null:
+		flecha.hide()
 	_siguiente_dash()
 
 
