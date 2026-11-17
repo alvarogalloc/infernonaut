@@ -52,6 +52,7 @@ signal murio ## Se emite una vez al morir (el guardia del tutorial suelta la lla
 @export var placeholder_ataque: ColorRect ## Visual provisional de la mano
 @export var telegrafo: Line2D ## Visual provisional de la advertencia
 @export var animaciones: AnimatedSprite2D
+@export var sprite_muerto: Sprite2D
 
 var jugador: Node2D = null
 var _estado: Estado = Estado.INACTIVO
@@ -73,6 +74,7 @@ func _ready() -> void:
 	add_to_group(Constantes.GRUPO_ENEMIGOS) ## igual que enemigo_1: las puertas cuentan enemigos por grupo
 	telegrafo.hide()
 	_apagar_hitbox_ataque()
+	sprite_muerto.hide()
 
 
 func _physics_process(delta: float) -> void:
@@ -348,6 +350,8 @@ func _morir() -> void:
 	collision.set_deferred("disabled", true)
 	hitboxDead.set_deferred("disabled", true)
 	area_activacion.set_deferred("disabled", true)
+	animaciones.hide()
+	sprite_muerto.show()
 	murio.emit()
 
 

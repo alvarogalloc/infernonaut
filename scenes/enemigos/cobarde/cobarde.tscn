@@ -170,6 +170,7 @@
 [ext_resource type="Texture2D" uid="uid://lqn5ex0d1a3x" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0021.png" id="167_ki0xr"]
 [ext_resource type="Texture2D" uid="uid://bkh4wdad8c7ag" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0022.png" id="168_wi2i0"]
 [ext_resource type="Texture2D" uid="uid://cgkd3wr23pn6j" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0023.png" id="169_d0dxl"]
+[ext_resource type="Texture2D" uid="uid://cn818uobsmdje" path="res://sprites/CobardeCooked.png" id="170_cooked"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cuerpo"]
 size = Vector2(300, 400)
@@ -731,7 +732,7 @@ size = Vector2(251, 302)
 resource_local_to_scene = true
 size = Vector2(2904, 1567)
 
-[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo", "animaciones")]
+[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo", "animaciones", "sprite_muerto")]
 collision_layer = 20
 collision_mask = 40
 motion_mode = 1
@@ -745,12 +746,16 @@ shape_ataque = NodePath("boca/hitboxAtaque/CollisionShape2D")
 placeholder_ataque = NodePath("boca/hitboxAtaque/PlaceholderAtaque")
 telegrafo = NodePath("boca/hitboxAtaque/Telegrafo")
 animaciones = NodePath("AnimatedSprite2D")
+sprite_muerto = NodePath("Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=881320718]
 shape = SubResource("RectangleShape2D_cuerpo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1257010295]
+position = Vector2(4, -10)
+scale = Vector2(0.865, 0.8144444)
 visible = false
+texture = ExtResource("170_cooked")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1134583049]
 position = Vector2(4, -10)
