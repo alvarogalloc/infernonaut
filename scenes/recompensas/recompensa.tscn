@@ -1,14 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://boqojxn57irnm"]
 
-[ext_resource type="Script" path="res://scenes/recompensas/recompensa.gd" id="1_reco"]
+[ext_resource type="Script" uid="uid://c4el3she50vxi" path="res://scenes/recompensas/recompensa.gd" id="1_reco"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rec"]
 radius = 35.0
 
-[node name="recompensa" type="Area2D"]
+[node name="recompensa" type="Area2D" unique_id=2058336279]
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("1_reco")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1384100177]
 shape = SubResource("CircleShape2D_rec")

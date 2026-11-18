@@ -118,7 +118,7 @@ animations = [{
 size = Vector2(245, 596)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
-size = Vector2(468, 465)
+size = Vector2(1160.0005, 990.0012)
 
 [sub_resource type="Gradient" id="Gradient_dashfade"]
 colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)
@@ -236,8 +236,8 @@ collision_layer = 2
 collision_mask = 148
 
 [node name="emisiondash" type="CollisionShape2D" parent="areadash" unique_id=1021779453]
-position = Vector2(-13.999999, 10.499999)
-scale = Vector2(0.99999994, 0.99999994)
+position = Vector2(31.428501, 46.428608)
+scale = Vector2(0.9999986, 0.9999986)
 shape = SubResource("RectangleShape2D_57qmd")
 disabled = true
 

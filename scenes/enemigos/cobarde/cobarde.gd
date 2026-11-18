@@ -352,6 +352,7 @@ func _morir() -> void:
 	area_activacion.set_deferred("disabled", true)
 	animaciones.hide()
 	sprite_muerto.show()
+	Sangre.explotar(self)
 	murio.emit()
 
 

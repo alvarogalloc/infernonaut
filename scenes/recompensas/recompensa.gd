@@ -15,7 +15,7 @@ func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 1 ## cuerpo del jugador
 	body_entered.connect(_on_body_entered)
-	_textura = load("res://sprites/ui/%s.svg" % ("escudo" if tipo == "escudo" else "sombra"))
+	_textura = load("res://sprites/%s.png" % ("shield" if tipo == "escudo" else "power"))
 	queue_redraw()
 
 

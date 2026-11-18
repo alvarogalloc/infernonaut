@@ -55,6 +55,8 @@ signal personaje_muerto #podemos hacer que emita una señal con la palabra signa
 ## último punto libre hacia el cursor.
 @export var dash_sombra_tiles: float = 12.0
 const SOMBRA_POR_RECOMPENSA := 5
+## Distancia (px) de la hitbox de dash frente al personaje (escudo direccional).
+const DASH_HITBOX_OFFSET : float = 70.0
 
 @export_group("Dash Tween")
 @export var dash_fuerte_dur: float = 0.30 ## s de un dash fuerte a máxima distancia
@@ -104,6 +106,9 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group(Constantes.GRUPO_PERSONAJES) #el grupo del personaje, se usa para conectarlo a la escena principal
 	area_idle.body_entered.connect(_on_area_2d_body_entered_idle)
+	if area_dash != null:
+		area_dash.add_to_group(Constantes.GRUPO_ATAQUE_PERSONAJE)
+		area_dash.body_entered.connect(_on_area_dash_body_entered)
 	target_position = global_position
 	timer_recarga = Timer.new()
 	timer_recarga.wait_time = tiempo_recarga
@@ -168,6 +173,8 @@ func _reposo() -> void:
 	_on_dash_end()
 	emisionidle.set_deferred("disabled", false)
 	emisiondash.set_deferred("disabled", true)
+	if area_dash != null:
+		area_dash.position = Vector2.ZERO
 	if animacion != null and animacion.animation != &"idle":
 		animacion.play("idle")
 	if reticula_anim != null and reticula_anim.animation != &"idle":
@@ -189,6 +196,8 @@ func _aplicar_dash(delta: float) -> void:
 		# Solo el dash fuerte daña (hitbox de dash); el normal es vulnerable.
 		emisionidle.set_deferred("disabled", _dash_fuerte)
 		emisiondash.set_deferred("disabled", not _dash_fuerte)
+		if _dash_fuerte and area_dash != null:
+			_posicionar_hitbox_dash()
 		move_and_slide()
 	# La retícula SIEMPRE sigue al mouse (nunca se bloquea).
 	_reticula_idle()
@@ -225,12 +234,12 @@ func _input(event):
 		return
 	if not (event is InputEventMouseButton and event.pressed):
 		return
-	# CLICK IZQUIERDO: dash fuerte, hace daño (gasta viales)
-	if event.button_index == MOUSE_BUTTON_LEFT:
-		_intentar_dash_fuerte()
-	# CLICK DERECHO: dash normal, solo movimiento (no gasta viales)
-	elif event.button_index == MOUSE_BUTTON_RIGHT:
+	# CLICK IZQUIERDO: dash normal, solo movimiento (no gasta viales)
+	if event.button_index == MOUSE_BUTTON_RIGHT:
 		_encolar_dash(get_global_mouse_position())
+	# CLICK DERECHO: dash fuerte con hitbox al frente (gasta viales)
+	elif event.button_index == MOUSE_BUTTON_LEFT:
+		_intentar_dash_fuerte()
 	# CLICK CENTRAL: dash sombra, atraviesa paredes (gasta cargas de mejora)
 	elif event.button_index == MOUSE_BUTTON_MIDDLE:
 		_intentar_dash_sombra()
@@ -353,6 +362,8 @@ func _lanzar_dash(es_fuerte: bool) -> void:
 		.set_ease(Tween.EASE_OUT)
 	_mostrar_flecha()
 	_on_dash_start_snappy()
+	if es_fuerte and area_dash != null:
+		_posicionar_hitbox_dash()
 
 
 ## Línea de origen -> destino del dash, del color del tipo de dash. Arranca
@@ -420,6 +431,9 @@ func _fin_dash() -> void:
 	dash_lento = false
 	target_position = global_position
 	velocity = Vector2.ZERO
+	if area_dash != null:
+		emisiondash.set_deferred("disabled", true)
+		area_dash.position = Vector2.ZERO
 	_on_llegada()
 	if animacion != null and animacion.animation != &"idle":
 		animacion.play("idle")
@@ -584,3 +598,32 @@ func _on_area_2d_body_entered_idle(_body: Node2D) -> void:
 
 func _on_environment_area_entered(_area: Area2D) -> void:
 	golpear()
+
+
+## Posiciona la hitbox de dash delante del personaje según la dirección del dash,
+## formando un "escudo" direccional (arriba / abajo / izquierda / derecha).
+func _posicionar_hitbox_dash() -> void:
+	var dir := _dash_dir
+	if dir == Vector2.ZERO:
+		dir = Vector2.RIGHT
+	if area_dash != null:
+		area_dash.position = dir * DASH_HITBOX_OFFSET
+
+## Hacia dónde va el golpe del dash en curso (ZERO si no está dasheando).
+## La lee Sangre.explotar para que la sangre salga hacia donde pegó el dash.
+func direccion_golpe() -> Vector2:
+	return _dash_dir if _dashing else Vector2.ZERO
+
+## Detecta cuando el cuerpo de un enemigo entra en la hitbox de dash fuerte
+## y lo elimina (equivalente a que el área del enemigo detecte un ataque).
+func _on_area_dash_body_entered(body: Node2D) -> void:
+	if not _dash_fuerte:
+		return
+	if body.is_in_group(Constantes.GRUPO_ENEMIGOS):
+		if body.has_method("_morir"):
+			body._morir()
+		else:
+			body.queue_free()
+		var jugador := get_tree().get_first_node_in_group(Constantes.GRUPO_PERSONAJES)
+		if jugador:
+			jugador.recargar_carga_por_kill()

@@ -46,7 +46,6 @@ var speed: float
 var jugador: Node2D = null
 var persiguiendo: bool = false
 var esta_muerto: bool = false #Estado de muerte
-@onready var _muerte_particles := get_node_or_null("MuerteParticles")
 
 var _jugador_en_area: bool = false
 var _tiempo_sin_ver: float = 0.0
@@ -252,11 +251,9 @@ func _perder_jugador() -> void:
 
 
 func _emitir_muerte() -> void:
-	# Partículas de muerte (sangre). Ya no hace queue_free() al terminar:
-	# el cadáver se queda en la sala.
-	if _muerte_particles != null:
-		_muerte_particles.restart()
-		_muerte_particles.emitting = true
+	# Explosión de sangre: partículas + manchas en el suelo de la sala.
+	# El cadáver se queda en la sala (no hay queue_free).
+	Sangre.explotar(self)
 
 
 ## FUNCION UNICA DE MUERTE: antes estaba duplicada en
