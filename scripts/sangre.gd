@@ -14,6 +14,8 @@ extends RefCounted
 ##     perdiendo fuerza hasta apagarse.
 ## 4. Si el enemigo muere cerca del personaje, parte de la sangre se le queda
 ##    pegada encima (se seca y se desvanece; con muchos kills lo pinta de rojo).
+## 5. Si lo mató el jugador: impact frame y manchas de sangre en la pantalla
+##    que se deslizan y se desvanecen (ver sangre_pantalla.gd).
 ## Además la mancha del suelo deja salpicaduras en 360° y otras orientadas
 ## hacia el golpe, más cerca del cuerpo.
 ## En la nube y el chorro el frenado es mayor que la gravedad: las gotas se
@@ -88,6 +90,10 @@ static func explotar(desde: Node2D, manchas: int = 12, direccion: Vector2 = Vect
 	var jugador := desde.get_tree().get_first_node_in_group(Constantes.GRUPO_PERSONAJES) as Node2D
 	if jugador != null and jugador != desde:
 		SangrePersonaje.salpicar(jugador, pos)
+		# Impact frame + sangre en la pantalla, solo cuando mata el jugador
+		# (hay dirección de golpe); no cuando muere por pinchos, etc.
+		if direccion != Vector2.ZERO:
+			SangrePantalla.muerte_enemigo(jugador, pos)
 
 	if manchas > 0:
 		var charco := Mancha.new()

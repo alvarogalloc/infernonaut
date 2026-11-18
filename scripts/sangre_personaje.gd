@@ -29,7 +29,7 @@ const GOTAS := Vector2i(10, 18)
 ## Gotas extra por cada kill acumulado (sangrado).
 const GOTAS_EXTRA_POR_KILL := 200.0
 ## Tope de gotas a la vez (se borran las más viejas).
-const MAX_GOTAS := 220
+const MAX_GOTAS := 600
 ## Segundos que se queda cada gota antes de empezar a desvanecerse (mín, máx).
 const VIDA := Vector2(4.0, 7.0)
 ## Segundos que tarda en desvanecerse al final.
@@ -37,7 +37,7 @@ const DESVANECER := 3.0
 ## Tamaño de las gotas (radio mínimo, máximo).
 const RADIO := Vector2(5.0, 20.0)
 ## Probabilidad de que una gota grande chorree hacia abajo.
-const CHORREO_PROB := 0.35
+const CHORREO_PROB := 0.5
 ## Qué parte del sprite cubren las gotas (1.0 = todo el rectángulo del frame).
 const AREA := 0.85
 ## Kills (acumulados) para quedar pintado de rojo del todo.
