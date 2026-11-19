@@ -1,45 +1,110 @@
 [gd_scene format=3 uid="uid://bxja1mcg7ghe4"]
 
 [ext_resource type="Script" uid="uid://d2wc84kvieq88" path="res://scenes/juego/menu_principal.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scenes/juego/menu_parallax.gd" id="2_parallax"]
+[ext_resource type="Texture2D" path="res://assets/menu/menuFondo.png" id="3_fondo"]
+[ext_resource type="Texture2D" path="res://assets/menu/menuPersonaje.png" id="4_personaje"]
+[ext_resource type="AudioStream" path="res://assets/menu/Audio_-Mozart-Lacrimosa.wav" id="5_musica"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
+content_margin_left = 24.0
+content_margin_right = 24.0
+bg_color = Color(0, 0, 0, 0.78)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover"]
+content_margin_left = 24.0
+content_margin_right = 24.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
 
 [node name="Menu" type="CanvasLayer"]
 script = ExtResource("1_menu")
 
-[node name="Fondo" type="ColorRect" parent="."]
+[node name="Parallax" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.06, 0.03, 0.04, 1)
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_parallax")
 
-[node name="Titulo" type="Label" parent="."]
-offset_left = 560.0
-offset_top = 260.0
-offset_right = 1360.0
-offset_bottom = 360.0
-theme_override_font_sizes/font_size = 90
-text = "INFERNONAUT"
-horizontal_alignment = 1
+[node name="Fondo" type="TextureRect" parent="Parallax"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_fondo")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Personaje" type="TextureRect" parent="Parallax"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_personaje")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Subtitulo" type="Label" parent="."]
-offset_left = 560.0
-offset_top = 370.0
-offset_right = 1360.0
-offset_bottom = 410.0
-theme_override_font_sizes/font_size = 28
+offset_left = 60.0
+offset_top = 290.0
+offset_right = 720.0
+offset_bottom = 340.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 30
 text = "dungeon crawler de dashes"
-horizontal_alignment = 1
 
 [node name="BotonJugar" type="Button" parent="."]
-offset_left = 810.0
+offset_left = 80.0
 offset_top = 470.0
-offset_right = 1110.0
-offset_bottom = 530.0
-theme_override_font_sizes/font_size = 34
+offset_right = 400.0
+offset_bottom = 550.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "JUGAR"
 
 [node name="BotonSalir" type="Button" parent="."]
-offset_left = 810.0
-offset_top = 550.0
-offset_right = 1110.0
-offset_bottom = 610.0
-theme_override_font_sizes/font_size = 34
+offset_left = 80.0
+offset_top = 575.0
+offset_right = 400.0
+offset_bottom = 655.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hover")
 text = "SALIR"
+
+[node name="Musica" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_musica")
+volume_db = -6.0
