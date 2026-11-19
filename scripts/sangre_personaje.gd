@@ -65,6 +65,7 @@ void fragment() {
 """
 
 static var _shader: Shader
+static var _tex_circulo: Texture2D
 
 var _sprite: AnimatedSprite2D
 var _material: ShaderMaterial
@@ -100,6 +101,9 @@ func _ready() -> void:
 	_sprite = get_parent() as AnimatedSprite2D
 	if _sprite == null:
 		return
+	# Las gotas son una textura escalada: con filtro lineal salen suaves
+	# aunque el proyecto use filtro Nearest por defecto (pixel art).
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	if RECORTAR_A_SILUETA:
 		_sprite.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
 	if _sprite.material == null:
@@ -188,13 +192,32 @@ func _draw() -> void:
 		color.a = clampf(alfa, 0.0, 1.0) * 0.92
 		# Pequeño "splat": nace chica y crece en los primeros 0.08 s.
 		var r := g.radio * clampf(g.edad / 0.08, 0.3, 1.0)
-		draw_circle(g.pos, r, color)
+		_gota(g.pos, r, color)
 		if g.chorreo > 0.0:
 			var largo := g.chorreo * clampf(g.edad / (g.vida * 0.7), 0.0, 1.0)
 			if largo > 1.0:
 				var fin := g.pos + Vector2(0.0, largo)
-				draw_line(g.pos, fin, color, r * 0.6, true)
-				draw_circle(fin, r * 0.3, color)
+				draw_line(g.pos, fin, color, r * 0.6)
+				_gota(fin, r * 0.3, color)
+
+
+## Una gota = un quad con textura (barato y se agrupa en pocos draw calls).
+## draw_circle genera un polígono de muchos vértices por gota y cada frame.
+func _gota(centro: Vector2, radio: float, color: Color) -> void:
+	draw_texture_rect(_circulo(), Rect2(centro - Vector2(radio, radio), Vector2(radio, radio) * 2.0), false, color)
+
+
+static func _circulo() -> Texture2D:
+	if _tex_circulo == null:
+		const S := 64
+		var img := Image.create(S, S, false, Image.FORMAT_RGBA8)
+		for y in S:
+			for x in S:
+				var d := Vector2(x + 0.5 - S * 0.5, y + 0.5 - S * 0.5).length() / (S * 0.5)
+				# Borde suave de ~1 px para que no se vea dentado.
+				img.set_pixel(x, y, Color(1, 1, 1, clampf((1.0 - d) * S * 0.5, 0.0, 1.0)))
+		_tex_circulo = ImageTexture.create_from_image(img)
+	return _tex_circulo
 
 
 static func _obtener_shader() -> Shader:

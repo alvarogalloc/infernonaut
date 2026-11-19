@@ -64,6 +64,11 @@ const _MANCHA_DIR_ALCANCE := 5.5  ## Hasta cuántos radios del charco llegan (la
 
 const _GRAVEDAD := 120.0 ## Un poco más de gravedad para que caiga con más peso.
 static var _gota: Texture2D
+static var _tex_rampa_ini: GradientTexture1D
+static var _tex_rampa_vida: GradientTexture1D
+## Zona donde GPUParticles2D sigue dibujando. Si el emisor queda fuera de
+## pantalla pero las gotas no, Godot las recorta; debe cubrir el alcance máximo.
+const _AREA_VISIBLE := Rect2(-800.0, -800.0, 1600.0, 1600.0)
 
 
 ## Revienta la sangre desde `desde`. Las manchas se cuelgan del padre del nodo
@@ -82,6 +87,7 @@ static func explotar(desde: Node2D, manchas: int = 12, direccion: Vector2 = Vect
 	for emisor in _crear_emisores(direccion):
 		sala.add_child(emisor)
 		emisor.global_position = pos
+		emisor.emitting = true
 
 	_arrancar_fuente(sala, pos)
 
@@ -115,24 +121,26 @@ static func _direccion_del_golpe(desde: Node) -> Vector2:
 	return Vector2.ZERO
 
 
-static func _crear_emisores(direccion: Vector2) -> Array[CPUParticles2D]:
+static func _crear_emisores(direccion: Vector2) -> Array[GPUParticles2D]:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 
 	# Reventón redondo: el volumen. Todo sale en el mismo instante.
 	var nube := _emisor(rng, _NUBE_CANTIDAD, _NUBE_VELOCIDAD, _NUBE_FRENADO,
 			_NUBE_ESCALA, _NUBE_ORIGEN)
-	nube.spread = 180.0
+	(nube.process_material as ParticleProcessMaterial).spread = 180.0
 
 	# Chorro: en abanico hacia el golpe y escalonado (~0.1 s) como un latigazo.
 	var chorro := _emisor(rng, _CHORRO_CANTIDAD, _CHORRO_VELOCIDAD, _CHORRO_FRENADO,
 			_CHORRO_ESCALA, _CHORRO_ORIGEN)
 	chorro.explosiveness = 0.85
+	var mat_chorro := chorro.process_material as ParticleProcessMaterial
 	if direccion == Vector2.ZERO:
-		chorro.spread = 180.0
+		mat_chorro.spread = 180.0
 	else:
-		chorro.direction = direccion.normalized()
-		chorro.spread = _CHORRO_ABANICO
+		var d := direccion.normalized()
+		mat_chorro.direction = Vector3(d.x, d.y, 0.0)
+		mat_chorro.spread = _CHORRO_ABANICO
 
 	return [nube, chorro]
 
@@ -148,72 +156,89 @@ static func _arrancar_fuente(sala: Node, pos: Vector2) -> void:
 	f.one_shot = false          ## emite de forma continua (no todo de golpe)
 	f.explosiveness = 0.0
 	f.lifetime = _FUENTE_VIDA
-	f.lifetime_randomness = 0.45
-	f.direction = Vector2.UP
-	f.spread = _FUENTE_ABANICO
-	f.gravity = Vector2(0.0, _FUENTE_GRAVEDAD)
+	var mat := f.process_material as ParticleProcessMaterial
+	mat.lifetime_randomness = 0.45
+	mat.direction = Vector3(0.0, -1.0, 0.0) ## arriba
+	mat.spread = _FUENTE_ABANICO
+	mat.gravity = Vector3(0.0, _FUENTE_GRAVEDAD, 0.0)
 
 	sala.add_child(f)
 	f.global_position = pos + _FUENTE_DESFASE
+	f.emitting = true
 
 	# Pierde fuerza durante el segundo, se apaga y se libera al caer la última gota.
 	var tw := f.create_tween()
-	tw.tween_property(f, "initial_velocity_max", _FUENTE_VELOCIDAD.y * _FUENTE_FUERZA_FINAL, _FUENTE_DURACION)
-	tw.parallel().tween_property(f, "initial_velocity_min", _FUENTE_VELOCIDAD.x * _FUENTE_FUERZA_FINAL, _FUENTE_DURACION)
+	tw.tween_property(mat, "initial_velocity_max", _FUENTE_VELOCIDAD.y * _FUENTE_FUERZA_FINAL, _FUENTE_DURACION)
+	tw.parallel().tween_property(mat, "initial_velocity_min", _FUENTE_VELOCIDAD.x * _FUENTE_FUERZA_FINAL, _FUENTE_DURACION)
 	tw.tween_callback(func() -> void: f.emitting = false)
 	tw.tween_interval(f.lifetime + 0.2)
 	tw.tween_callback(f.queue_free)
 
 
+## Emisor en la GPU: la simulación (posición, velocidad, frenado, color) la
+## calcula el shader de ParticleProcessMaterial, no GDScript ni la CPU.
+## Nace apagado: quien lo agrega al árbol pone `emitting = true`.
 static func _emisor(rng: RandomNumberGenerator, cantidad: Vector2i, velocidad: Vector2,
-		frenado: Vector2, escala: Vector2, origen: Vector2) -> CPUParticles2D:
-	var p := CPUParticles2D.new()
+		frenado: Vector2, escala: Vector2, origen: Vector2) -> GPUParticles2D:
+	var m := ParticleProcessMaterial.new()
+	m.particle_flag_disable_z = true ## partículas 2D: sin movimiento en Z
+	m.lifetime_randomness = 0.4 ## no todas desaparecen al mismo tiempo (en GPU vive en el material)
+	# El origen tampoco es un punto: sale de una zona chica.
+	m.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	m.emission_sphere_radius = rng.randf_range(origen.x, origen.y)
+	m.direction = Vector3(1.0, 0.0, 0.0)
+	m.spread = 45.0
+	m.initial_velocity_min = velocidad.x
+	m.initial_velocity_max = velocidad.y
+	m.gravity = Vector3(0.0, _GRAVEDAD, 0.0)
+	m.damping_min = frenado.x
+	m.damping_max = frenado.y
+	m.scale_min = escala.x
+	m.scale_max = escala.y
+	m.color_initial_ramp = _rampa_inicial()
+	m.color_ramp = _rampa_vida()
+
+	var p := GPUParticles2D.new()
+	p.process_material = m
+	p.texture = _tex_gota()
 	p.amount = rng.randi_range(cantidad.x, cantidad.y)
 	p.lifetime = rng.randf_range(0.7, 1.0)
-	p.lifetime_randomness = 0.4 ## no todas desaparecen al mismo tiempo
 	p.one_shot = true
 	p.explosiveness = 1.0
-	p.emitting = true
-
-	# El origen tampoco es un punto: sale de una zona chica.
-	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
-	p.emission_sphere_radius = rng.randf_range(origen.x, origen.y)
-
-	p.initial_velocity_min = velocidad.x
-	p.initial_velocity_max = velocidad.y
-	p.gravity = Vector2(0.0, _GRAVEDAD)
-	p.damping_min = frenado.x
-	p.damping_max = frenado.y
-	p.scale_amount_min = escala.x
-	p.scale_amount_max = escala.y
-	p.color_initial_ramp = _color_inicial()
-	p.color_ramp = _color_vida()
-	p.texture = _tex_gota()
+	p.emitting = false
+	p.fixed_fps = 60
+	p.visibility_rect = _AREA_VISIBLE
 	p.z_index = Constantes.Z_EFECTO
 	p.finished.connect(p.queue_free)
 	return p
 
 
 ## Tono de cada gota al nacer, al azar entre oscuro y vivo: evita el "todo del
-## mismo rojo" de una nube plana.
-static func _color_inicial() -> Gradient:
-	var g := Gradient.new()
-	g.set_color(0, Color(0.45, 0.0, 0.02, 1.0))
-	g.set_color(1, Color(0.9, 0.05, 0.04, 1.0))
-	return g
+## mismo rojo" de una nube plana. Se crea una sola vez y se comparte.
+static func _rampa_inicial() -> GradientTexture1D:
+	if _tex_rampa_ini == null:
+		var g := Gradient.new()
+		g.set_color(0, Color(0.45, 0.0, 0.02, 1.0))
+		g.set_color(1, Color(0.9, 0.05, 0.04, 1.0))
+		_tex_rampa_ini = GradientTexture1D.new()
+		_tex_rampa_ini.gradient = g
+	return _tex_rampa_ini
 
 
 ## Evolución de cada gota: se queda opaca (es líquido, no humo), se oscurece
-## un poco y se funde solo al final.
-static func _color_vida() -> Gradient:
-	var g := Gradient.new()
-	g.offsets = PackedFloat32Array([0.0, 0.7, 1.0])
-	g.colors = PackedColorArray([
-		Color(1.0, 1.0, 1.0, 1.0),
-		Color(0.75, 0.55, 0.55, 1.0),
-		Color(0.55, 0.35, 0.35, 0.0),
-	])
-	return g
+## un poco y se funde solo al final. También compartida.
+static func _rampa_vida() -> GradientTexture1D:
+	if _tex_rampa_vida == null:
+		var g := Gradient.new()
+		g.offsets = PackedFloat32Array([0.0, 0.7, 1.0])
+		g.colors = PackedColorArray([
+			Color(1.0, 1.0, 1.0, 1.0),
+			Color(0.75, 0.55, 0.55, 1.0),
+			Color(0.55, 0.35, 0.35, 0.0),
+		])
+		_tex_rampa_vida = GradientTexture1D.new()
+		_tex_rampa_vida.gradient = g
+	return _tex_rampa_vida
 
 
 ## Gota redonda generada en código: las partículas sin textura son cuadrados.
