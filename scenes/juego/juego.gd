@@ -8,6 +8,10 @@ const MUERTE := preload("res://scenes/HUD+/PantallaMuerte/pantalla_muerte.tscn")
 const PAUSA := preload("res://scenes/HUD+/PantallaPausa/pantalla_pausa.tscn")
 const NIVEL := preload("res://scenes/nivel/tutorial.tscn")
 const MAZE := preload("res://scenes/nivel/maze.tscn")
+## Música de fondo de la partida sin tutorial (modo "maze").
+const OST := preload("res://assets/musica/ost_juego.ogg")
+const OST_VOLUMEN_DB := -12.0
+const OST_FADE_SALIDA := 0.6
 
 var _menu: CanvasLayer = null
 var _carga: CanvasLayer = null
@@ -17,10 +21,19 @@ var _fin: CanvasLayer = null
 var _nivel: Node = null
 var _muerto: bool = false
 var _modo := "tutorial"
+var _ost: AudioStreamPlayer = null
+var _ost_tween: Tween = null
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# El reproductor vive aquí (no en el nivel) para que la música no se corte
+	# al reiniciar la partida; solo para al volver al menú.
+	OST.loop
+	_ost = AudioStreamPlayer.new()
+	_ost.stream = OST
+	_ost.volume_db = OST_VOLUMEN_DB
+	add_child(_ost)
 	_mostrar_menu()
 
 
@@ -40,6 +53,7 @@ func _limpiar() -> void:
 
 func _mostrar_menu() -> void:
 	_limpiar()
+	_detener_ost()
 	_menu = MENU.instantiate()
 	add_child(_menu)
 	_menu.tutorial_solicitado.connect(_iniciar_tutorial)
@@ -57,6 +71,10 @@ func _iniciar_maze() -> void:
 func _iniciar_partida(modo: String) -> void:
 	_limpiar()
 	_modo = modo
+	if modo == "maze":
+		_iniciar_ost()
+	else:
+		_detener_ost()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	_carga = CARGA.instantiate()
 	add_child(_carga)
@@ -78,6 +96,37 @@ func _iniciar_partida(modo: String) -> void:
 	if jug != null and not jug.personaje_muerto.is_connected(_on_muerte):
 		jug.personaje_muerto.connect(_on_muerte)
 
+
+## Arranca el OST. Si ya está sonando (reinicio tras morir) lo deja seguir.
+func _iniciar_ost() -> void:
+	if _ost_tween != null:
+		_ost_tween.kill()
+		_ost_tween = null
+		
+	_ost.volume_db = OST_VOLUMEN_DB
+	
+	if not _ost.playing:
+		# En lugar de hacer _ost.play() directo, creamos un Tween con retraso
+		_ost_tween = create_tween()
+		_ost_tween.tween_interval(3.0) # Espera 3 segundos
+		_ost_tween.tween_callback(_ost.play) # Ejecuta el play() tras la espera
+
+## Baja el volumen y lo detiene (al volver al menú o entrar a otro modo).
+## Baja el volumen y lo detiene (al volver al menú o entrar a otro modo).
+func _detener_ost() -> void:
+	# 1. Matamos el tween primero por si estaba en medio de los 3 segundos de espera
+	if _ost_tween != null:
+		_ost_tween.kill()
+		_ost_tween = null
+		
+	# 2. Si no estaba sonando, ya no hay nada más que hacer
+	if not _ost.playing:
+		return
+		
+	# 3. Si ya estaba sonando, hacemos el fade out normal
+	_ost_tween = create_tween()
+	_ost_tween.tween_property(_ost, "volume_db", -40.0, OST_FADE_SALIDA)
+	_ost_tween.tween_callback(_ost.stop)
 
 func _on_completado() -> void:
 	if _modo == "tutorial":
