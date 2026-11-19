@@ -15,6 +15,65 @@ const TIEMPO_FADE_MUERTE := 0.5
 const GRUPO_PERSONAJES := "personajes"
 const GRUPO_ATAQUE_PERSONAJE := "ataque_personaje"
 const GRUPO_ENEMIGOS := "enemigos"
+const GRUPO_PUERTAS := "puertas"
+const GRUPO_SALAS := "salas"
+
+## Margen interior de una sala (px): mantiene a los enemigos fuera del marco
+## de paredes y del hueco de las puertas.
+const MARGEN_SALA := 60.0
+
+
+## Sala (Node2D en GRUPO_SALAS) a la que pertenece `nodo`, o null si no está
+## dentro de una sala.
+static func sala_de(nodo: Node) -> Node2D:
+	var n := nodo
+	while n != null:
+		if n.is_in_group(GRUPO_SALAS):
+			return n as Node2D
+		n = n.get_parent()
+	return null
+
+
+## true si `nodo` está en la sala que la cámara considera actual. Fuera de una
+## sala (tests, escenas sueltas) devuelve true para no bloquear nada.
+static func en_sala_actual(nodo: Node) -> bool:
+	var sala := sala_de(nodo)
+	var cam := _camara()
+	if sala == null or cam == null:
+		return true
+	return cam.call("sala_actual") == sala
+
+
+## Rect interior de la sala de `nodo` (sin el marco de paredes). Vacío si no
+## hay sala o cámara.
+static func rect_interior(nodo: Node) -> Rect2:
+	var sala := sala_de(nodo)
+	var cam := _camara()
+	if sala == null or cam == null:
+		return Rect2()
+	var r: Rect2 = cam.call("sala_rect", sala)
+	return r.grow(-MARGEN_SALA)
+
+
+## Mantiene a un cuerpo dentro del interior de su sala: nunca se queda en el
+## hueco de una puerta. Devuelve true si lo movió.
+static func limitar_a_sala(cuerpo: CharacterBody2D) -> bool:
+	var r := rect_interior(cuerpo)
+	if r.size == Vector2.ZERO:
+		return false
+	var p := cuerpo.global_position.clamp(r.position, r.end)
+	if p == cuerpo.global_position:
+		return false
+	cuerpo.global_position = p
+	cuerpo.velocity = Vector2.ZERO
+	return true
+
+
+static func _camara() -> Camera2D:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).get_first_node_in_group("camara_jugador") as Camera2D
+	return null
 
 
 ## ---------------------------------------------------------------- Capas Z

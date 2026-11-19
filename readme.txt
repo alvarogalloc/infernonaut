@@ -30,15 +30,18 @@ INFERNONAUT - UNIDADES, SALAS Y TUTORIAL
 -----------------------
 - Escena principal: res://scenes/juego/juego.tscn (menú -> carga -> nivel).
 - El nivel es CURADO, no generado: res://scenes/nivel/tutorial.gd contiene
-  seis mapas fijos de 30x16 (interior) en una fila y los construye en runtime.
-  Los mapas se editan como texto en el array MAPAS; cada carácter es una
-  entidad (ver leyenda en el script).
-- Hay dos modos en el menú:
-  * TUTORIAL: siempre disponible.
-  * JUGAR ARENA: se desbloquea al completar el tutorial al menos una vez
-    (se guarda en user://progreso.cfg).
+  los mapas fijos y los construye en runtime: MAPAS (tutorial, 30x16 interior)
+  y MAPAS_MAZE (mazmorra, 14x7 interior = sala 16x9 con zoom 2). Cada carácter
+  es una entidad (ver leyenda en el script).
+- El menú solo tiene JUGAR y SALIR. JUGAR pregunta si quieres el tutorial:
+  sí abre el tutorial; no entra directo a la mazmorra demo.
+- JUGAR ARENA ya no tiene botón propio; el modo arena queda solo para tests.
+- Los enemigos solo detectan y persiguen dentro de su propia sala, y quedan
+  encerrados en el interior (nunca se plantan en el hueco de la puerta). Al
+  entrar a una sala el jugador es invulnerable durante la gracia anti-caza.
 - El tutorial termina al tocar la meta de la arena; entonces se guarda el
-  progreso y se muestra la pantalla de fin.
+  progreso y se muestra la pantalla de fin. La mazmorra demo y la arena tienen
+  su propia pantalla de fin (no tocan el progreso).
 - TileSet embebido, atlas 1 fila (60 px, capa 4 pared) compuesto en runtime a
   partir de res://sprites/: suelo1.png, suelo2.png (variante) y t3.png (pared).
   La puerta usa el sprite nuevo res://sprites/door.png.
@@ -75,13 +78,40 @@ Unidad de referencia: 1 tile = 60 px = 2 m.
   4. Dash sombra (click central): atravesar el muro hasta la llave.
   5. Examen: escudo + pinchos + muro sombra + llave.
   6. Arena: enemigos, pinchos y meta.
-- Las puertas NO se abren matando enemigos: se abren al tocarlas con una
-  llave, que se consume. Sin llave, el HUD avisa.
+- Las puertas NO se abren matando enemigos: se abren al tocarlas con las
+  llaves necesarias, que se consumen. El color y los pines muestran el
+  requisito (verde = abierta/0, oro = 1, azul = 2, violeta = 3); cuando el
+  jugador ya puede abrirla, la puerta pulsa en verde. Si no, parpadea roja.
+  Al abrirse se disuelve con door_dissolve.gdshader.
+- Al recoger una llave, un haz rápido del color del requisito vuela desde la
+  llave hasta la puerta abrible más cercana. Vive en el plano del mundo (no en
+  el HUD): pista inmediata sin cortar el ritmo.
 - La puerta final se abre directamente si el tutorial ya se completó alguna
   vez; si no, exige la llave del examen.
 - HUD: viales, llaves, escudo y dash sombra siempre visibles (atenuados a 0)
-  con tooltip; panel de lección con icono de ratón; mensajes puntuales.
+  con tooltip. El tutorial usa el panel de lección con texto; la mazmorra NO
+  usa cajas de texto: un tooltip de acción sigue al jugador (icono + anillo
+  pulsante) y hace un pop cuando se ejecuta la acción.
+- Los escudos se acumulan hasta 2 (B + H en la mazmorra).
 - Persistencia mínima: scripts/progreso.gd (user://progreso.cfg).
+
+7b. MAZMORRA DEMO (3x3 compacta)
+--------------------------------
+- 9 salas de 16x9 tiles (la mitad que el tutorial). cámara con zoom 2 para
+  que la acción sea corta: 2-3 dashes por sala en vez de travesías largas.
+- Inicio en D. K0 abre D->E. E es el cruce: el guardia lleva K1 (abre E->B)
+  y hay una cobarde.
+- B es combate: escudo + guardia con K2 (abre B->C). C da el dash sombra, un
+  escudo extra y la llave K6 tras un muro.
+- E->F es una puerta abierta; en F el dash sombra cruza un muro y da K4.
+- E->H es abierta; H tiene una puerta de pinchos (3 tiles): el escudo absorbe
+  un golpe. Detrás está K5. La puerta final H->I pide 3 llaves (K4+K5+K6).
+- A (norte de D) y G (sur de D) son opcionales: combate y escudo, con un atajo
+  G->H que crea un bucle. F->I admite un atajo secreto con dash sombra.
+- Tooltip de acción por sala: D clic derecho, E/B clic izquierdo, C/F clic
+  central, H escudo, I meta. Pulso constante; pop al ejecutar la acción.
+- Puerta: `llaves_requeridas` (1 por defecto; la final usa 3 y las consume).
+  Pines de llave a ambos lados y anillo de color; verde si ya es abrible.
 
 8. LUZ
 ------
@@ -95,7 +125,9 @@ Unidad de referencia: 1 tile = 60 px = 2 m.
 9. TESTS
 --------
 Uso: godot --headless --fixed-fps 60 --script res://tests/assert_XXX.gd
-- assert_tutorial: 6 salas, llaves, puerta sin/con llave, tooltips, Mix.
+- assert_tutorial: 6 salas, llaves, puerta sin/con llave, tooltips, luces.
+- assert_maze: 9 salas, spawn, 9 puertas, llaves, powerups, tooltip de acción,
+  guardia que suelta llave y puerta final de 3 llaves.
 - assert_dash / assert_cola_dash / assert_dash_dano: dashes y hitbox.
 - assert_caza / assert_vision / assert_cobarde: enemigos.
 - Varios tests antiguos de generación viven en unused/tests.

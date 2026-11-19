@@ -8,6 +8,9 @@ signal reanudar_solicitado
 ## Se emite al pedir reiniciar: juego.gd vuelve a montar la misma sala.
 signal reiniciar_solicitado
 
+## Se emite al pedir salir de la partida: juego.gd vuelve al menú principal.
+signal salir_solicitado
+
 @onready var boton_reanudar: Button = $Control/Panel/VBoxContainer/BotonReanudar
 @onready var boton_reiniciar: Button = $Control/Panel/VBoxContainer/BotonReiniciar
 @onready var boton_salir: Button = $Control/Panel/VBoxContainer/BotonSalir
@@ -37,4 +40,4 @@ func _on_boton_reiniciar_pressed() -> void:
 
 
 func _on_boton_salir_pressed() -> void:
-	get_tree().quit()
+	salir_solicitado.emit()

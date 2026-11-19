@@ -17,11 +17,11 @@ signal murio ## Se emite una vez al morir (el guardia del tutorial suelta la lla
 @export var tiempo_deteccion: float = 0.6 ## Delay antes de empezar a huir
 
 @export_group("Ataque")
-@export var intervalo_ataque: float = 2.5 ## Segundos entre ataques (huyendo o parado)
+@export var intervalo_ataque: float = 1.5 ## Segundos entre ataques (huyendo o parado)
 @export var tiempo_preparacion: float = 0.7 ## Parado con el telégrafo visible (ventana para esquivar)
 @export var tiempo_extension: float = 0.15 ## Lo que tarda la mano en llegar al punto marcado
 @export var duracion_ataque: float = 0.5 ## Tiempo total que la hitbox está activa (incluye la extensión)
-@export var tiempo_recuperacion: float = 0.5 ## Parado después del ataque, antes de volver a huir
+@export var tiempo_recuperacion: float = 0.3 ## Parado después del ataque, antes de volver a huir
 @export var ancho_ataque: float = 120.0
 @export var alcance_maximo: float = 1500.0
 
@@ -70,6 +70,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if _estado == Estado.MUERTO:
 		return
+	# Fuera de su sala no reacciona: ni huye ni dispara a través de la puerta.
+	if _estado != Estado.INACTIVO and not Constantes.en_sala_actual(self):
+		_cambiar_estado(Estado.INACTIVO)
 
 	# Si el jugador desapareció (escena liberada, etc.) volvemos a reposo
 	if _estado != Estado.INACTIVO and not is_instance_valid(jugador):
@@ -143,7 +146,7 @@ func _cambiar_estado(nuevo: Estado) -> void:
 			_animar_ataque() # animación de la mano saliendo, según la dirección fijada
 		Estado.MUERTO:
 			velocity = Vector2.ZERO
-			# ANIMACION: muerte
+			_reproducir(&"butcher")
 
 
 # ---------------------------------------------------------------- HUIDA
@@ -160,6 +163,7 @@ func _huir() -> void:
 
 	velocity = dir * velocidad_huida
 	move_and_slide()
+	Constantes.limitar_a_sala(self)
 
 
 ## true si avanzar un tile en `dir` choca con algo.
@@ -191,6 +195,8 @@ func _puede_disparar() -> bool:
 ## Reacciona si lo ve a tiro o si el jugador está dentro de su área de
 ## activación y hay línea de vista (aunque esté lejos para disparar).
 func _despierta() -> bool:
+	if not Constantes.en_sala_actual(self):
+		return false
 	if not is_instance_valid(jugador):
 		return false
 	return _puede_disparar() or (_jugador_en_area and Vision.ve_a(self, jugador))
@@ -297,7 +303,7 @@ func _apagar_hitbox_ataque() -> void:
 func _on_hitbox_ataque_area_entered(area: Area2D) -> void:
 	var objetivo := area.get_parent()
 	if objetivo and objetivo.is_in_group(Constantes.GRUPO_PERSONAJES):
-		objetivo.morir()
+		objetivo.golpear()
 
 
 # ---------------------------------------------------------------- MUERTE

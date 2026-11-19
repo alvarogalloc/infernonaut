@@ -62,6 +62,10 @@ func _physics_process(delta: float) -> void:
 	# Si está muerto, detenemos por completo cualquier cálculo de movimiento
 	if esta_muerto:
 		return
+	# Si el jugador se fue a otra sala, se abandona la caza: nunca persigue
+	# ni detecta a través de la puerta.
+	if persiguiendo and not Constantes.en_sala_actual(self):
+		_perder_jugador()
 
 	var viendo := false
 	if persiguiendo and jugador != null and is_instance_valid(jugador):
@@ -87,6 +91,7 @@ func _physics_process(delta: float) -> void:
 			_iniciar_persecucion()
 
 	move_and_slide()
+	Constantes.limitar_a_sala(self)
 
 
 # ---------------------------------------------------------------- Patrulla
@@ -198,6 +203,8 @@ func detener_persecucion() -> void:
 
 func _iniciar_persecucion() -> void:
 	if _caza_pausada() or persiguiendo or esta_muerto or not is_instance_valid(jugador):
+		return
+	if not Constantes.en_sala_actual(self):
 		return
 	if not Vision.ve_a(self, jugador):
 		return

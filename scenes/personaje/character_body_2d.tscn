@@ -118,7 +118,7 @@ animations = [{
 size = Vector2(245, 596)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
-size = Vector2(468, 465)
+size = Vector2(520, 515)
 
 [sub_resource type="Gradient" id="Gradient_dashfade"]
 colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)

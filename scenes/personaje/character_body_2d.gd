@@ -28,7 +28,14 @@ var transicionando : bool = false
 
 
 ##Señal que se va a emitir para la escenaprincipal
-signal personaje_muerto #podemos hacer que emita una señal con la palabra signal, seguida del nombre de la señal
+signal personaje_muerto
+## Acciones para el tooltip de mundo (mazmorra): qué hizo el jugador.
+signal dash_normal
+signal dash_fuerte
+signal dash_sombra
+signal llave_recogida
+signal mejora_recogida(tipo: String)
+signal golpe_absorbido
 
 #EXPORTACION VARIABLES, PARA IMPORTAR LOS NODOS HIJOS Y PODER MODIFICARLOS DESDE AQUI
 @export var animacion : AnimatedSprite2D #para el animated sprite del personaje
@@ -253,6 +260,10 @@ func dash_hacia(destino: Vector2, es_fuerte: bool) -> void:
 	dash_rapido = es_fuerte
 	dash_lento = not es_fuerte
 	_lanzar_dash(es_fuerte)
+	if es_fuerte:
+		dash_fuerte.emit()
+	else:
+		dash_normal.emit()
 
 
 ## Dash fuerte: solo se ejecuta si hay cargas, y consume una
@@ -288,6 +299,7 @@ func dash_sombra_hacia(destino: Vector2) -> void:
 	_sombra_mask_previa = collision_mask
 	collision_mask = 0 ## ignorar paredes durante la travesía
 	_lanzar_dash(false)
+	dash_sombra.emit()
 
 
 func _destino_libre(destino: Vector2) -> Vector2:
@@ -488,6 +500,7 @@ func recargar_carga_por_kill() -> void:
 ## Recoge una llave. La puerta del tutorial la consume al abrirse.
 func agregar_llave() -> void:
 	llaves += 1
+	llave_recogida.emit()
 
 
 ## FUNCION UNICA DE MUERTE
@@ -510,6 +523,11 @@ func morir() -> void:
 	_morir()
 
 
+## Protección temporal tras entrar a una sala (ms): la puerta nunca mata.
+func proteger(ms: int) -> void:
+	_invulnerable_hasta = maxi(_invulnerable_hasta, Time.get_ticks_msec() + ms)
+
+
 ## Recibe daño letal: lo absorbe el escudo (si queda) o muere.
 func golpear() -> void:
 	if _muerto or Time.get_ticks_msec() < _invulnerable_hasta:
@@ -517,6 +535,7 @@ func golpear() -> void:
 	if escudos_restantes > 0:
 		escudos_restantes -= 1
 		_invulnerable_hasta = Time.get_ticks_msec() + 800
+		golpe_absorbido.emit()
 		_feedback_proteccion()
 		return
 	_morir()
@@ -525,9 +544,10 @@ func golpear() -> void:
 ## Mejora de una sala "tesoro" (recogible).
 func aplicar_recompensa(tipo: String) -> void:
 	if tipo == "escudo":
-		escudos_restantes = mini(escudos_restantes + 1, 1)
+		escudos_restantes = mini(escudos_restantes + 1, 2)
 	elif tipo == "dash_sombra":
 		cargas_dash_sombra += SOMBRA_POR_RECOMPENSA
+	mejora_recogida.emit(tipo)
 	_feedback_proteccion()
 
 

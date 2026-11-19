@@ -55,9 +55,13 @@ func mostrar_leccion(indice: int) -> void:
 		return
 	_actual = indice
 	var leccion: Dictionary = LECCIONES[indice]
-	_icono.texture = load(leccion.icono)
-	_titulo.text = leccion.titulo
-	_texto.text = leccion.texto
+	_mostrar(leccion.icono, leccion.titulo, leccion.texto)
+
+
+func _mostrar(icono: String, titulo: String, texto: String) -> void:
+	_icono.texture = load(icono)
+	_titulo.text = titulo
+	_texto.text = texto
 	_panel.modulate.a = 0.0
 	var t := create_tween()
 	t.tween_property(_panel, "modulate:a", 1.0, 0.25)

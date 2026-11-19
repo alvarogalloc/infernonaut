@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://c0hk5gs57qou1"]
 
 [ext_resource type="Script" uid="uid://7csws16yl5y3" path="res://scenes/enemigos/cobarde/cobarde.gd" id="1_cobarde"]
+[ext_resource type="Texture2D" uid="uid://bdlp7eg07etwc" path="res://sprites/mentirosospritebutchered.png" id="99_butch"]
 [ext_resource type="Texture2D" uid="uid://dqnwy15ab8l2" path="res://sprites/spritesheets/CobardeIdleAnim/CobardeIdleAnim/Línea de tiempo 1_0000.png" id="2_4f6nj"]
 [ext_resource type="Texture2D" uid="uid://wlq5lnf8ec31" path="res://sprites/spritesheets/CobardedFrontShot_anim/CobardedFrontShot_anim/Línea de tiempo 1_0000.png" id="2_kqci8"]
-[ext_resource type="Texture2D" path="res://misc_sprites/light_suave.png" id="2_luz"]
+[ext_resource type="Texture2D" uid="uid://de23affufiso1" path="res://misc_sprites/light_suave.png" id="2_luz"]
 [ext_resource type="Texture2D" uid="uid://df8pygdqje4h4" path="res://sprites/spritesheets/CobardeStartleAnim/CobardeStartleAnim/Línea de tiempo 1_0000.png" id="2_w3ib4"]
 [ext_resource type="Texture2D" uid="uid://dptujngs8ier2" path="res://sprites/spritesheets/CobardedFrontShot_anim/CobardedFrontShot_anim/Línea de tiempo 1_0001.png" id="3_p7c14"]
 [ext_resource type="Texture2D" uid="uid://ce1lsfnencnwr" path="res://sprites/spritesheets/CobardeIdleAnim/CobardeIdleAnim/Línea de tiempo 1_0001.png" id="3_ul4b1"]
@@ -416,6 +417,14 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_butch")
+}],
+"loop": false,
+"name": &"butcher",
+"speed": 5.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_activacion"]
@@ -513,9 +522,9 @@ default_color = Color(1, 0.2, 0.2, 0.25)
 position = Vector2(-17, -10)
 scale = Vector2(10, 10)
 color = Color(0.9, 0.35, 0.3, 1)
+energy = 0.35
 texture = ExtResource("2_luz")
 texture_scale = 0.5
-energy = 0.35
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="body_entered" from="activate" to="." method="_on_activate_body_entered"]

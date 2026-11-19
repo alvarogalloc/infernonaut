@@ -1,12 +1,13 @@
 extends Node
-## Escena principal: menú -> carga -> tutorial curado (o arena directa).
-## Los niveles ya no se generan: scenes/nivel/tutorial.gd tiene las salas fijas.
+## Escena principal: menú -> carga -> nivel curado.
+## Modos: "tutorial", "maze" (mazmorra demo) y "arena" (desbloqueada).
 
 const MENU := preload("res://scenes/juego/menu_principal.tscn")
 const CARGA := preload("res://scenes/juego/pantalla_carga.tscn")
 const MUERTE := preload("res://scenes/HUD+/PantallaMuerte/pantalla_muerte.tscn")
 const PAUSA := preload("res://scenes/HUD+/PantallaPausa/pantalla_pausa.tscn")
 const NIVEL := preload("res://scenes/nivel/tutorial.tscn")
+const MAZE := preload("res://scenes/nivel/maze.tscn")
 
 var _menu: CanvasLayer = null
 var _carga: CanvasLayer = null
@@ -15,7 +16,7 @@ var _muerte: CanvasLayer = null
 var _fin: CanvasLayer = null
 var _nivel: Node = null
 var _muerto: bool = false
-var _modo_arena: bool = false
+var _modo := "tutorial"
 
 
 func _ready() -> void:
@@ -42,27 +43,31 @@ func _mostrar_menu() -> void:
 	_menu = MENU.instantiate()
 	add_child(_menu)
 	_menu.tutorial_solicitado.connect(_iniciar_tutorial)
-	_menu.arena_solicitada.connect(_iniciar_arena)
+	_menu.maze_solicitada.connect(_iniciar_maze)
 
 
 func _iniciar_tutorial() -> void:
-	_iniciar_partida(false)
+	_iniciar_partida("tutorial")
 
 
-func _iniciar_arena() -> void:
-	_iniciar_partida(true)
+func _iniciar_maze() -> void:
+	_iniciar_partida("maze")
 
 
-func _iniciar_partida(arena: bool) -> void:
+func _iniciar_partida(modo: String) -> void:
 	_limpiar()
-	_modo_arena = arena
+	_modo = modo
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	_carga = CARGA.instantiate()
 	add_child(_carga)
 	# Deja que la pantalla de carga se dibuje antes de construir.
 	await get_tree().process_frame
 	await get_tree().process_frame
-	_nivel = NIVEL.instantiate()
-	_nivel.set("solo_arena", arena)
+	_nivel = (MAZE if modo == "maze" else NIVEL).instantiate()
+	if modo == "maze":
+		_nivel.set("modo", "maze")
+	else:
+		_nivel.set("solo_arena", modo == "arena")
 	add_child(_nivel)
 	_nivel.connect("completado", _on_completado)
 	await get_tree().create_timer(0.4).timeout
@@ -75,7 +80,7 @@ func _iniciar_partida(arena: bool) -> void:
 
 
 func _on_completado() -> void:
-	if not _modo_arena:
+	if _modo == "tutorial":
 		Progreso.marcar_tutorial_completado()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_fin = CanvasLayer.new()
@@ -93,16 +98,22 @@ func _on_completado() -> void:
 	caja.add_theme_constant_override("separation", 18)
 	_fin.add_child(caja)
 	var titulo := Label.new()
-	titulo.text = "ARENA COMPLETADA" if _modo_arena else "TUTORIAL COMPLETADO"
+	var subtitulo := Label.new()
+	if _modo == "maze":
+		titulo.text = "MAZMORRA COMPLETADA"
+		subtitulo.text = "Demo completada. Prueba el tutorial o la arena."
+	elif _modo == "arena":
+		titulo.text = "ARENA COMPLETADA"
+		subtitulo.text = "Sobreviviste a la arena."
+	else:
+		titulo.text = "TUTORIAL COMPLETADO"
+		subtitulo.text = "La arena queda desbloqueada en el menú."
 	titulo.add_theme_font_size_override("font_size", 64)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caja.add_child(titulo)
-	var sub := Label.new()
-	sub.text = "Sobreviviste a la arena." if _modo_arena \
-			else "La arena queda desbloqueada en el menú."
-	sub.add_theme_font_size_override("font_size", 28)
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caja.add_child(sub)
+	subtitulo.add_theme_font_size_override("font_size", 28)
+	subtitulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caja.add_child(subtitulo)
 	var boton := Button.new()
 	boton.text = "VOLVER AL MENÚ"
 	boton.add_theme_font_size_override("font_size", 32)
@@ -135,6 +146,7 @@ func _abrir_pausa() -> void:
 	add_child(_pausa)
 	_pausa.reanudar_solicitado.connect(_cerrar_pausa)
 	_pausa.reiniciar_solicitado.connect(_reiniciar)
+	_pausa.salir_solicitado.connect(_mostrar_menu)
 	get_tree().paused = true
 
 
@@ -147,4 +159,4 @@ func _cerrar_pausa() -> void:
 
 
 func _reiniciar() -> void:
-	_iniciar_partida(_modo_arena)
+	_iniciar_partida(_modo)

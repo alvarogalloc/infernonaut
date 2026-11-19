@@ -1,10 +1,9 @@
 extends Node2D
-## Tutorial curado (sin generación procedural): seis salas en fila.
-## Cada sala enseña una acción y esconde una llave; la puerta al este la
-## consume. Los mapas son fijos (30x16 interior) y se construyen una vez.
-##
-## Uso: desde juego.gd, instanciar y añadir al árbol. `solo_arena = true`
-## construye únicamente la arena (modo desbloqueado tras el tutorial).
+## Niveles curados (sin generación procedural):
+##   modo "tutorial" -> seis salas en fila, una lección por sala.
+##   modo "maze"     -> mazmorra demo de 9 salas en rejilla 3x3.
+##   solo_arena      -> únicamente la arena del tutorial.
+## Los mapas son fijos (30x16 interior) y se construyen una vez.
 
 signal completado
 
@@ -34,6 +33,7 @@ const RUTA_SUELO2 := "res://sprites/suelo2.png"
 const RUTA_PARED := "res://sprites/t3.png"
 const RUTA_PUERTA_TEX := "res://sprites/door.png"
 const RUTA_HUD := "res://scenes/HUD+/TutorialHud/tutorial_hud.tscn"
+const RUTA_HINT := "res://scenes/HUD+/ActionHint/action_hint.tscn"
 
 const ESC_JUGADOR := 0.16
 const ESC_ENEMIGO := 0.175
@@ -156,52 +156,210 @@ const MAPAS := [
 
 const PUERTAS := [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]
 
+## Mazmorra demo: 9 salas en rejilla 3x3 (mapas fijos, sin generación).
+const POS_MAZE := [
+	Vector2i(0, 0),
+	Vector2i(1, 0),
+	Vector2i(2, 0),
+	Vector2i(0, 1),
+	Vector2i(1, 1),
+	Vector2i(2, 1),
+	Vector2i(0, 2),
+	Vector2i(1, 2),
+	Vector2i(2, 2),
+]
+
+const MAPAS_MAZE := [
+	[
+		"..............",
+		"..............",
+		".....E....C...",
+		"......R.......",
+		"..............",
+		"..............",
+		"..............",
+	],
+	[
+		"..............",
+		".....C........",
+		"..............",
+		"......R..L....",
+		"..............",
+		"..............",
+		"..............",
+	],
+	[
+		"..............",
+		"........#..C..",
+		"........#.....",
+		"...S...#..R...",
+		"........#.....",
+		"........#..K..",
+		"..............",
+	],
+	[
+		"..........#...",
+		"..........#...",
+		"..............",
+		"...P..K.......",
+		"..............",
+		"..........#...",
+		"..........#...",
+	],
+	[
+		"..............",
+		"...##....##...",
+		"..........C...",
+		"......L.......",
+		"..............",
+		"...##....##...",
+		"..............",
+	],
+	[
+		"..............",
+		"........#..E..",
+		"........#.....",
+		"........#..K..",
+		"........#.....",
+		"........#.....",
+		"..............",
+	],
+	[
+		"..............",
+		"..............",
+		"..............",
+		"...R......E...",
+		"..............",
+		"..............",
+		"..............",
+	],
+	[
+		".........#....",
+		".........#....",
+		"..R......X..K.",
+		".........X....",
+		".........X....",
+		".........#....",
+		"..............",
+	],
+	[
+		"..............",
+		"..............",
+		"..R....E......",
+		"...........M..",
+		"..........C...",
+		"..............",
+		"..............",
+	],
+]
+
+const PUERTAS_MAZE := [
+	[3, 4, "E", 3, 1],
+	[1, 4, "S", 7, 1],
+	[1, 2, "E", 3, 1],
+	[4, 5, "E", 3, 0],
+	[4, 7, "S", 7, 0],
+	[0, 3, "S", 7, 0],
+	[3, 6, "S", 7, 0],
+	[6, 7, "E", 3, 0],
+	[7, 8, "E", 3, 3],
+]
+
+const ACCIONES_MAZE := [
+	{"icono": "res://sprites/ui/escudo.svg", "accion": "escudo"},
+	{"icono": "res://sprites/ui/raton_izq.svg", "accion": "fuerte"},
+	{"icono": "res://sprites/ui/raton_centro.svg", "accion": "sombra"},
+	{"icono": "res://sprites/ui/raton_der.svg", "accion": "normal"},
+	{"icono": "res://sprites/ui/raton_izq.svg", "accion": "fuerte"},
+	{"icono": "res://sprites/ui/raton_centro.svg", "accion": "sombra"},
+	{"icono": "res://sprites/ui/escudo.svg", "accion": "escudo"},
+	{"icono": "res://sprites/ui/escudo.svg", "accion": "escudo"},
+	{"icono": "res://sprites/ui/meta.svg", "accion": "meta"},
+]
+
+
+
 @export var solo_arena := false
+@export var modo := "tutorial" ## "tutorial" | "maze"
 
 var _ts: TileSet
+var _cols := COLS
+var _filas := FILAS
+var _px := PX
+var _mapas: Array = MAPAS
+var _puertas: Array = PUERTAS
 var _info: Array = []
 var _jugador: Node2D = null
 var _hud: Node = null
+var _hint: Node = null
 var _leccion := -1
+var _spawn := -1
+var _n_puerta := 0
 
 
 func _ready() -> void:
 	_ts = _tileset()
-	_info.resize(MAPAS.size())
+	_mapas = MAPAS_MAZE if modo == "maze" else MAPAS
+	_puertas = PUERTAS_MAZE if modo == "maze" else PUERTAS
+	if modo == "maze":
+		_cols = 16
+		_filas = 9
+		_px = Vector2(_cols * TILE, _filas * TILE)
+	_info.resize(_mapas.size())
 	if solo_arena:
 		var i := MAPAS.size() - 1
 		_crear_sala(i, Vector2.ZERO)
-		_spawn_jugador(_info[i].inicio)
 	else:
-		for i in MAPAS.size():
-			_crear_sala(i, Vector2(i * PX.x, 0.0))
-		for d in PUERTAS:
-			_crear_puerta(d[0], d[1])
-		_spawn_jugador(_info[0].inicio)
+		for i in _mapas.size():
+			var pos := Vector2.ZERO
+			if modo == "maze":
+				pos = Vector2(POS_MAZE[i].x * _px.x, POS_MAZE[i].y * _px.y)
+			else:
+				pos = Vector2(i * _px.x, 0.0)
+			_crear_sala(i, pos)
+		for d in _puertas:
+			_crear_puerta(d)
+	_spawn_jugador(_info[_spawn].sala.position + _info[_spawn].inicio)
 	_hud = load(RUTA_HUD).instantiate()
 	add_child(_hud)
+	if modo == "maze":
+		_hint = load(RUTA_HINT).instantiate()
+		add_child(_hint)
 	var oscuro := CanvasModulate.new()
-	oscuro.color = Color(0.82, 0.78, 0.82)
+	oscuro.color = Color(0.62, 0.58, 0.64)
 	add_child(oscuro)
 
 
 func _process(_delta: float) -> void:
 	if _jugador == null or not is_instance_valid(_jugador):
 		return
-	var indice := MAPAS.size() - 1 if solo_arena \
-			else clampi(int(_jugador.global_position.x / PX.x), 0, MAPAS.size() - 1)
-	if indice != _leccion:
-		_leccion = indice
-		if _hud != null:
+	var indice := -1
+	if solo_arena:
+		indice = MAPAS.size() - 1
+	else:
+		var gx := int(floor(_jugador.global_position.x / _px.x))
+		var gy := int(floor(_jugador.global_position.y / _px.y))
+		for i in _info.size():
+			if _info[i].gx == gx and _info[i].gy == gy:
+				indice = i
+				break
+	if indice < 0 or indice == _leccion:
+		return
+	_leccion = indice
+	if _hud != null:
+		if modo == "maze" and _hint != null:
+			_hint.call("mostrar", ACCIONES_MAZE[indice])
+		else:
 			_hud.call("mostrar_leccion", indice)
 
 
 func _crear_sala(indice: int, pos: Vector2) -> void:
-	var mapa: Array = MAPAS[indice]
-	assert(mapa.size() == FILAS - 2, "mapa %d: filas" % indice)
+	var mapa: Array = _mapas[indice]
+	assert(mapa.size() == _filas - 2, "mapa %d: filas" % indice)
 	var sala := Node2D.new()
 	sala.name = "sala_%d" % indice
 	sala.position = pos
+	sala.add_to_group(Constantes.GRUPO_SALAS)
 	add_child(sala)
 	var capa := TileMapLayer.new()
 	capa.name = "blockout"
@@ -210,12 +368,12 @@ func _crear_sala(indice: int, pos: Vector2) -> void:
 	sala.add_child(capa)
 
 	var inicio := Vector2.ZERO
-	for y in FILAS:
-		if y > 0 and y < FILAS - 1:
-			assert(mapa[y - 1].length() == COLS - 2, "mapa %d fila %d" % [indice, y - 1])
-		for x in COLS:
+	for y in _filas:
+		if y > 0 and y < _filas - 1:
+			assert(mapa[y - 1].length() == _cols - 2, "mapa %d fila %d" % [indice, y - 1])
+		for x in _cols:
 			var celda := Vector2i(x, y)
-			var borde := x <= 0 or y <= 0 or x >= COLS - 1 or y >= FILAS - 1
+			var borde := x <= 0 or y <= 0 or x >= _cols - 1 or y >= _filas - 1
 			var c := "#" if borde else String(mapa[y - 1][x - 1])
 			var tile := WALL
 			if c == ",":
@@ -226,6 +384,8 @@ func _crear_sala(indice: int, pos: Vector2) -> void:
 			match c:
 				"P":
 					inicio = _centro(celda)
+					if _spawn < 0:
+						_spawn = indice
 				"K":
 					_pone(sala, RUTA_LLAVE, _centro(celda), 1.0)
 				"R":
@@ -249,21 +409,35 @@ func _crear_sala(indice: int, pos: Vector2) -> void:
 					var meta: Node2D = _pone(sala, RUTA_META, _centro(celda), ESC_META)
 					meta.name = "meta"
 					meta.objetivo_alcanzado.connect(_on_meta)
-	_info[indice] = {"sala": sala, "capa": capa, "inicio": inicio}
+	_info[indice] = {"sala": sala, "capa": capa, "inicio": inicio, "gx": int(pos.x / _px.x), "gy": int(pos.y / _px.y)}
 
 
-func _crear_puerta(de: int, a: int) -> void:
+func _crear_puerta(d: Array) -> void:
+	var de: int = d[0]
+	var a: int = d[1]
+	var lado: String = d[2] if d.size() > 2 else "E"
+	var coord: int = d[3] if d.size() > 3 else FILA_PUERTA
+	var llaves: int = d[4] if d.size() > 4 else 1
 	var la: TileMapLayer = _info[de].capa
 	var lb: TileMapLayer = _info[a].capa
-	# El hueco se pisa con suelo (sin colisión); la puerta es la única barrera.
-	la.set_cell(Vector2i(COLS - 1, FILA_PUERTA), 0, FLOOR)
-	la.set_cell(Vector2i(COLS - 1, FILA_PUERTA + 1), 0, FLOOR)
-	lb.set_cell(Vector2i(0, FILA_PUERTA), 0, FLOOR)
-	lb.set_cell(Vector2i(0, FILA_PUERTA + 1), 0, FLOOR)
-
 	var p := Puerta.new()
-	p.name = "puerta_%d" % de
-	p.position = Vector2(PX.x, (FILA_PUERTA + 1) * TILE)
+	p.name = "puerta_%d" % _n_puerta
+	_n_puerta += 1
+	p.llaves_requeridas = llaves
+	p.lado = lado
+	p.mostrar_aviso = modo != "maze"
+	if lado == "E":
+		la.set_cell(Vector2i(_cols - 1, coord), 0, FLOOR)
+		la.set_cell(Vector2i(_cols - 1, coord + 1), 0, FLOOR)
+		lb.set_cell(Vector2i(0, coord), 0, FLOOR)
+		lb.set_cell(Vector2i(0, coord + 1), 0, FLOOR)
+		p.position = Vector2(_px.x, (coord + 1) * TILE)
+	else: ## "S": puerta en el borde sur de `de` y norte de `a`
+		la.set_cell(Vector2i(coord, _filas - 1), 0, FLOOR)
+		la.set_cell(Vector2i(coord + 1, _filas - 1), 0, FLOOR)
+		lb.set_cell(Vector2i(coord, 0), 0, FLOOR)
+		lb.set_cell(Vector2i(coord + 1, 0), 0, FLOOR)
+		p.position = Vector2((coord + 1) * TILE, _px.y)
 	p.collision_layer = 8 ## capa "pared"
 	p.collision_mask = 0
 	p.z_index = Constantes.Z_PUERTA
@@ -276,7 +450,7 @@ func _crear_puerta(de: int, a: int) -> void:
 	spr.texture = load(RUTA_PUERTA_TEX)
 	p.add_child(spr)
 	_info[de].sala.add_child(p)
-	if de == PUERTAS[-1][0] and Progreso.tutorial_completado():
+	if modo != "maze" and de == PUERTAS[-1][0] and Progreso.tutorial_completado():
 		p.abrir()
 
 
@@ -287,6 +461,7 @@ func _spawn_jugador(pos: Vector2) -> void:
 	add_child(_jugador)
 	var cam: Camera2D = load(RUTA_CAMARA).instantiate()
 	cam.position = pos
+	cam.set("tamano_unidad", _px)
 	add_child(cam)
 	_transicion()
 

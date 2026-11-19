@@ -170,6 +170,9 @@ func _preparar_caza(vieja: Node2D, nueva: Node2D) -> void:
 		_detener_caza_sala(vieja)
 	var reanudar := Time.get_ticks_msec() \
 		+ int((duracion_cubrir + retardo_negro + duracion_revelar + gracia_anti_caza) * 1000.0)
+	# Entrar nunca mata: el jugador queda protegido mientras dura la gracia.
+	if _jugador != null and is_instance_valid(_jugador) and _jugador.has_method("proteger"):
+		_jugador.proteger(reanudar - Time.get_ticks_msec())
 	for e in _enemigos_de_sala(nueva):
 		if e.has_method("detener_persecucion"):
 			e.detener_persecucion()
