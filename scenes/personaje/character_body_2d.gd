@@ -327,6 +327,7 @@ func dash_sombra_hacia(destino: Vector2) -> void:
 	_sombra_mask_previa = collision_mask
 	collision_mask = 0 ## ignorar paredes durante la travesía
 	_lanzar_dash(false)
+	Sfx.uso_dash_sombra(self) ## solo llega aquí si el dash sí se lanzó (había cargas)
 	dash_sombra.emit()
 
 
@@ -593,6 +594,7 @@ func golpear() -> void:
 func aplicar_recompensa(tipo: String) -> void:
 	if tipo == "escudo":
 		escudos_restantes = mini(escudos_restantes + 1, 2)
+		Sfx.obtencion_escudo(self)
 	elif tipo == "dash_sombra":
 		cargas_dash_sombra += SOMBRA_POR_RECOMPENSA
 	mejora_recogida.emit(tipo)

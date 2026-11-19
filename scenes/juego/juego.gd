@@ -108,7 +108,7 @@ func _iniciar_ost() -> void:
 	if not _ost.playing:
 		# En lugar de hacer _ost.play() directo, creamos un Tween con retraso
 		_ost_tween = create_tween()
-		_ost_tween.tween_interval(3.0) # Espera 3 segundos
+		_ost_tween.tween_interval(1) # Espera 3 segundos
 		_ost_tween.tween_callback(_ost.play) # Ejecuta el play() tras la espera
 
 ## Baja el volumen y lo detiene (al volver al menú o entrar a otro modo).
