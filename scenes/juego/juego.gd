@@ -85,6 +85,7 @@ func _on_completado() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_fin = CanvasLayer.new()
 	_fin.process_mode = Node.PROCESS_MODE_ALWAYS
+	_fin.layer = 60
 	var fondo := ColorRect.new()
 	fondo.color = Color(0.03, 0.02, 0.04, 0.92)
 	fondo.anchor_right = 1.0

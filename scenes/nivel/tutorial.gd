@@ -34,6 +34,7 @@ const RUTA_PARED := "res://sprites/t3.png"
 const RUTA_PUERTA_TEX := "res://sprites/door.png"
 const RUTA_HUD := "res://scenes/HUD+/TutorialHud/tutorial_hud.tscn"
 const RUTA_HINT := "res://scenes/HUD+/ActionHint/action_hint.tscn"
+const RUTA_MINIMAPA := "res://scenes/HUD+/Minimapa/minimapa.gd"
 
 const ESC_JUGADOR := 0.16
 const ESC_ENEMIGO := 0.175
@@ -292,6 +293,7 @@ var _info: Array = []
 var _jugador: Node2D = null
 var _hud: Node = null
 var _hint: Node = null
+var _minimapa: Control = null
 var _leccion := -1
 var _spawn := -1
 var _n_puerta := 0
@@ -328,6 +330,25 @@ func _ready() -> void:
 	var oscuro := CanvasModulate.new()
 	oscuro.color = Color(0.62, 0.58, 0.64)
 	add_child(oscuro)
+	_crear_minimapa()
+
+
+## Minimapa mínimo en la esquina superior derecha: visitadas encendidas.
+func _crear_minimapa() -> void:
+	var capa := CanvasLayer.new()
+	capa.layer = 40
+	var mini: Control = load(RUTA_MINIMAPA).new()
+	mini.anchor_left = 1.0
+	mini.anchor_right = 1.0
+	mini.offset_left = -230.0
+	mini.offset_right = -10.0
+	mini.offset_top = 10.0
+	mini.offset_bottom = 190.0
+	mini.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	capa.add_child(mini)
+	add_child(capa)
+	mini.call("configurar", _info, _spawn)
+	_minimapa = mini
 
 
 func _process(_delta: float) -> void:
@@ -346,6 +367,8 @@ func _process(_delta: float) -> void:
 	if indice < 0 or indice == _leccion:
 		return
 	_leccion = indice
+	if _minimapa != null:
+		_minimapa.call("marcar", indice)
 	if _hud != null:
 		if modo == "maze" and _hint != null:
 			_hint.call("mostrar", ACCIONES_MAZE[indice])
