@@ -143,6 +143,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _abrir_pausa() -> void:
+	Sfx.abrir_pausa(self)
 	_pausa = PAUSA.instantiate()
 	add_child(_pausa)
 	_pausa.reanudar_solicitado.connect(_cerrar_pausa)

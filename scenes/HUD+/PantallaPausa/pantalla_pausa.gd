@@ -30,14 +30,17 @@ func _ready() -> void:
 
 
 func _on_boton_reanudar_pressed() -> void:
+	Sfx.seleccionar_opcion(self)
 	reanudar_solicitado.emit()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 
 func _on_boton_reiniciar_pressed() -> void:
+	Sfx.seleccionar_opcion(self)
 	reiniciar_solicitado.emit()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 
 func _on_boton_salir_pressed() -> void:
+	Sfx.seleccionar_opcion(self)
 	salir_solicitado.emit()

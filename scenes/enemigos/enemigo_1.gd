@@ -272,6 +272,7 @@ func _morir() -> void:
 		return
 
 	esta_muerto = true
+	Sfx.muerte_enemigo(self)
 	_desactivar_rayos()
 	_emitir_muerte()
 	persiguiendo = false

@@ -352,6 +352,7 @@ func _morir() -> void:
 		return
 	_cambiar_estado(Estado.MUERTO)
 	esta_muerto = true
+	Sfx.muerte_enemigo(self)
 	collision.set_deferred("disabled", true)
 	hitboxDead.set_deferred("disabled", true)
 	area_activacion.set_deferred("disabled", true)
