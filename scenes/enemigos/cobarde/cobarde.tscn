@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c0hk5gs57qou1"]
 
 [ext_resource type="Script" uid="uid://7csws16yl5y3" path="res://scenes/enemigos/cobarde/cobarde.gd" id="1_cobarde"]
-[ext_resource type="Texture2D" uid="uid://bdlp7eg07etwc" path="res://sprites/mentirosospritebutchered.png" id="99_butch"]
 [ext_resource type="Texture2D" uid="uid://dqnwy15ab8l2" path="res://sprites/spritesheets/CobardeIdleAnim/CobardeIdleAnim/Línea de tiempo 1_0000.png" id="2_4f6nj"]
 [ext_resource type="Texture2D" uid="uid://wlq5lnf8ec31" path="res://sprites/spritesheets/CobardedFrontShot_anim/CobardedFrontShot_anim/Línea de tiempo 1_0000.png" id="2_kqci8"]
 [ext_resource type="Texture2D" uid="uid://de23affufiso1" path="res://misc_sprites/light_suave.png" id="2_luz"]
@@ -99,6 +98,79 @@
 [ext_resource type="Texture2D" uid="uid://flktf7k6r34r" path="res://sprites/spritesheets/CobardedSidewayShot_anim/CobardedSidewayShot_anim/Línea de tiempo 1_0016.png" id="36_w8367"]
 [ext_resource type="Texture2D" uid="uid://cym67yejgxi4n" path="res://sprites/spritesheets/CobardedSidewayShot_anim/CobardedSidewayShot_anim/Línea de tiempo 1_0017.png" id="37_bvgcq"]
 [ext_resource type="Texture2D" uid="uid://b4p285ku70irt" path="res://sprites/spritesheets/CobardedBackwardsShot_anim/CobardedBackwardsShot_anim/Línea de tiempo 1_0017.png" id="37_w8367"]
+[ext_resource type="Texture2D" uid="uid://brnhirx06c6j6" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0000.png" id="98_yegbn"]
+[ext_resource type="Texture2D" uid="uid://c7au4oksre4bm" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0001.png" id="99_5f2ev"]
+[ext_resource type="Texture2D" uid="uid://cr5mo7ok1660u" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0002.png" id="100_4hrf2"]
+[ext_resource type="Texture2D" uid="uid://dfr1ynp2ph4qk" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0003.png" id="101_jrdtb"]
+[ext_resource type="Texture2D" uid="uid://cnq7wu8ymcqdr" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0004.png" id="102_cxji1"]
+[ext_resource type="Texture2D" uid="uid://br8u60jex08qn" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0005.png" id="103_p5pnp"]
+[ext_resource type="Texture2D" uid="uid://dy475wdrtumo6" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0006.png" id="104_wxv7y"]
+[ext_resource type="Texture2D" uid="uid://c04aq6ftlvijq" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0007.png" id="105_t5kuo"]
+[ext_resource type="Texture2D" uid="uid://dqexwc0owfp7k" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0008.png" id="106_i8bjn"]
+[ext_resource type="Texture2D" uid="uid://xtg212y3fblo" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0009.png" id="107_on768"]
+[ext_resource type="Texture2D" uid="uid://cg71lnurbfogo" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0010.png" id="108_ik8nd"]
+[ext_resource type="Texture2D" uid="uid://c3uvxp3dgbwne" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0011.png" id="109_cjxng"]
+[ext_resource type="Texture2D" uid="uid://iqqium84ge2g" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0012.png" id="110_5xeit"]
+[ext_resource type="Texture2D" uid="uid://crmikc5qogdd8" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0013.png" id="111_ql3eb"]
+[ext_resource type="Texture2D" uid="uid://d3lsyl3nlk246" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0014.png" id="112_ipp52"]
+[ext_resource type="Texture2D" uid="uid://80ixj3lmyesn" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0015.png" id="113_v0fkt"]
+[ext_resource type="Texture2D" uid="uid://hh3rf4vg4kbn" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0016.png" id="114_g2g6o"]
+[ext_resource type="Texture2D" uid="uid://bvwnsfsl8idrp" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0017.png" id="115_6xebu"]
+[ext_resource type="Texture2D" uid="uid://kvalxct7jofb" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0018.png" id="116_i2kk6"]
+[ext_resource type="Texture2D" uid="uid://dauqhian78mrh" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0019.png" id="117_fj12l"]
+[ext_resource type="Texture2D" uid="uid://crutjao24e8ph" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0020.png" id="118_gkqwa"]
+[ext_resource type="Texture2D" uid="uid://bgkw43s30qxsx" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0021.png" id="119_bken6"]
+[ext_resource type="Texture2D" uid="uid://d0my6rk1crbpx" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0022.png" id="120_cht63"]
+[ext_resource type="Texture2D" uid="uid://3id616lscaob" path="res://sprites/spritesheets/CobardeFrontScape_anim/CobardeFrontScape_anim/Línea de tiempo 1_0023.png" id="121_ryt03"]
+[ext_resource type="Texture2D" uid="uid://b5ibmaqvp16l0" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0000.png" id="122_xc0oi"]
+[ext_resource type="Texture2D" uid="uid://bu7fpajw5bj31" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0001.png" id="123_btgw7"]
+[ext_resource type="Texture2D" uid="uid://dytdla2a22ufx" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0002.png" id="124_ro1ff"]
+[ext_resource type="Texture2D" uid="uid://dymbqdgwwt71k" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0003.png" id="125_p8dx8"]
+[ext_resource type="Texture2D" uid="uid://dnwr1o0rf7vbf" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0004.png" id="126_tji4c"]
+[ext_resource type="Texture2D" uid="uid://86jp0gtsjc7a" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0005.png" id="127_fwthn"]
+[ext_resource type="Texture2D" uid="uid://dcf2a1spgv1ws" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0006.png" id="128_iey4q"]
+[ext_resource type="Texture2D" uid="uid://dcfa2qqdwro37" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0007.png" id="129_bwy8i"]
+[ext_resource type="Texture2D" uid="uid://cc64xq4jcsc8p" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0008.png" id="130_ee7l4"]
+[ext_resource type="Texture2D" uid="uid://doc8k247giwoe" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0009.png" id="131_xp6bv"]
+[ext_resource type="Texture2D" uid="uid://bwg0lt0ybfem0" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0010.png" id="132_dpqsf"]
+[ext_resource type="Texture2D" uid="uid://de8bfkvmtiti2" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0011.png" id="133_giak3"]
+[ext_resource type="Texture2D" uid="uid://gtoegyrkoqrv" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0012.png" id="134_kg8gd"]
+[ext_resource type="Texture2D" uid="uid://c85bw4y4mftb7" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0013.png" id="135_pa7kn"]
+[ext_resource type="Texture2D" uid="uid://crxeekdjysvem" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0014.png" id="136_qt4rw"]
+[ext_resource type="Texture2D" uid="uid://bhbx73dtxu1wd" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0015.png" id="137_cj6oh"]
+[ext_resource type="Texture2D" uid="uid://bkow4n1uuxogo" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0016.png" id="138_qvbti"]
+[ext_resource type="Texture2D" uid="uid://baxx4mhgtcrwd" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0017.png" id="139_18ggb"]
+[ext_resource type="Texture2D" uid="uid://dxwg87okcus1t" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0018.png" id="140_5hk2p"]
+[ext_resource type="Texture2D" uid="uid://bqnhu4ihc4dlo" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0019.png" id="141_ei5v4"]
+[ext_resource type="Texture2D" uid="uid://bccrfyo6uyb7c" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0020.png" id="142_d42sk"]
+[ext_resource type="Texture2D" uid="uid://bu261algagomf" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0021.png" id="143_r0mf1"]
+[ext_resource type="Texture2D" uid="uid://duc4wlldlpuq6" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0022.png" id="144_pkqvs"]
+[ext_resource type="Texture2D" uid="uid://dhynycshxdwqm" path="res://sprites/spritesheets/CobardeSidewaysScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0023.png" id="145_se2le"]
+[ext_resource type="Texture2D" uid="uid://3flqcwn0tt03" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0000.png" id="146_jyjej"]
+[ext_resource type="Texture2D" uid="uid://dkmijv20uh4im" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0001.png" id="147_oysdm"]
+[ext_resource type="Texture2D" uid="uid://r4lptpyghyx2" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0002.png" id="148_qro1e"]
+[ext_resource type="Texture2D" uid="uid://cxe6jbk5a1hcl" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0003.png" id="149_1gavs"]
+[ext_resource type="Texture2D" uid="uid://cirsy01n3a86t" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0004.png" id="150_3a102"]
+[ext_resource type="Texture2D" uid="uid://1vobhve5wx4w" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0005.png" id="151_ug5q0"]
+[ext_resource type="Texture2D" uid="uid://k56uglsswuay" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0006.png" id="152_80peb"]
+[ext_resource type="Texture2D" uid="uid://cw12eux5o5oqr" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0007.png" id="153_v5tl2"]
+[ext_resource type="Texture2D" uid="uid://bbmepn7lyutnr" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0008.png" id="154_tcm4q"]
+[ext_resource type="Texture2D" uid="uid://cb3yntbekqtx8" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0009.png" id="155_ur5q2"]
+[ext_resource type="Texture2D" uid="uid://b3ivhvjpj2sai" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0010.png" id="156_8w6rj"]
+[ext_resource type="Texture2D" uid="uid://can4wsghp0myq" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0011.png" id="157_dgik8"]
+[ext_resource type="Texture2D" uid="uid://djo6rmvkudl0f" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0012.png" id="158_0qhsh"]
+[ext_resource type="Texture2D" uid="uid://dut8iw7yrgnx7" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0013.png" id="159_mdo5g"]
+[ext_resource type="Texture2D" uid="uid://bnkx7rpfa5bmr" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0014.png" id="160_fngec"]
+[ext_resource type="Texture2D" uid="uid://d0hxsq7q00rnx" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0015.png" id="161_5x848"]
+[ext_resource type="Texture2D" uid="uid://cjdjb05yjgrrj" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0016.png" id="162_at6wd"]
+[ext_resource type="Texture2D" uid="uid://bixcowhuwb6wt" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0017.png" id="163_ghdnb"]
+[ext_resource type="Texture2D" uid="uid://dqnkxwya0t74y" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0018.png" id="164_dcaal"]
+[ext_resource type="Texture2D" uid="uid://bwp841r4jp2wh" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0019.png" id="165_6ajok"]
+[ext_resource type="Texture2D" uid="uid://vrd8u7ju8a2b" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0020.png" id="166_fceib"]
+[ext_resource type="Texture2D" uid="uid://lqn5ex0d1a3x" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0021.png" id="167_ki0xr"]
+[ext_resource type="Texture2D" uid="uid://bkh4wdad8c7ag" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0022.png" id="168_wi2i0"]
+[ext_resource type="Texture2D" uid="uid://cgkd3wr23pn6j" path="res://sprites/spritesheets/CobardeBackwardsScape_anim/CobardeBackwardsScape_anim/Línea de tiempo 1_0023.png" id="169_d0dxl"]
+[ext_resource type="Texture2D" uid="uid://cn818uobsmdje" path="res://sprites/CobardeCooked.png" id="170_cooked"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cuerpo"]
 size = Vector2(300, 400)
@@ -420,11 +492,234 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("99_butch")
+"texture": ExtResource("98_yegbn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("99_5f2ev")
+}, {
+"duration": 1.0,
+"texture": ExtResource("100_4hrf2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("101_jrdtb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("102_cxji1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("103_p5pnp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("104_wxv7y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("105_t5kuo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("106_i8bjn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("107_on768")
+}, {
+"duration": 1.0,
+"texture": ExtResource("108_ik8nd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("109_cjxng")
+}, {
+"duration": 1.0,
+"texture": ExtResource("110_5xeit")
+}, {
+"duration": 1.0,
+"texture": ExtResource("111_ql3eb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("112_ipp52")
+}, {
+"duration": 1.0,
+"texture": ExtResource("113_v0fkt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("114_g2g6o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("115_6xebu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("116_i2kk6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("117_fj12l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("118_gkqwa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("119_bken6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("120_cht63")
+}, {
+"duration": 1.0,
+"texture": ExtResource("121_ryt03")
 }],
-"loop": false,
-"name": &"butcher",
-"speed": 5.0
+"loop": 1,
+"name": &"run_down",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("122_xc0oi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("123_btgw7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("124_ro1ff")
+}, {
+"duration": 1.0,
+"texture": ExtResource("125_p8dx8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("126_tji4c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("127_fwthn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("128_iey4q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("129_bwy8i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("130_ee7l4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("131_xp6bv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("132_dpqsf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("133_giak3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("134_kg8gd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("135_pa7kn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("136_qt4rw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("137_cj6oh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("138_qvbti")
+}, {
+"duration": 1.0,
+"texture": ExtResource("139_18ggb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("140_5hk2p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("141_ei5v4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("142_d42sk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("143_r0mf1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("144_pkqvs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("145_se2le")
+}],
+"loop": 1,
+"name": &"run_side",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("146_jyjej")
+}, {
+"duration": 1.0,
+"texture": ExtResource("147_oysdm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("148_qro1e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("149_1gavs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("150_3a102")
+}, {
+"duration": 1.0,
+"texture": ExtResource("151_ug5q0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("152_80peb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("153_v5tl2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("154_tcm4q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("155_ur5q2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("156_8w6rj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("157_dgik8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("158_0qhsh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("159_mdo5g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("160_fngec")
+}, {
+"duration": 1.0,
+"texture": ExtResource("161_5x848")
+}, {
+"duration": 1.0,
+"texture": ExtResource("162_at6wd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("163_ghdnb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("164_dcaal")
+}, {
+"duration": 1.0,
+"texture": ExtResource("165_6ajok")
+}, {
+"duration": 1.0,
+"texture": ExtResource("166_fceib")
+}, {
+"duration": 1.0,
+"texture": ExtResource("167_ki0xr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("168_wi2i0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("169_d0dxl")
+}],
+"loop": 1,
+"name": &"run_up",
+"speed": 20.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_activacion"]
@@ -437,7 +732,7 @@ size = Vector2(251, 302)
 resource_local_to_scene = true
 size = Vector2(2904, 1567)
 
-[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo", "animaciones")]
+[node name="cobarde" type="CharacterBody2D" unique_id=203467473 node_paths=PackedStringArray("collision", "hitboxDead", "area_activacion", "boca", "hitbox_ataque", "shape_ataque", "placeholder_ataque", "telegrafo", "animaciones", "sprite_muerto")]
 collision_layer = 20
 collision_mask = 40
 motion_mode = 1
@@ -451,19 +746,22 @@ shape_ataque = NodePath("boca/hitboxAtaque/CollisionShape2D")
 placeholder_ataque = NodePath("boca/hitboxAtaque/PlaceholderAtaque")
 telegrafo = NodePath("boca/hitboxAtaque/Telegrafo")
 animaciones = NodePath("AnimatedSprite2D")
+sprite_muerto = NodePath("Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=881320718]
 shape = SubResource("RectangleShape2D_cuerpo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1257010295]
+position = Vector2(4, -10)
+scale = Vector2(0.865, 0.8144444)
 visible = false
+texture = ExtResource("170_cooked")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1134583049]
 position = Vector2(4, -10)
 scale = Vector2(0.865, 0.8144444)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
-animation = &"attack_side"
-frame_progress = 0.49596557
+animation = &"run_side"
 
 [node name="PlaceholderCuerpo" type="ColorRect" parent="." unique_id=1575589538]
 visible = false

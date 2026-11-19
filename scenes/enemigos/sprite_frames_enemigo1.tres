@@ -44,76 +44,148 @@
 [ext_resource type="Texture2D" uid="uid://dsuycf6783mk6" path="res://sprites/spritesheets/MentirosIdle_whiteout/MentirosIdle_whiteout/Línea de tiempo 1_0022.png" id="42_1qhx7"]
 [ext_resource type="Texture2D" uid="uid://cnd8nx07n5tdr" path="res://sprites/spritesheets/MentirosIdle_whiteout/MentirosIdle_whiteout/Línea de tiempo 1_0023.png" id="43_sg1fe"]
 [ext_resource type="Texture2D" uid="uid://chjkkxnefhny2" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0000.png" id="44_0ykat"]
+[ext_resource type="Texture2D" uid="uid://b1iu24d25khva" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0000.png" id="44_yc7k1"]
 [ext_resource type="Texture2D" uid="uid://f8qc2ed3acju" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0001.png" id="45_qsd8p"]
+[ext_resource type="Texture2D" uid="uid://dlmf2clvxl631" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0001.png" id="45_vbwv2"]
+[ext_resource type="Texture2D" uid="uid://v2blvllbhtqb" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0002.png" id="46_x3n0x"]
 [ext_resource type="Texture2D" uid="uid://ll70yrng5owg" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0002.png" id="46_yql7l"]
 [ext_resource type="Texture2D" uid="uid://dp5d2idwwin8t" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0003.png" id="47_ckaly"]
+[ext_resource type="Texture2D" uid="uid://due7mgb4dspa4" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0003.png" id="47_rdwqh"]
 [ext_resource type="Texture2D" uid="uid://csdhnbsxiftol" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0004.png" id="48_et45c"]
+[ext_resource type="Texture2D" uid="uid://d4cyqmfjeuj6n" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0004.png" id="48_fsdcc"]
 [ext_resource type="Texture2D" uid="uid://dhd4o0lqynnpi" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0005.png" id="49_5ixrs"]
+[ext_resource type="Texture2D" uid="uid://ddusui5pbquwf" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0005.png" id="49_41yco"]
+[ext_resource type="Texture2D" uid="uid://cjuh6fe0qfib2" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0006.png" id="50_h27kw"]
 [ext_resource type="Texture2D" uid="uid://dsf8fliicyp15" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0006.png" id="50_wyew1"]
 [ext_resource type="Texture2D" uid="uid://by3ys8swnbpbt" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0007.png" id="51_rsary"]
+[ext_resource type="Texture2D" uid="uid://b1idwkggvya0o" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0007.png" id="51_rwpqj"]
 [ext_resource type="Texture2D" uid="uid://dlnaf5b1gb333" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0008.png" id="52_loxp3"]
+[ext_resource type="Texture2D" uid="uid://be3sme67i62sp" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0008.png" id="52_uq4sx"]
+[ext_resource type="Texture2D" uid="uid://cosvmh2xt0yue" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0009.png" id="53_fcnpv"]
 [ext_resource type="Texture2D" uid="uid://xqws1w0shon1" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0009.png" id="53_lyjm4"]
+[ext_resource type="Texture2D" uid="uid://blsy6fj6g6w3g" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0010.png" id="54_4pb4t"]
 [ext_resource type="Texture2D" uid="uid://drmhuher24iv5" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0010.png" id="54_x5snp"]
 [ext_resource type="Texture2D" uid="uid://crc2dilwivekq" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0011.png" id="55_3kbna"]
+[ext_resource type="Texture2D" uid="uid://dxjxgmqrykrle" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0011.png" id="55_7wbnq"]
+[ext_resource type="Texture2D" uid="uid://rbvr82gh84di" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0012.png" id="56_1usri"]
 [ext_resource type="Texture2D" uid="uid://4h5gvx7aisko" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0012.png" id="56_dmelq"]
 [ext_resource type="Texture2D" uid="uid://b7d127moytfo2" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0013.png" id="57_331s8"]
+[ext_resource type="Texture2D" uid="uid://ojcd58indvs4" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0013.png" id="57_qsuey"]
+[ext_resource type="Texture2D" uid="uid://ct2xjwsnbxklm" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0014.png" id="58_2jjvb"]
 [ext_resource type="Texture2D" uid="uid://jyxyhqjfqwmu" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0014.png" id="58_530qh"]
 [ext_resource type="Texture2D" uid="uid://bbe5y1ynuho8r" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0015.png" id="59_i2xbk"]
+[ext_resource type="Texture2D" uid="uid://cbjy6463wr0xc" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0015.png" id="59_kva6o"]
+[ext_resource type="Texture2D" uid="uid://dah4sb825tcwc" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0016.png" id="60_dh6kp"]
 [ext_resource type="Texture2D" uid="uid://b1tq58ew1krg1" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0016.png" id="60_hfrx1"]
+[ext_resource type="Texture2D" uid="uid://jgnxykk33sgf" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0017.png" id="61_cu5e4"]
 [ext_resource type="Texture2D" uid="uid://b3na2jdthaqj7" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0017.png" id="61_ucpc7"]
 [ext_resource type="Texture2D" uid="uid://chu6i1hak86t6" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0018.png" id="62_234wd"]
+[ext_resource type="Texture2D" uid="uid://ep3y4ymjfsjw" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0018.png" id="62_dlhfl"]
 [ext_resource type="Texture2D" uid="uid://cgad6y10sxisf" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0019.png" id="63_4v8uv"]
+[ext_resource type="Texture2D" uid="uid://dxg3um364qyep" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0019.png" id="63_n5jp6"]
+[ext_resource type="Texture2D" uid="uid://ie5ap64o8ds1" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0020.png" id="64_3f5e2"]
 [ext_resource type="Texture2D" uid="uid://dwtdom7o3ipfl" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0020.png" id="64_8ehvu"]
 [ext_resource type="Texture2D" uid="uid://cepesgv4hn031" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0021.png" id="65_4kwjs"]
+[ext_resource type="Texture2D" uid="uid://c6swk24xob7bf" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0021.png" id="65_s3sqh"]
+[ext_resource type="Texture2D" uid="uid://c0m7no6qkprtj" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0022.png" id="66_4oq22"]
 [ext_resource type="Texture2D" uid="uid://b1ldttvjpryr4" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0022.png" id="66_kg4bj"]
 [ext_resource type="Texture2D" uid="uid://bj4co64njaxlx" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0023.png" id="67_82c1x"]
+[ext_resource type="Texture2D" uid="uid://chbis5sy6i0oi" path="res://sprites/spritesheets/MentirosoBackwardChase_anim/MentirosoBackwardChase_anim/Línea de tiempo 1_0023.png" id="67_fv88c"]
+[ext_resource type="Texture2D" uid="uid://b6fkxcb2k6yv3" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0000.png" id="68_afbvk"]
 [ext_resource type="Texture2D" uid="uid://b7ll05j4hue8" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0024.png" id="68_w1ddi"]
 [ext_resource type="Texture2D" uid="uid://dbsq8lribk8ev" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0025.png" id="69_1ra3g"]
+[ext_resource type="Texture2D" uid="uid://p14gy8tpgw1j" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0001.png" id="69_2piqc"]
+[ext_resource type="Texture2D" uid="uid://47vhxsltnrg3" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0002.png" id="70_7ckh5"]
 [ext_resource type="Texture2D" uid="uid://byrajvi2xfy4h" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0026.png" id="70_533ab"]
 [ext_resource type="Texture2D" uid="uid://dpajseq8pxoo5" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0027.png" id="71_t2v0x"]
+[ext_resource type="Texture2D" uid="uid://ewdvgtu583sy" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0003.png" id="71_vfmuo"]
+[ext_resource type="Texture2D" uid="uid://c0bdi1yyo3qvw" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0004.png" id="72_0shuu"]
 [ext_resource type="Texture2D" uid="uid://darse77m1d0qm" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0028.png" id="72_u08yr"]
+[ext_resource type="Texture2D" uid="uid://bt4tqftgiugrk" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0005.png" id="73_lbbq6"]
 [ext_resource type="Texture2D" uid="uid://cc6e7sgp8ta64" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0029.png" id="73_shlml"]
+[ext_resource type="Texture2D" uid="uid://biaytv2q20khr" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0006.png" id="74_8hxck"]
 [ext_resource type="Texture2D" uid="uid://cx41btr5fxvt2" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0030.png" id="74_34cus"]
+[ext_resource type="Texture2D" uid="uid://i5jjpnbqwq6a" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0007.png" id="75_b0oij"]
 [ext_resource type="Texture2D" uid="uid://plolekktmhfp" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0031.png" id="75_udgd1"]
+[ext_resource type="Texture2D" uid="uid://pk3lwo1481me" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0008.png" id="76_o6hn1"]
 [ext_resource type="Texture2D" uid="uid://c87688saduodn" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0032.png" id="76_qghqu"]
+[ext_resource type="Texture2D" uid="uid://iidghc8cd6sd" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0009.png" id="77_bwslr"]
 [ext_resource type="Texture2D" uid="uid://dng1cgxofj7h0" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0033.png" id="77_v2av8"]
 [ext_resource type="Texture2D" uid="uid://0fn1vkhwoao2" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0034.png" id="78_g3dgi"]
+[ext_resource type="Texture2D" uid="uid://dss2x5v3n5u0p" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0010.png" id="78_l4eg0"]
+[ext_resource type="Texture2D" uid="uid://d2y8duxnocku1" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0011.png" id="79_hffqr"]
 [ext_resource type="Texture2D" uid="uid://cbdabj23r2kn1" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0035.png" id="79_j13d8"]
+[ext_resource type="Texture2D" uid="uid://dfj8itesxa7ho" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0012.png" id="80_2myqh"]
 [ext_resource type="Texture2D" uid="uid://bgxut4h58kbjf" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0036.png" id="80_txr15"]
 [ext_resource type="Texture2D" uid="uid://ckagdkw1am3px" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0037.png" id="81_ek3j5"]
+[ext_resource type="Texture2D" uid="uid://wfjdjrhepgx3" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0013.png" id="81_n1a2x"]
 [ext_resource type="Texture2D" uid="uid://dfndinwmfuhhb" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0038.png" id="82_7gkpq"]
+[ext_resource type="Texture2D" uid="uid://dcq7ihh753704" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0014.png" id="82_irref"]
 [ext_resource type="Texture2D" uid="uid://cjqm7kbeuoi30" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0039.png" id="83_5drty"]
+[ext_resource type="Texture2D" uid="uid://7w7h8noxt4ii" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0015.png" id="83_w80to"]
 [ext_resource type="Texture2D" uid="uid://ocet4l3r1ov1" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0040.png" id="84_ls1lq"]
+[ext_resource type="Texture2D" uid="uid://dc0nkiir18c46" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0016.png" id="84_ouo08"]
+[ext_resource type="Texture2D" uid="uid://mtamy5u2v37r" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0017.png" id="85_sd5kn"]
 [ext_resource type="Texture2D" uid="uid://yd5pf7nhii7r" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0041.png" id="85_w6cis"]
 [ext_resource type="Texture2D" uid="uid://co6wjs4840xci" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0042.png" id="86_85qvf"]
+[ext_resource type="Texture2D" uid="uid://e2k1ut67trq5" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0018.png" id="86_nh2ld"]
+[ext_resource type="Texture2D" uid="uid://b3dlo54lvfpmj" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0019.png" id="87_44dhy"]
 [ext_resource type="Texture2D" uid="uid://nv4co0wt42vw" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0043.png" id="87_ku36s"]
+[ext_resource type="Texture2D" uid="uid://ct1rbrdo7dn30" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0020.png" id="88_rtc4c"]
 [ext_resource type="Texture2D" uid="uid://dsivd2whq11r7" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0044.png" id="88_xehli"]
+[ext_resource type="Texture2D" uid="uid://cyygl4l3ci3k6" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0021.png" id="89_5etuh"]
 [ext_resource type="Texture2D" uid="uid://cpio0if00efgw" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0045.png" id="89_ntlkq"]
 [ext_resource type="Texture2D" uid="uid://bvr1imaa4l88l" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0046.png" id="90_1amdl"]
+[ext_resource type="Texture2D" uid="uid://bykxs6li5vhkq" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0022.png" id="90_jdso2"]
+[ext_resource type="Texture2D" uid="uid://bjxboi8ej04ev" path="res://sprites/spritesheets/MentirosoSidewaysChase_anim/MentirosoSidewaysChase_anim/Línea de tiempo 1_0023.png" id="91_gh34k"]
 [ext_resource type="Texture2D" uid="uid://dosjjuo430dgf" path="res://sprites/spritesheets/MentirosoWalkFront_whiteout/MentirosoWalkFront_whiteout/Línea de tiempo 1_0047.png" id="91_o4q0w"]
 [ext_resource type="Texture2D" uid="uid://d3cmmkwf6niql" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0000.png" id="92_gnu3b"]
+[ext_resource type="Texture2D" uid="uid://q3ytiermby80" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0000.png" id="92_vx4a7"]
+[ext_resource type="Texture2D" uid="uid://c51i2k6rsnyei" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0001.png" id="93_d4yqu"]
 [ext_resource type="Texture2D" uid="uid://rwtp16g1f0oo" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0001.png" id="93_m0lg4"]
 [ext_resource type="Texture2D" uid="uid://csdybqqgln17t" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0002.png" id="94_h2to1"]
+[ext_resource type="Texture2D" uid="uid://b11mojmxunwij" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0002.png" id="94_jdq0r"]
 [ext_resource type="Texture2D" uid="uid://bh0rke0htxumk" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0003.png" id="95_88g5j"]
+[ext_resource type="Texture2D" uid="uid://breoomsisd8gg" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0003.png" id="95_g7phi"]
 [ext_resource type="Texture2D" uid="uid://cfbfd7rltvsyv" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0004.png" id="96_bbwyu"]
+[ext_resource type="Texture2D" uid="uid://cipbn36wvh2ot" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0004.png" id="96_s8c21"]
+[ext_resource type="Texture2D" uid="uid://6auh7dan6oa" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0005.png" id="97_ol3bb"]
 [ext_resource type="Texture2D" uid="uid://cdt3n7jrpuik8" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0005.png" id="97_suaxe"]
 [ext_resource type="Texture2D" uid="uid://byllckl770b7q" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0006.png" id="98_dc1jd"]
+[ext_resource type="Texture2D" uid="uid://dlvivkqebhg2g" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0006.png" id="98_pmue7"]
+[ext_resource type="Texture2D" uid="uid://b75aik5l1ft6r" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0007.png" id="99_5s0kb"]
 [ext_resource type="Texture2D" uid="uid://lvgry4nfut25" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0007.png" id="99_s7mic"]
+[ext_resource type="Texture2D" uid="uid://dpp0dmx3x0sct" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0008.png" id="100_36fus"]
 [ext_resource type="Texture2D" uid="uid://dtrlm6pye30fl" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0008.png" id="100_n0uw0"]
+[ext_resource type="Texture2D" uid="uid://c47t76rhew1ba" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0009.png" id="101_1nfwm"]
 [ext_resource type="Texture2D" uid="uid://xaq4ewqp2v3w" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0009.png" id="101_w5uy5"]
 [ext_resource type="Texture2D" uid="uid://d4mqpg6keexra" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0010.png" id="102_048kp"]
+[ext_resource type="Texture2D" uid="uid://c5u5132tljhet" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0010.png" id="102_kk7jb"]
+[ext_resource type="Texture2D" uid="uid://dx8y7xx3wqedk" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0011.png" id="103_1818p"]
 [ext_resource type="Texture2D" uid="uid://cobs2466yniqj" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0011.png" id="103_vtlr3"]
+[ext_resource type="Texture2D" uid="uid://twjq6txq8ohp" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0012.png" id="104_b112a"]
 [ext_resource type="Texture2D" uid="uid://c2dik2u2x8837" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0012.png" id="104_ul6cu"]
 [ext_resource type="Texture2D" uid="uid://c1dhqah3iiwaw" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0013.png" id="105_16l3i"]
+[ext_resource type="Texture2D" uid="uid://dw6u14nq36ll1" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0013.png" id="105_e531a"]
 [ext_resource type="Texture2D" uid="uid://v2a384p88s6o" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0014.png" id="106_0wtn0"]
+[ext_resource type="Texture2D" uid="uid://c2wqer3gsdeys" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0014.png" id="106_y48g4"]
+[ext_resource type="Texture2D" uid="uid://dqqnxatemf3y8" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0015.png" id="107_h30xl"]
 [ext_resource type="Texture2D" uid="uid://mxnk46asdxqo" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0015.png" id="107_hx82w"]
 [ext_resource type="Texture2D" uid="uid://h8u5gaf5qipq" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0016.png" id="108_7cqpl"]
+[ext_resource type="Texture2D" uid="uid://jbakt0ie3m4w" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0016.png" id="108_m5fqo"]
+[ext_resource type="Texture2D" uid="uid://n0bluynrfot6" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0017.png" id="109_1eehd"]
 [ext_resource type="Texture2D" uid="uid://d1xtd0o66xd2f" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0017.png" id="109_q4dwh"]
 [ext_resource type="Texture2D" uid="uid://bb7l7lyclw6o" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0018.png" id="110_phx68"]
+[ext_resource type="Texture2D" uid="uid://kcj4jbeaooq7" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0018.png" id="110_tgmli"]
 [ext_resource type="Texture2D" uid="uid://gm843667o1ye" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0019.png" id="111_4t5ce"]
+[ext_resource type="Texture2D" uid="uid://d1er4ns0no4ih" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0019.png" id="111_hkskl"]
+[ext_resource type="Texture2D" uid="uid://bguu5iir4kibd" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0020.png" id="112_0mged"]
 [ext_resource type="Texture2D" uid="uid://bypjvvvdrxkm2" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0020.png" id="112_06ebb"]
+[ext_resource type="Texture2D" uid="uid://cbwie4qgqrywq" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0021.png" id="113_ca2bb"]
 [ext_resource type="Texture2D" uid="uid://3vt5ukhpsne1" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0021.png" id="113_l1rtm"]
+[ext_resource type="Texture2D" uid="uid://bn0vue23q8lxg" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0022.png" id="114_cc8x6"]
 [ext_resource type="Texture2D" uid="uid://b3mrmb4elt033" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0022.png" id="114_pavfa"]
+[ext_resource type="Texture2D" uid="uid://bjsok7q6cxcy" path="res://sprites/spritesheets/MentirosoFrontChase_anim/MentirosoFrontChase_anim/Línea de tiempo 1_0023.png" id="115_to2ph"]
 [ext_resource type="Texture2D" uid="uid://dbnxgwndc3yg5" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0023.png" id="115_uwewi"]
 [ext_resource type="Texture2D" uid="uid://dd6n7sa1ptpl3" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0024.png" id="116_2b4xs"]
 [ext_resource type="Texture2D" uid="uid://clcog1iaosfmd" path="res://sprites/spritesheets/MentirosoWalkBack_whiteout/MentirosoWalkBack_whiteout/Línea de tiempo 1_0025.png" id="117_d1n2g"]
@@ -284,6 +356,237 @@ animations = [{
 }],
 "loop": 1,
 "name": &"idle",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("92_vx4a7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("93_d4yqu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("94_jdq0r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("95_g7phi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("96_s8c21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("97_ol3bb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("98_pmue7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("99_5s0kb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("100_36fus")
+}, {
+"duration": 1.0,
+"texture": ExtResource("101_1nfwm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("102_kk7jb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("103_1818p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("104_b112a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("105_e531a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("106_y48g4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("107_h30xl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("108_m5fqo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("109_1eehd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("110_tgmli")
+}, {
+"duration": 1.0,
+"texture": ExtResource("111_hkskl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("112_0mged")
+}, {
+"duration": 1.0,
+"texture": ExtResource("113_ca2bb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("114_cc8x6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("115_to2ph")
+}],
+"loop": 1,
+"name": &"run_down",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("68_afbvk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69_2piqc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_7ckh5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_vfmuo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_0shuu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73_lbbq6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("74_8hxck")
+}, {
+"duration": 1.0,
+"texture": ExtResource("75_b0oij")
+}, {
+"duration": 1.0,
+"texture": ExtResource("76_o6hn1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("77_bwslr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("78_l4eg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("79_hffqr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("80_2myqh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("81_n1a2x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("82_irref")
+}, {
+"duration": 1.0,
+"texture": ExtResource("83_w80to")
+}, {
+"duration": 1.0,
+"texture": ExtResource("84_ouo08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("85_sd5kn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("86_nh2ld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("87_44dhy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("88_rtc4c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("89_5etuh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("90_jdso2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("91_gh34k")
+}],
+"loop": 1,
+"name": &"run_side",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_yc7k1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_vbwv2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_x3n0x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_rdwqh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_fsdcc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_41yco")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_h27kw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_rwpqj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_uq4sx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_fcnpv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_4pb4t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_7wbnq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_1usri")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57_qsuey")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_2jjvb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_kva6o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("60_dh6kp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("61_cu5e4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_dlhfl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_n5jp6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_3f5e2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65_s3sqh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_4oq22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_fv88c")
+}],
+"loop": 1,
+"name": &"run_up",
 "speed": 20.0
 }, {
 "frames": [{

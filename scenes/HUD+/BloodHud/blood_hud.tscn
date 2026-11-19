@@ -4,9 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://d1dhe28336c8y" path="res://sprites/vial.png" id="2_jejpu"]
 [ext_resource type="Texture2D" uid="uid://ch0ytqxjugk1q" path="res://sprites/vial_full.png" id="3_477mq"]
 [ext_resource type="SpriteFrames" path="res://scenes/HUD+/BloodHud/sprite_frames_hud.tres" id="4_fondoanim"]
-[ext_resource type="Texture2D" path="res://sprites/ui/llave.svg" id="5_llave"]
-[ext_resource type="Texture2D" path="res://sprites/ui/escudo.svg" id="6_escudo"]
-[ext_resource type="Texture2D" path="res://sprites/ui/sombra.svg" id="7_sombra"]
+[ext_resource type="Texture2D" uid="uid://d1frt3myxo54f" path="res://sprites/key.png" id="5_llave"]
+[ext_resource type="Texture2D" uid="uid://b7xp883owmifs" path="res://sprites/shield.png" id="6_escudo"]
+[ext_resource type="Texture2D" uid="uid://b3l23h2i7lftp" path="res://sprites/power.png" id="7_sombra"]
 
 [node name="BloodHud" type="Control"]
 layout_mode = 3

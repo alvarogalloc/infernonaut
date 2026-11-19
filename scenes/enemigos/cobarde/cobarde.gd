@@ -34,6 +34,14 @@ signal murio ## Se emite una vez al morir (el guardia del tutorial suelta la lla
 ## y se voltea (flip_h) cuando el ataque va hacia la izquierda.
 @export var anim_ataque_lado: StringName = &"attack_side"
 
+@export_group("Animaciones de huida")
+## Nombres en el SpriteFrames del AnimatedSprite2D. La animación lateral
+## está dibujada hacia la derecha y se voltea (flip_h) cuando huye a la izquierda.
+## Si alguna no existe, se queda en "idle" sin dar error.
+@export var anim_huir_arriba: StringName = &"run_up"
+@export var anim_huir_abajo: StringName = &"run_down"
+@export var anim_huir_lado: StringName = &"run_side"
+
 @export_group("Nodos")
 @export var collision: CollisionShape2D
 @export var hitboxDead: CollisionShape2D
@@ -44,6 +52,7 @@ signal murio ## Se emite una vez al morir (el guardia del tutorial suelta la lla
 @export var placeholder_ataque: ColorRect ## Visual provisional de la mano
 @export var telegrafo: Line2D ## Visual provisional de la advertencia
 @export var animaciones: AnimatedSprite2D
+@export var sprite_muerto: Sprite2D
 
 var jugador: Node2D = null
 var _estado: Estado = Estado.INACTIVO
@@ -65,6 +74,7 @@ func _ready() -> void:
 	add_to_group(Constantes.GRUPO_ENEMIGOS) ## igual que enemigo_1: las puertas cuentan enemigos por grupo
 	telegrafo.hide()
 	_apagar_hitbox_ataque()
+	sprite_muerto.hide()
 
 
 func _physics_process(delta: float) -> void:
@@ -98,6 +108,7 @@ func _physics_process(delta: float) -> void:
 				_huir()
 			else:
 				velocity = Vector2.ZERO
+				_reproducir(&"idle")
 			if _tiempo_estado >= intervalo_ataque:
 				_cambiar_estado(Estado.PREPARANDO if _puede_disparar() else Estado.INACTIVO)
 		Estado.PREPARANDO:
@@ -146,7 +157,6 @@ func _cambiar_estado(nuevo: Estado) -> void:
 			_animar_ataque() # animación de la mano saliendo, según la dirección fijada
 		Estado.MUERTO:
 			velocity = Vector2.ZERO
-			_reproducir(&"butcher")
 
 
 # ---------------------------------------------------------------- HUIDA
@@ -162,6 +172,7 @@ func _huir() -> void:
 		dir = _direccion_libre(dir)
 
 	velocity = dir * velocidad_huida
+	_animar_huida()
 	move_and_slide()
 	Constantes.limitar_a_sala(self)
 
@@ -179,6 +190,24 @@ func _direccion_libre(dir: Vector2) -> Vector2:
 		if not _bloqueado(candidata):
 			return candidata
 	return dir
+
+
+## Animación de huida según el lado al que corre. La lateral está dibujada
+## hacia la derecha: se voltea si huye a la izquierda.
+func _animar_huida() -> void:
+	if velocity.length_squared() == 0.0:
+		animaciones.flip_h = false
+		_reproducir(&"idle")
+		return
+	if absf(velocity.x) > absf(velocity.y):
+		animaciones.flip_h = velocity.x < 0.0
+		_reproducir(anim_huir_lado)
+	else:
+		animaciones.flip_h = false
+		if velocity.y < 0.0:
+			_reproducir(anim_huir_arriba)
+		else:
+			_reproducir(anim_huir_abajo)
 
 
 # --------------------------------------------------------------- ATAQUE
@@ -326,6 +355,9 @@ func _morir() -> void:
 	collision.set_deferred("disabled", true)
 	hitboxDead.set_deferred("disabled", true)
 	area_activacion.set_deferred("disabled", true)
+	animaciones.hide()
+	sprite_muerto.show()
+	Sangre.explotar(self)
 	murio.emit()
 
 

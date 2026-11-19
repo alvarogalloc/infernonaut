@@ -31,13 +31,21 @@ signal murio
 @export var anim_caminar_abajo: StringName = &"walk_down"
 @export_group("")
 
+@export_group("Persecución")
+## Nombres de las animaciones de carrera.
+## Si no existen en el SpriteFrames, vuelve a "idle" sin dar error.
+## La animación lateral se hace flip_h automáticamente cuando corre a la izquierda.
+@export var anim_correr_arriba: StringName = &"run_up"
+@export var anim_correr_abajo: StringName = &"run_down"
+@export var anim_correr_lado: StringName = &"run_side"
+@export_group("")
+
 var speed: float
 
 ## Variables para controlar la persecución
 var jugador: Node2D = null
 var persiguiendo: bool = false
 var esta_muerto: bool = false #Estado de muerte
-@onready var _muerte_particles := get_node_or_null("MuerteParticles")
 
 var _jugador_en_area: bool = false
 var _tiempo_sin_ver: float = 0.0
@@ -81,6 +89,7 @@ func _physics_process(delta: float) -> void:
 				_perder_jugador()
 		if persiguiendo:
 			velocity = global_position.direction_to(_ultimo_visto) * speed
+			_animar_persecucion()
 	else:
 		velocity = Vector2.ZERO
 		if patrulla_activa and not _detectando:
@@ -145,12 +154,30 @@ func _patrullar() -> void:
 
 
 func _animar_patrulla() -> void:
+	animacion.flip_h = false
 	if velocity.y < 0.0:
 		_reproducir(anim_caminar_arriba)
 	elif velocity.y > 0.0:
 		_reproducir(anim_caminar_abajo)
 	else:
 		_reproducir(&"idle")
+
+
+func _animar_persecucion() -> void:
+	if velocity.length_squared() == 0.0:
+		animacion.flip_h = false
+		_reproducir(&"idle")
+		return
+
+	if absf(velocity.x) > absf(velocity.y):
+		animacion.flip_h = velocity.x < 0.0
+		_reproducir(anim_correr_lado)
+	else:
+		animacion.flip_h = false
+		if velocity.y < 0.0:
+			_reproducir(anim_correr_arriba)
+		else:
+			_reproducir(anim_correr_abajo)
 
 
 ## Reproduce `nombre` si existe en el SpriteFrames; si no, cae a "idle".
@@ -231,11 +258,9 @@ func _perder_jugador() -> void:
 
 
 func _emitir_muerte() -> void:
-	# Partículas de muerte (sangre). Ya no hace queue_free() al terminar:
-	# el cadáver se queda en la sala.
-	if _muerte_particles != null:
-		_muerte_particles.restart()
-		_muerte_particles.emitting = true
+	# Explosión de sangre: partículas + manchas en el suelo de la sala.
+	# El cadáver se queda en la sala (no hay queue_free).
+	Sangre.explotar(self)
 
 
 ## FUNCION UNICA DE MUERTE: antes estaba duplicada en

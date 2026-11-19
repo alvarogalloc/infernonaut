@@ -13,7 +13,7 @@ const LECCIONES := [
 		"texto": "Daña enemigos y gasta 1 vial. El guardia de esta sala lleva la llave: mátalo.",
 	},
 	{
-		"icono": "res://sprites/ui/escudo.svg",
+		"icono": "res://sprites/shield.png",
 		"titulo": "ESCUDO",
 		"texto": "Absorbe un golpe letal. Cruza los pinchos: sin escudo, mueres.",
 	},
@@ -23,7 +23,7 @@ const LECCIONES := [
 		"texto": "Atraviesa paredes y aterriza en el último punto libre. Gasta 1 carga.",
 	},
 	{
-		"icono": "res://sprites/ui/llave.svg",
+		"icono": "res://sprites/key.png",
 		"titulo": "EXAMEN FINAL",
 		"texto": "Combina escudo y dash sombra. La llave abre la puerta a la arena.",
 	},
