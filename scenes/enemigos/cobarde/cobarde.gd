@@ -142,6 +142,7 @@ func _cambiar_estado(nuevo: Estado) -> void:
 		Estado.REACCIONANDO:
 			velocity = Vector2.ZERO
 			animaciones.play("detection")
+			Sfx.cobarde_detectando(self)
 		Estado.HUYENDO:
 			# Si venimos de un ataque, no nos quedamos congelados en su último frame
 			if _animacion_es_de_ataque():

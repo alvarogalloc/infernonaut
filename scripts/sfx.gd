@@ -7,6 +7,7 @@ extends RefCounted
 ##   Sfx.obtencion_escudo(self)
 ##   Sfx.uso_dash_sombra(self)
 ##   Sfx.enemigo_1_detectando(self)
+##   Sfx.cobarde_detectando(self)
 ## Cada sonido se reproduce en un AudioStreamPlayer temporal colgado de la
 ## raíz del árbol: así no se corta si el nodo que lo pidió se libera (botón
 ## que reinicia o cambia de escena) y suena aunque el juego esté en pausa.
@@ -23,6 +24,11 @@ const ENEMIGO_1_DETECTANDO := [
 	preload("res://assets/sfx/enemigo_1_detectando1.mp3"),
 	preload("res://assets/sfx/enemigo_1_detectando2.mp3"),
 	preload("res://assets/sfx/enemigo_1_detectando3.mp3"),
+]
+const COBARDE_DETECTANDO := [
+	preload("res://assets/sfx/cobarde_detectando1.mp3"),
+	preload("res://assets/sfx/cobarde_detectando2.mp3"),
+	preload("res://assets/sfx/cobarde_detectando3.mp3"),
 ]
 
 
@@ -51,6 +57,12 @@ static func uso_dash_sombra(contexto: Node) -> void:
 ## El -8.0 es el volumen en dB (0 = original; más negativo = más bajo).
 static func enemigo_1_detectando(contexto: Node) -> void:
 	_reproducir(contexto, ENEMIGO_1_DETECTANDO.pick_random(), -11.0)
+
+
+## Reproduce al azar uno de los sonidos de cobarde detectando al jugador.
+## Volumen en dB (0 = original; más negativo = más bajo).
+static func cobarde_detectando(contexto: Node) -> void:
+	_reproducir(contexto, COBARDE_DETECTANDO.pick_random(), 0.0)
 
 
 static func _reproducir(contexto: Node, sonido: AudioStream, volumen_db: float = 0.0) -> void:
