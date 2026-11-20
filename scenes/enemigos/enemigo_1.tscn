@@ -26,6 +26,7 @@ hitboxDead = NodePath("Area2D/CollisionShape2D")
 collision = NodePath("CollisionShape2D")
 ray_arriba = NodePath("RayArriba")
 ray_abajo = NodePath("RayAbajo")
+velocidad_patrulla = 120.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1470058930 groups=["ataque_personaje", "lalo"]]
 position = Vector2(-11.5, 7.5)
