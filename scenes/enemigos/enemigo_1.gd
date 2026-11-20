@@ -312,6 +312,7 @@ func _on_activate_body_entered(body: Node2D) -> void:
 	_desactivar_rayos()
 	velocity = Vector2.ZERO
 	animacion.play("detection")
+	Sfx.enemigo_1_detectando(self)
 	await get_tree().create_timer(0.6).timeout
 	# se verifica si el enemigo murió (o se reseteó) mientras esperábamos
 	if esta_muerto or not _detectando:

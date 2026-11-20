@@ -2,6 +2,9 @@ extends Area2D
 ## Meta del nivel: al tocarla el jugador, avisa y da feedback.
 signal objetivo_alcanzado
 
+## Tamaño base de la meta (1.0 = tamaño original del sprite).
+@export var escala_base := 0.4
+
 var _alcanzado := false
 var _t := 0.0
 
@@ -12,8 +15,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	rotation += delta * 0.8
-	scale = Vector2.ONE * (1.0 + 0.08 * sin(_t * 3.0))
+	scale = Vector2.ONE * escala_base
 
 
 func _on_body_entered(body: Node2D) -> void:

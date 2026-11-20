@@ -1,18 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://rmdh8lae21yx"]
 
-[ext_resource type="Script" path="res://scenes/objetivo/objetivo.gd" id="1_ob"]
-[ext_resource type="Texture2D" path="res://sprites/objetivo.png" id="2_tx"]
+[ext_resource type="Script" uid="uid://652f1c2e74xj" path="res://scenes/objetivo/objetivo.gd" id="1_ob"]
+[ext_resource type="Texture2D" uid="uid://dwltueemk5i52" path="res://sprites/Holetile.png" id="2_e8t1r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ob"]
-radius = 120.0
+radius = 81.055534
 
-[node name="objetivo" type="Area2D"]
+[node name="objetivo" type="Area2D" unique_id=2132207608]
+scale = Vector2(0.39999956, 0.39999956)
 collision_layer = 64
-collision_mask = 1
 script = ExtResource("1_ob")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_tx")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=479548239]
+texture = ExtResource("2_e8t1r")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1365475404]
 shape = SubResource("CircleShape2D_ob")
