@@ -154,7 +154,7 @@ const MAPAS := [
 	],
 ]
 
-const PUERTAS := [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5],[5,6]]
+const PUERTAS := [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]
 
 ## Mazmorra demo: 9 salas en rejilla 3x3 (mapas fijos, sin generación).
 const POS_MAZE := [
@@ -287,7 +287,7 @@ const ACCIONES_MAZE := [
 	{"icono": "res://sprites/ui/escudo.svg", "accion": "escudo"},
 	{"icono": "res://sprites/ui/raton_der.svg", "accion": "meta"},
 	{"icono": "res://sprites/ui/raton_der.svg", "accion": "normal"},
-	{"icono": "res://sprites/ui/meta.svg", "accion": "meta"},         # sala 9
+	{"icono": "res://sprites/ui/meta.svg", "accion": "meta"},
 ]
 
 
