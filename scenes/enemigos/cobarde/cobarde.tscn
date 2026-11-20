@@ -737,6 +737,12 @@ collision_layer = 20
 collision_mask = 40
 motion_mode = 1
 script = ExtResource("1_cobarde")
+tiempo_deteccion = 0.2
+intervalo_ataque = 0.7
+tiempo_preparacion = 0.3
+duracion_ataque = 0.3
+tiempo_recuperacion = 0.2
+ancho_ataque = 150.0
 collision = NodePath("CollisionShape2D")
 hitboxDead = NodePath("Area2D/CollisionShape2D")
 area_activacion = NodePath("activate/areaActivacion")
@@ -752,9 +758,9 @@ sprite_muerto = NodePath("Sprite2D")
 shape = SubResource("RectangleShape2D_cuerpo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1257010295]
+visible = false
 position = Vector2(4, -10)
 scale = Vector2(0.865, 0.8144444)
-visible = false
 texture = ExtResource("170_cooked")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1134583049]
