@@ -2,8 +2,8 @@ extends Control
 ## Minimapa mínimo: salas visitadas iluminadas, pendientes oscuras.
 ## La geometría sale de las coordenadas gx/gy que ya calcula tutorial.gd.
 
-const CELDA := 20.0
-const HUECO := 4.0
+const CELDA := 38.0
+const HUECO := 6.0
 const MARGEN := 10.0
 
 const COLOR_OSCURA := Color(0.09, 0.08, 0.11, 0.95)

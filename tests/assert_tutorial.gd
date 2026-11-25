@@ -78,6 +78,27 @@ func _inicial() -> void:
 		var nodo := hud.get_node_or_null(fila)
 		_ok("HUD %s" % fila, nodo != null and nodo.tooltip_text != "")
 
+	# Solo los viales clonados flotan bajo el personaje y oscilan; el HUD
+	# original se queda en su esquina.
+	hud._actualizar_posicion()
+	var vial1 := hud.get_node("Flotantes/Vial1") as Control
+	var vial2 := hud.get_node("Flotantes/Vial2") as Control
+	var centro: Vector2 = vial2.get_global_transform_with_canvas() * (vial2.size * 0.5)
+	var pj: Vector2 = _jug.get_global_transform_with_canvas().origin
+	_ok("viales flotan bajo el personaje",
+			absf(centro.x - pj.x) < 3.0 and centro.y > pj.y + 100.0)
+	_ok("HUD original en su sitio", hud.get_global_transform_with_canvas().origin.is_zero_approx())
+	hud._tiempo = 0.0
+	hud._process(0.0)
+	var y1: float = (vial1.get_global_transform_with_canvas() * (vial1.size * 0.5)).y
+	var y2: float = (vial2.get_global_transform_with_canvas() * (vial2.size * 0.5)).y
+	_ok("viales oscilan independientes", absf(y1 - y2) > 1.0)
+	hud._tiempo = PI / (2.0 * hud.velocidad)
+	hud._process(0.0)
+	var y1b: float = (vial1.get_global_transform_with_canvas() * (vial1.size * 0.5)).y
+	_ok("viales oscilan", absf(y1b - y1) > hud.amplitud * 0.5)
+	hud._tiempo = 0.0
+
 	# Luces aditivas suaves (Mix dibujaría el fondo negro de la textura como
 	# cajas negras) y antorchas con parpadeo.
 	var luces: Array = []

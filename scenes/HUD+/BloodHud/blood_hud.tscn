@@ -134,3 +134,41 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "0"
 vertical_alignment = 1
+
+[node name="Flotantes" type="Control" parent="."]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Vial1" type="TextureProgressBar" parent="Flotantes"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+value = 100.0
+fill_mode = 3
+mouse_filter = 2
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")
+
+[node name="Vial2" type="TextureProgressBar" parent="Flotantes"]
+layout_mode = 0
+offset_left = 44.0
+offset_right = 84.0
+offset_bottom = 40.0
+value = 100.0
+fill_mode = 3
+mouse_filter = 2
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")
+
+[node name="Vial3" type="TextureProgressBar" parent="Flotantes"]
+layout_mode = 0
+offset_left = 88.0
+offset_right = 128.0
+offset_bottom = 40.0
+value = 100.0
+fill_mode = 3
+mouse_filter = 2
+texture_under = ExtResource("2_jejpu")
+texture_progress = ExtResource("3_477mq")

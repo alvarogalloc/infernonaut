@@ -352,10 +352,10 @@ func _crear_minimapa() -> void:
 	var mini: Control = load(RUTA_MINIMAPA).new()
 	mini.anchor_left = 1.0
 	mini.anchor_right = 1.0
-	mini.offset_left = -230.0
+	mini.offset_left = -310.0
 	mini.offset_right = -10.0
 	mini.offset_top = 10.0
-	mini.offset_bottom = 190.0
+	mini.offset_bottom = 210.0
 	mini.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	capa.add_child(mini)
 	add_child(capa)
