@@ -59,7 +59,15 @@ func _inicial() -> void:
 	_ok("transición", trans != null)
 	if trans != null:
 		trans.set("activa", false) ## el test teletransporta: sin wipe
-	_ok("HUD tutorial", get_first_node_in_group("tutorial_hud") != null)
+	var hud_tutorial := get_first_node_in_group("tutorial_hud")
+	_ok("HUD tutorial", hud_tutorial != null)
+	if hud_tutorial != null:
+		var boton := hud_tutorial.get_node_or_null("Panel/Fila/Textos/Continuar")
+		_ok("botón continuar", boton != null)
+		_ok("lección modal abierta", hud_tutorial.get_node("Panel").visible)
+		if boton != null:
+			boton.emit_signal("pressed")
+			_ok("lección se cierra", not hud_tutorial.get_node("Panel").visible)
 	_ok("meta", _buscar(_n.get_node("sala_5"), "meta") != null)
 	for i in 5:
 		_ok("puerta %d" % i, _n.get_node_or_null("sala_%d/puerta_%d" % [i, i]) != null)
