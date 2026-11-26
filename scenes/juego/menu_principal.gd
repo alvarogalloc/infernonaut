@@ -9,6 +9,7 @@ signal maze_solicitada
 
 const VOLUMEN_MUSICA_DB := -6.0
 const FADE_IN_MUSICA := 2.0
+const VOLUMEN_INICIO_DB := -12.0
 const SONIDO_INICIO := preload("res://assets/menu/iniciar-partida.wav")
 
 @onready var _musica: AudioStreamPlayer = $Musica
@@ -66,6 +67,7 @@ func _cerrar_dialogo(dialogo: Window) -> void:
 func _reproducir_sonido_inicio() -> void:
 	var reproductor := AudioStreamPlayer.new()
 	reproductor.stream = SONIDO_INICIO
+	reproductor.volume_db = VOLUMEN_INICIO_DB
 	reproductor.process_mode = Node.PROCESS_MODE_ALWAYS
 	reproductor.finished.connect(reproductor.queue_free)
 	get_tree().root.add_child(reproductor)
